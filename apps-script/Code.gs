@@ -2,11 +2,13 @@
  * NHẬN ĐƠN LANDING PAGE – SỨC KHỎE HOÀN HẢO
  * ------------------------------------------------------------
  * Mỗi đơn khách đặt trên landing page:
- *   1. Ghi ngay vào sheet "ĐƠN HÀNG" đúng mẫu: Ngày giờ | STT | TÊN NGƯỜI NHẬN | SĐT |
- *      ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD/CK | SỐ TIỀN COD (nghìn) | Note | TỈNH/TP
- *      - Mỗi đơn ghi rõ ngày giờ đặt (vd 12/11/2026 14:35), STT đếm lại từ 1 mỗi ngày
+ *   1. Ghi ngay vào sheet "ĐƠN HÀNG" đúng mẫu: Ngày | STT | TÊN NGƯỜI NHẬN | SĐT |
+ *      ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD/CK | SỐ TIỀN COD (nghìn) | Note
+ *      - Cột Ngày ghi rõ ngày giờ từng đơn (vd 12/11/2026 14:35), STT đếm lại từ 1 mỗi ngày
  *      - Sang ngày mới tự chèn dòng đỏ TỔNG TIỀN của ngày trước
  *   2. Trong ~1 phút gửi email báo đơn mới, đính kèm file Excel (.xlsx) toàn bộ đơn trong ngày.
+ *   3. Lưu file Excel theo ngày vào thư mục Drive "ĐƠN HÀNG LANDING SKHH" (DonHang_dd-MM-yyyy.xlsx),
+ *      tự cập nhật mỗi khi có đơn mới trong ngày.
  *   3. Sheet "LOG_WEB" lưu nguồn quảng cáo (utm, fbclid) để đối soát Ads.
  *
  * CÀI ĐẶT (làm 1 lần):
@@ -27,13 +29,14 @@ const CONFIG = {
   SHOP_NAME: 'Sức Khỏe Hoàn Hảo',
   SHEET_ORDERS: 'ĐƠN HÀNG',
   SHEET_LOG: 'LOG_WEB',
+  DRIVE_FOLDER: 'ĐƠN HÀNG LANDING SKHH',   // thư mục Drive chứa file Excel theo ngày ('' = không lưu)
   TZ: 'Asia/Ho_Chi_Minh',
   DEDUPE_MINUTES: 3          // cùng SĐT + cùng nội dung trong 3 phút = bấm trùng, không ghi 2 lần
 };
 
-const HEADERS = ['Ngày giờ', 'STT', 'TÊN NGƯỜI NHẬN', 'SĐT', 'ĐỊA CHỈ ĐẦY ĐỦ', 'GHI CHÚ', 'NỘI DUNG', 'COD /CK', 'SỐ TIỀN COD', 'Note', 'TỈNH/TP'];
-const WIDTHS = [118, 40, 170, 110, 420, 110, 380, 60, 80, 90, 130];
-const FORMATS = ['@', '0', '@', '@', '@', '@', '@', '@', '#,##0', '@', '@'];
+const HEADERS = ['Ngày', 'STT', 'TÊN NGƯỜI NHẬN', 'SĐT', 'ĐỊA CHỈ ĐẦY ĐỦ', 'GHI CHÚ', 'NỘI DUNG', 'COD /CK', 'SỐ TIỀN COD', 'Note'];
+const WIDTHS = [118, 40, 170, 110, 420, 110, 380, 60, 80, 90];
+const FORMATS = ['@', '0', '@', '@', '@', '@', '@', '@', '#,##0', '@'];
 const LOG_HEADERS = ['Thời gian', 'Mã đơn', 'Ngày giờ', 'STT', 'Tên', 'SĐT', 'Địa chỉ', 'Ghi chú', 'Nội dung', 'COD/CK',
   'Số tiền (nghìn)', 'Tổng (VNĐ)', 'utm_source', 'utm_campaign', 'utm_content', 'fbclid', 'Trang', 'Thiết bị', 'Đã gửi mail', 'Tỉnh/TP'];
 const L = { time: 0, id: 1, day: 2, stt: 3, name: 4, phone: 5, addr: 6, note: 7, content: 8, pay: 9, amount: 10, total: 11, sent: 18 };
@@ -103,7 +106,7 @@ function doPost(e) {
       const addrCell = note ? address + '\nnote : ' + note : address;
       const shipNote = ship === 0 ? 'freeship' : (ship ? 'ship ' + Math.round(ship / 1000) + 'k' : '');
       const amountK = Math.round(total / 1000);
-      const row = [stamp, stt, name, phone, addrCell, shipNote, content, pay, amountK, '', province];
+      const row = [stamp, stt, name, phone, addrCell, shipNote, content, pay, amountK, ''];
 
       const r = sh.getLastRow() + 1;
       writeOrderRow_(sh, r, row);
@@ -149,6 +152,7 @@ function processQueue() {
     // file Excel: tất cả đơn của ngày (theo đơn mới nhất trong lô)
     const day = String(pending[pending.length - 1].v[L.day]).slice(0, 10);
     const xlsx = makeDayXlsx_(sh, day);
+    if (xlsx) { try { saveToDrive_(xlsx); } catch (e) { console.error('Lưu Drive lỗi: ' + e); } }
 
     const totalK = pending.reduce(function (s, p) { return s + Number(p.v[L.amount] || 0); }, 0);
     const first = pending[0].v;
@@ -283,7 +287,7 @@ function makeDayXlsx_(sh, day) {
   const block = findDayBlock_(sh, day);
   if (!block) return null;
   const data = sh.getRange(block.start, 1, block.end - block.start + 1, HEADERS.length).getValues();
-  const fileName = 'DonHang_' + day.replace(/\//g, '-') + '_SKHH';
+  const fileName = 'DonHang_' + day.replace(/\//g, '-');
   const tmp = SpreadsheetApp.create(fileName);
   try {
     const t = tmp.getSheets()[0];
@@ -337,6 +341,17 @@ function emailHtml_(pending, sheetUrl, day) {
     '</table>' +
     '<p style="font-size:13px;color:#666">Số tiền tính theo nghìn đồng (131 = 131.000đ). ' +
     '<a href="' + sheetUrl + '">Mở Google Sheet đơn hàng</a></p></div>';
+}
+
+/** Lưu / cập nhật file Excel của ngày vào thư mục Drive */
+function saveToDrive_(blob) {
+  if (!CONFIG.DRIVE_FOLDER) return;
+  const it = DriveApp.getFoldersByName(CONFIG.DRIVE_FOLDER);
+  const folder = it.hasNext() ? it.next() : DriveApp.createFolder(CONFIG.DRIVE_FOLDER);
+  const name = blob.getName();
+  const old = folder.getFilesByName(name);
+  while (old.hasNext()) old.next().setTrashed(true);
+  folder.createFile(blob.copyBlob().setName(name));
 }
 
 function json_(o) {

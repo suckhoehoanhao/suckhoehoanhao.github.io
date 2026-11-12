@@ -2,11 +2,11 @@
 
 Trang bán hàng 1 file (`index.html`), tối ưu điện thoại và máy tính. Đơn khách đặt được ghi vào Google Sheet theo mẫu cột:
 
-`Ngày giờ | STT | TÊN NGƯỜI NHẬN | SĐT | ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD /CK | SỐ TIỀN COD | Note | TỈNH/TP`
+`Ngày | STT | TÊN NGƯỜI NHẬN | SĐT | ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD /CK | SỐ TIỀN COD | Note`
 
 (vd `12/11/2026 14:35`, STT đếm lại từ 1 mỗi ngày, sang ngày mới tự chèn dòng đỏ tổng tiền)
 
-và gửi email kèm file Excel (.xlsx) các đơn trong ngày.
+và gửi email kèm file Excel (.xlsx) các đơn trong ngày. File Excel theo ngày cũng được lưu vào thư mục Drive **ĐƠN HÀNG LANDING SKHH** (`DonHang_dd-MM-yyyy.xlsx`).
 
 ## Cấu trúc
 
