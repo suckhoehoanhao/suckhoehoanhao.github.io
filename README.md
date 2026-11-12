@@ -2,7 +2,9 @@
 
 Trang bán hàng 1 file (`index.html`), tối ưu điện thoại và máy tính. Đơn khách đặt được ghi vào Google Sheet theo mẫu cột:
 
-`Ngày | STT | TÊN NGƯỜI NHẬN | SĐT | ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD /CK | SỐ TIỀN COD | Note`
+`Ngày giờ | STT | TÊN NGƯỜI NHẬN | SĐT | ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD /CK | SỐ TIỀN COD | Note | TỈNH/TP`
+
+(vd `12/11/2026 14:35`, STT đếm lại từ 1 mỗi ngày, sang ngày mới tự chèn dòng đỏ tổng tiền)
 
 và gửi email kèm file Excel (.xlsx) các đơn trong ngày.
 
@@ -10,7 +12,8 @@ và gửi email kèm file Excel (.xlsx) các đơn trong ngày.
 
 | File | Dùng để |
 |---|---|
-| `index.html` | Landing page (logo, ảnh đã nhúng sẵn) |
+| `index.html` | Landing page (1 font Quicksand, màu Qi HEAL, popup chi tiết sản phẩm, chọn Tỉnh/TP từ danh sách 34 tỉnh thành) |
+| `img/` | Logo, ảnh sản phẩm (WebP nén nhẹ) |
 | `apps-script/Code.gs` | Code nhận đơn, dán vào Google Apps Script |
 
 ## 1. Bật nhận đơn (Google Apps Script)

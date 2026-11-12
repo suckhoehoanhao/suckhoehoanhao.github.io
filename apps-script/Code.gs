@@ -2,9 +2,9 @@
  * NHẬN ĐƠN LANDING PAGE – SỨC KHỎE HOÀN HẢO
  * ------------------------------------------------------------
  * Mỗi đơn khách đặt trên landing page:
- *   1. Ghi ngay vào sheet "ĐƠN HÀNG" đúng mẫu: Ngày | STT | TÊN NGƯỜI NHẬN | SĐT |
- *      ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD/CK | SỐ TIỀN COD (nghìn) | Note
- *      - Ngày chỉ ghi ở đơn đầu tiên trong ngày, STT đếm lại từ 1 mỗi ngày
+ *   1. Ghi ngay vào sheet "ĐƠN HÀNG" đúng mẫu: Ngày giờ | STT | TÊN NGƯỜI NHẬN | SĐT |
+ *      ĐỊA CHỈ ĐẦY ĐỦ | GHI CHÚ | NỘI DUNG | COD/CK | SỐ TIỀN COD (nghìn) | Note | TỈNH/TP
+ *      - Mỗi đơn ghi rõ ngày giờ đặt (vd 12/11/2026 14:35), STT đếm lại từ 1 mỗi ngày
  *      - Sang ngày mới tự chèn dòng đỏ TỔNG TIỀN của ngày trước
  *   2. Trong ~1 phút gửi email báo đơn mới, đính kèm file Excel (.xlsx) toàn bộ đơn trong ngày.
  *   3. Sheet "LOG_WEB" lưu nguồn quảng cáo (utm, fbclid) để đối soát Ads.
@@ -31,11 +31,11 @@ const CONFIG = {
   DEDUPE_MINUTES: 3          // cùng SĐT + cùng nội dung trong 3 phút = bấm trùng, không ghi 2 lần
 };
 
-const HEADERS = ['Ngày', 'STT', 'TÊN NGƯỜI NHẬN', 'SĐT', 'ĐỊA CHỈ ĐẦY ĐỦ', 'GHI CHÚ', 'NỘI DUNG', 'COD /CK', 'SỐ TIỀN COD', 'Note'];
-const WIDTHS = [48, 40, 170, 110, 420, 110, 380, 60, 80, 90];
-const FORMATS = ['@', '0', '@', '@', '@', '@', '@', '@', '#,##0', '@'];
-const LOG_HEADERS = ['Thời gian', 'Mã đơn', 'Ngày', 'STT', 'Tên', 'SĐT', 'Địa chỉ', 'Ghi chú', 'Nội dung', 'COD/CK',
-  'Số tiền (nghìn)', 'Tổng (VNĐ)', 'utm_source', 'utm_campaign', 'utm_content', 'fbclid', 'Trang', 'Thiết bị', 'Đã gửi mail'];
+const HEADERS = ['Ngày giờ', 'STT', 'TÊN NGƯỜI NHẬN', 'SĐT', 'ĐỊA CHỈ ĐẦY ĐỦ', 'GHI CHÚ', 'NỘI DUNG', 'COD /CK', 'SỐ TIỀN COD', 'Note', 'TỈNH/TP'];
+const WIDTHS = [118, 40, 170, 110, 420, 110, 380, 60, 80, 90, 130];
+const FORMATS = ['@', '0', '@', '@', '@', '@', '@', '@', '#,##0', '@', '@'];
+const LOG_HEADERS = ['Thời gian', 'Mã đơn', 'Ngày giờ', 'STT', 'Tên', 'SĐT', 'Địa chỉ', 'Ghi chú', 'Nội dung', 'COD/CK',
+  'Số tiền (nghìn)', 'Tổng (VNĐ)', 'utm_source', 'utm_campaign', 'utm_content', 'fbclid', 'Trang', 'Thiết bị', 'Đã gửi mail', 'Tỉnh/TP'];
 const L = { time: 0, id: 1, day: 2, stt: 3, name: 4, phone: 5, addr: 6, note: 7, content: 8, pay: 9, amount: 10, total: 11, sent: 18 };
 const COLOR = { header: '#1c4f8f', red: '#ff0000', yellow: '#ffff00' };
 
@@ -47,7 +47,8 @@ function doPost(e) {
 
     const name = clean_(d.name, 80);
     const phone = normPhone_(d.phone);
-    const address = clean_(d.address, 300);
+    const province = clean_(d.province, 60);
+    const address = d.street ? [clean_(d.street, 160), clean_(d.ward, 80), province].filter(String).join(', ') : clean_(d.address, 300);
     const note = clean_(d.note, 300);
     const pay = d.payment === 'ck' ? 'ck' : 'cod';
     const items = (Array.isArray(d.items) ? d.items : []).slice(0, 50).map(function (i) {
@@ -61,6 +62,7 @@ function doPost(e) {
     if (name.length < 2) return json_({ ok: false, error: 'Thiếu họ tên' });
     if (!/^0\d{9}$/.test(phone)) return json_({ ok: false, error: 'Số điện thoại chưa đúng' });
     if (address.length < 5) return json_({ ok: false, error: 'Thiếu địa chỉ' });
+    if (d.street !== undefined && !province) return json_({ ok: false, error: 'Chưa chọn tỉnh / thành phố' });
     if (!items.length) return json_({ ok: false, error: 'Chưa có sản phẩm' });
 
     const ship = (d.ship === null || d.ship === undefined || d.ship === '') ? null : Math.max(0, Number(d.ship) || 0);
@@ -82,7 +84,8 @@ function doPost(e) {
       if (dup) return json_({ ok: true, orderId: dup, duplicate: true });
 
       // ngày mới -> chốt tổng ngày cũ, STT về 1
-      const today = Utilities.formatDate(now, CONFIG.TZ, 'd/M');
+      const today = Utilities.formatDate(now, CONFIG.TZ, 'dd/MM/yyyy');
+      const stamp = Utilities.formatDate(now, CONFIG.TZ, 'dd/MM/yyyy HH:mm');
       const lastDay = props.getProperty('LAST_DAY');
       let stt = Number(props.getProperty('DAY_STT') || 0);
       if (lastDay !== today) {
@@ -100,14 +103,14 @@ function doPost(e) {
       const addrCell = note ? address + '\nnote : ' + note : address;
       const shipNote = ship === 0 ? 'freeship' : (ship ? 'ship ' + Math.round(ship / 1000) + 'k' : '');
       const amountK = Math.round(total / 1000);
-      const row = [stt === 1 ? today : '', stt, name, phone, addrCell, shipNote, content, pay, amountK, ''];
+      const row = [stamp, stt, name, phone, addrCell, shipNote, content, pay, amountK, '', province];
 
       const r = sh.getLastRow() + 1;
       writeOrderRow_(sh, r, row);
 
-      lg.appendRow([now, orderId, today, stt, name, "'" + phone, addrCell, shipNote, content, pay, amountK, total,
+      lg.appendRow([now, orderId, stamp, stt, name, "'" + phone, addrCell, shipNote, content, pay, amountK, total,
         clean_(d.utm_source, 100), clean_(d.utm_campaign, 150), clean_(d.utm_content, 150), clean_(d.fbclid, 300),
-        clean_(d.page, 300), clean_(d.ua, 300), '']);
+        clean_(d.page, 300), clean_(d.ua, 300), '', province]);
 
       props.setProperty('PENDING', '1');
       return json_({ ok: true, orderId: orderId, total: total });
@@ -144,7 +147,7 @@ function processQueue() {
     if (!pending.length) return;
 
     // file Excel: tất cả đơn của ngày (theo đơn mới nhất trong lô)
-    const day = String(pending[pending.length - 1].v[L.day]);
+    const day = String(pending[pending.length - 1].v[L.day]).slice(0, 10);
     const xlsx = makeDayXlsx_(sh, day);
 
     const totalK = pending.reduce(function (s, p) { return s + Number(p.v[L.amount] || 0); }, 0);
@@ -174,8 +177,9 @@ function processQueue() {
 function setup() {
   const ss = SpreadsheetApp.getActive();
   ss.setSpreadsheetTimeZone(CONFIG.TZ);
-  ensureOrders_(ss);
-  ensureLog_(ss);
+  formatHeader_(ensureOrders_(ss));                       // luôn cập nhật dòng tiêu đề theo mẫu mới
+  const lg = ensureLog_(ss);
+  lg.getRange(1, 1, 1, LOG_HEADERS.length).setValues([LOG_HEADERS]).setFontWeight('bold').setBackground('#eeeeee');
   const blank = ss.getSheetByName('Trang tính1') || ss.getSheetByName('Sheet1');
   if (blank && ss.getSheets().length > 2 && blank.getLastRow() === 0) ss.deleteSheet(blank);
   ScriptApp.getProjectTriggers().forEach(function (t) {
@@ -188,7 +192,7 @@ function setup() {
 
 function testOrder() {
   const res = doPost({ postData: { contents: JSON.stringify({
-    name: 'Khách Test', phone: '0900000000', address: 'Test – 318 Nguyễn Thị Minh Khai, P. Phú Lợi, TP HCM',
+    name: 'Khách Test', phone: '0900000000', street: '318 Nguyễn Thị Minh Khai', ward: 'Phường Phú Lợi', province: 'TP. Hồ Chí Minh',
     note: 'đơn thử, xoá sau', payment: 'cod',
     items: [{ short: 'dphh 50ml', qty: 1, price: 175000 }, { short: 'rượu tứ vị 500ml', qty: 2, price: 131000 }],
     ship: null, utm_source: 'test'
@@ -252,14 +256,13 @@ function findDayBlock_(sh, day) {
   const last = sh.getLastRow();
   if (last < 2) return null;
   const v = sh.getRange(2, 1, last - 1, 2).getDisplayValues();
-  for (let i = v.length - 1; i >= 0; i--) {
-    if (v[i][0] === day) {
-      let j = i;
-      while (j + 1 < v.length && v[j + 1][0] === '' && v[j + 1][1] !== '') j++;
-      return { start: i + 2, end: j + 2 };
-    }
-  }
-  return null;
+  const isDay = function (r) { return r[1] !== '' && String(r[0]).slice(0, 10) === day; };
+  let end = -1;
+  for (let i = v.length - 1; i >= 0; i--) { if (isDay(v[i])) { end = i; break; } }
+  if (end < 0) return null;
+  let start = end;
+  while (start - 1 >= 0 && isDay(v[start - 1])) start--;
+  return { start: start + 2, end: end + 2 };
 }
 
 function findDuplicate_(lg, phone, content, now) {
@@ -280,14 +283,14 @@ function makeDayXlsx_(sh, day) {
   const block = findDayBlock_(sh, day);
   if (!block) return null;
   const data = sh.getRange(block.start, 1, block.end - block.start + 1, HEADERS.length).getValues();
-  const fileName = 'DonHang_' + day.replace('/', '-') + '_SKHH';
+  const fileName = 'DonHang_' + day.replace(/\//g, '-') + '_SKHH';
   const tmp = SpreadsheetApp.create(fileName);
   try {
     const t = tmp.getSheets()[0];
     t.setName('ĐƠN HÀNG');
     formatHeader_(t);
     data.forEach(function (row, i) {
-      row[0] = row[0] === '' ? '' : String(row[0]);
+      row[0] = String(row[0]);
       row[3] = String(row[3]);
       writeOrderRow_(t, i + 2, row);
     });
@@ -312,7 +315,7 @@ function emailHtml_(pending, sheetUrl, day) {
     const v = p.v;
     sum += Number(v[L.amount] || 0);
     rows += '<tr>' +
-      '<td ' + td + '>' + esc_(v[L.day]) + '</td>' +
+      '<td ' + td + ' nowrap>' + esc_(v[L.day]) + '</td>' +
       '<td ' + td + '>' + esc_(v[L.stt]) + '</td>' +
       '<td ' + td + '><b>' + esc_(v[L.name]) + '</b><br><span style="color:#888">' + esc_(v[L.id]) + '</span></td>' +
       '<td ' + td + '><a href="tel:' + esc_(String(v[L.phone]).replace(/^'/, '')) + '">' + esc_(String(v[L.phone]).replace(/^'/, '')) + '</a></td>' +
@@ -327,7 +330,7 @@ function emailHtml_(pending, sheetUrl, day) {
     '<p style="font-size:15px">Có <b>' + pending.length + ' đơn mới</b> từ landing page (' + esc_(day) + '). ' +
     'File Excel đính kèm = <b>toàn bộ đơn trong ngày</b>.</p>' +
     '<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%">' +
-    '<tr><th ' + th + '>Ngày</th><th ' + th + '>STT</th><th ' + th + '>TÊN NGƯỜI NHẬN</th><th ' + th + '>SĐT</th>' +
+    '<tr><th ' + th + '>Ngày giờ</th><th ' + th + '>STT</th><th ' + th + '>TÊN NGƯỜI NHẬN</th><th ' + th + '>SĐT</th>' +
     '<th ' + th + '>ĐỊA CHỈ ĐẦY ĐỦ</th><th ' + th + '>GHI CHÚ</th><th ' + th + '>NỘI DUNG</th><th ' + th + '>COD /CK</th><th ' + th + '>SỐ TIỀN COD</th></tr>' +
     rows +
     '<tr><td colspan="8" style="background:#ff0000;padding:7px 8px"></td><td style="background:#ff0000;color:#ffff00;font-weight:bold;padding:7px 8px" align="right">' + sum + '</td></tr>' +
