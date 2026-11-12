@@ -12,7 +12,7 @@ và gửi email kèm file Excel (.xlsx) các đơn trong ngày.
 
 | File | Dùng để |
 |---|---|
-| `index.html` | Landing page (1 font Quicksand, màu Qi HEAL, popup chi tiết sản phẩm, chọn Tỉnh/TP từ danh sách 34 tỉnh thành) |
+| `index.html` | Landing page: Logo → Tiêu đề → Đặt nhanh + Hình + USP → Số liệu → Lợi ích → Bán chạy → Tất cả sản phẩm (popup chi tiết) → Phản hồi khách hàng → Đặt hàng → Footer + bản đồ |
 | `img/` | Logo, ảnh sản phẩm (WebP nén nhẹ) |
 | `apps-script/Code.gs` | Code nhận đơn, dán vào Google Apps Script |
 
@@ -54,3 +54,15 @@ Mã sản phẩm: `dau-phong`, `ruou-tu-vi`, `thong-kinh-lac-thuy`, `dap-thao-mo
 ## Sửa giá / sản phẩm / phí ship
 
 Trong `index.html`: mảng `PRODUCTS` (tên, giá, ảnh, tên viết tắt ghi vào cột NỘI DUNG) và `SHIP_FEE`, `FREESHIP_FROM` trong `CONFIG`.
+
+## Phản hồi khách hàng
+
+Mục này tự ẩn khi chưa có dữ liệu. Chỉ điền phản hồi **thật** của khách, trong `index.html` (khối `window.REVIEWS`):
+
+```js
+window.REVIEWS = [
+  {name:"Chị Lan", place:"Thủ Đức", text:"Nội dung khách nhắn…", img:"img/review-1.jpg"}
+];
+```
+
+Ảnh chụp feedback bỏ vào thư mục `img/`.
