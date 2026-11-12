@@ -260,7 +260,8 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 .mini .qi{width:40px}
 /* chuyển khoản */
 .callc{margin:10px 0 2px;background:#fff7ec;color:#9a5b00;border:1px solid #ffd9a8;border-radius:10px;padding:8px 10px;font-weight:700;font-size:14px}
-.ck{margin-top:12px;border:2px solid var(--p);border-radius:14px;padding:12px;text-align:left}
+.ck{margin-top:12px;border:2px solid var(--p);border-radius:14px;padding:12px;text-align:left;background:#fff}
+#formCK{margin-top:10px}
 .ckh{text-align:center;font-weight:700;color:var(--p);font-size:16px;margin-bottom:8px}
 .ck img{width:240px;height:240px;max-width:100%;margin:0 auto;object-fit:contain;background:#fff;border-radius:8px}
 .cks{text-align:center;font-size:13px;color:var(--mute);margin:6px 0 8px}
@@ -512,10 +513,11 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
               <label class="on"><input type="radio" name="payment" value="cod" checked>Khi nhận hàng</label>
               <label><input type="radio" name="payment" value="ck">Chuyển khoản (QR)</label>
             </div>
+            <div class="ck" id="formCK" hidden></div>
           </div>
           <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
           <button class="btn btn-p go" id="go" type="submit">Đặt hàng ngay</button>
-          <p class="note">Nhân viên sẽ gọi xác nhận đơn trước khi giao.</p>
+          <p class="note" id="goNote">📞 Nhân viên sẽ gọi xác nhận đơn trước khi giao.</p>
           <div class="ferr" id="ferr"></div>
         </form>
       </div>
@@ -578,17 +580,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
       <div class="id" id="okId"></div>
       <div class="tm" id="okTime"></div>
       <p class="callc" id="okCall">📞 Nhân viên sẽ gọi xác nhận đơn hàng</p>
-      <div class="ck" id="okCK" hidden>
-        <div class="ckh">Chuyển khoản để hoàn tất đơn</div>
-        <img id="okQR" alt="Mã QR chuyển khoản Vietcombank" width="240" height="240">
-        <p class="cks">Mở app ngân hàng → quét mã QR. Số tiền và nội dung đã điền sẵn.</p>
-        <div class="ckr"><span>Ngân hàng</span><b class="js-bn">Vietcombank</b></div>
-        <div class="ckr"><span>Chủ tài khoản</span><b class="js-bh">NGUYEN THI ANH XUAN</b></div>
-        <div class="ckr"><span>Số tài khoản</span><b id="okAcc"></b><button class="cp" data-cp="okAcc">Sao chép</button></div>
-        <div class="ckr"><span>Số tiền</span><b id="okAmt"></b><button class="cp" data-cp="okAmtRaw">Sao chép</button><i id="okAmtRaw" hidden></i></div>
-        <div class="ckr"><span>Nội dung</span><b id="okMemo"></b><button class="cp" data-cp="okMemo">Sao chép</button></div>
-        <p class="ckn" id="okShipNote"></p>
-      </div>
+      <div class="ck" id="okCK" hidden></div>
       <div class="sm" id="okS"></div>
       <div class="to" id="okTo"></div>
       <div class="nx">
@@ -783,7 +775,8 @@ var PROVINCES = [
     $("#tot").innerHTML=c.items.length?'<div><span>Tạm tính ('+c.count+' sp)</span><span>'+fmt(c.sub)+'</span></div>'+(c.save>0?'<div class="sv"><span>Đã áp giá sỉ, tiết kiệm</span><span>−'+fmt(c.save)+'</span></div>':'')+'<div><span>Phí giao hàng</span>'+sh+'</div>'+
       (C.FREESHIP_FROM!=null&&c.sub<C.FREESHIP_FROM?'<div style="color:var(--mute);font-size:13px">Mua thêm '+fmt(C.FREESHIP_FROM-c.sub)+' để được miễn ship</div>':'')+'<div class="gr"><span>Tổng</span><span>'+fmt(c.total)+'</span></div>':"";
     $("#binf").innerHTML=c.items.length?'<small>'+c.count+' sản phẩm</small><b>'+fmt(c.total)+'</b>':'<small>Chưa chọn sản phẩm</small><b>0đ</b>';
-    $("#bbtn").textContent=c.items.length?"Đặt hàng →":"Chọn sản phẩm"}
+    $("#bbtn").textContent=c.items.length?"Đặt hàng →":"Chọn sản phẩm";
+    if(window.__fck)window.__fck()}
 
   var fired=false;
   function initCheckout(){if(fired)return;var c=calc();if(!c.items.length)return;fired=true;
@@ -818,7 +811,7 @@ var PROVINCES = [
     busy=true;var b=$("#go");b.disabled=true;b.innerHTML='<span class="spin"></span> Đang gửi đơn…';
     send(payload).then(function(r){if(!r||!r.ok)throw new Error((r&&r.error)||"Lỗi gửi đơn");done(r.orderId,payload,c)})
     .catch(function(x){er.innerHTML="Chưa gửi được đơn ("+esc(x.message||"mất kết nối")+"). Bấm <b>Đặt hàng</b> lại, hoặc gọi <a href=\"tel:"+C.HOTLINE+"\">"+C.HOTLINE_TEXT+"</a> / <a href=\""+C.ZALO+"\" target=\"_blank\">nhắn Zalo</a> để shop lên đơn giúp.";er.style.display="block"})
-    .then(function(){busy=false;b.disabled=false;b.textContent="Đặt hàng ngay"})});
+    .then(function(){busy=false;b.disabled=false;b.textContent=payCK()?"Xác nhận đặt hàng":"Đặt hàng ngay"})});
 
   function send(p){
     if(!C.ORDER_API){console.warn("[Landing] Chưa có ORDER_API – chế độ thử, đơn không được lưu.");return new Promise(function(r){setTimeout(function(){r({ok:true,orderId:"DEMO-"+String(Date.now()).slice(-4)})},500)})}
@@ -837,22 +830,40 @@ var PROVINCES = [
     var isCK=p.payment==="ck",B=C.BANK||{};
     $("#okCall").textContent=isCK?"📞 Nhân viên sẽ kiểm tra chuyển khoản và gọi xác nhận đơn hàng":"📞 Nhân viên sẽ gọi xác nhận đơn hàng";
     $("#okCK").hidden=!(isCK&&B.acc);
-    if(isCK&&B.acc){var memo=(String(id)+" "+p.phone).replace(/[^A-Za-z0-9 ]/g,"");
-      $("#okAcc").textContent=B.acc;$("#okAmt").textContent=fmt(c.total);$("#okAmtRaw").textContent=String(c.total);$("#okMemo").textContent=memo;
-      $("#okShipNote").textContent=c.ship==null?"Số tiền trên là tiền hàng. Phí ship (nếu có) nhân viên sẽ báo khi gọi xác nhận.":"";
-      var q=$("#okQR"),cks=$("#okCK .cks");cks.textContent="Mở app ngân hàng → quét mã QR. Số tiền và nội dung đã điền sẵn.";
-      q.onerror=function(){q.onerror=null;q.src=B.qr;cks.textContent="Mở app ngân hàng → quét mã QR, rồi nhập đúng số tiền và nội dung bên dưới."};
-      q.src="https://img.vietqr.io/image/"+B.bin+"-"+B.acc+"-qr_only.png?amount="+c.total+"&addInfo="+encodeURIComponent(memo)+"&accountName="+encodeURIComponent(B.holder)}
+    if(isCK&&B.acc)renderCK($("#okCK"),c.total,memoOf(p.phone),c.ship==null,"Nếu chưa chuyển khoản, anh/chị quét mã dưới đây:");
     $("#okStep1").textContent=isCK?"Chuyển khoản theo thông tin bên trên":"Nhân viên sẽ gọi số "+p.phone+" để xác nhận đơn";
     $("#okStep2").textContent=isCK?"Nhân viên kiểm tra chuyển khoản và gọi số "+p.phone+" xác nhận đơn":"Shop đóng gói và giao tận nơi cho anh/chị";
     $("#okStep3").textContent=isCK?"Shop đóng gói và giao tận nơi cho anh/chị":"Nhận hàng, kiểm tra rồi thanh toán";
     Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();$("#qPhone").value="";
-    $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});
+    $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});fckKey="";updateFormCK();
     $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
-  $("#okCK").addEventListener("click",function(e){var b=e.target.closest(".cp");if(!b)return;var t=$("#"+b.dataset.cp).textContent;
+  /* ===== chuyển khoản QR (dùng chung cho form và popup) ===== */
+  function memoOf(ph){ph=normPhone(ph||"");return "SKHH "+(/^0\d{9}$/.test(ph)?ph:"DAT HANG")}
+  function qrURL(amount,memo){var B=C.BANK;return "https://img.vietqr.io/image/"+B.bin+"-"+B.acc+"-qr_only.png?amount="+amount+"&addInfo="+encodeURIComponent(memo)+"&accountName="+encodeURIComponent(B.holder)}
+  function renderCK(el,amount,memo,shipNull,title){var B=C.BANK;
+    el.innerHTML='<div class="ckh">'+esc(title||"Quét mã QR để chuyển khoản")+'</div><img alt="Mã QR chuyển khoản '+esc(B.name)+'" width="240" height="240">'+
+      '<p class="cks">Mở app ngân hàng → quét mã QR. Số tiền và nội dung đã điền sẵn.</p>'+
+      '<div class="ckr"><span>Ngân hàng</span><b>'+esc(B.name)+'</b></div>'+
+      '<div class="ckr"><span>Chủ tài khoản</span><b>'+esc(B.holder)+'</b></div>'+
+      '<div class="ckr"><span>Số tài khoản</span><b>'+esc(B.acc)+'</b><button type="button" class="cp" data-v="'+esc(B.acc)+'">Sao chép</button></div>'+
+      '<div class="ckr"><span>Số tiền</span><b class="amt">'+fmt(amount)+'</b><button type="button" class="cp" data-v="'+amount+'">Sao chép</button></div>'+
+      '<div class="ckr"><span>Nội dung</span><b>'+esc(memo)+'</b><button type="button" class="cp" data-v="'+esc(memo)+'">Sao chép</button></div>'+
+      (shipNull?'<p class="ckn">Số tiền trên là tiền hàng. Phí ship (nếu có) nhân viên sẽ báo khi gọi xác nhận.</p>':'');
+    var q=el.querySelector("img"),cks=el.querySelector(".cks");
+    q.onerror=function(){q.onerror=null;q.src=B.qr;cks.textContent="Mở app ngân hàng → quét mã QR, rồi nhập đúng số tiền và nội dung bên dưới."};
+    q.src=qrURL(amount,memo)}
+  d.addEventListener("click",function(e){var b=e.target.closest(".cp");if(!b)return;var t=b.dataset.v;
     function ok(){b.classList.add("done");b.textContent="Đã chép";setTimeout(function(){b.classList.remove("done");b.textContent="Sao chép"},1500)}
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){fb()})}else fb();
-    function fb(){var ta=d.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";d.body.appendChild(ta);ta.select();try{d.execCommand("copy");ok()}catch(x){}ta.remove()}});
+    function fb(){var ta=d.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";d.body.appendChild(ta);ta.select();try{d.execCommand("copy");ok()}catch(x){}ta.remove()}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,fb)}else fb()});
+  var fck=$("#formCK"),fckKey="",fckT;
+  function payCK(){var r=d.querySelector('input[name="payment"]:checked');return !!(r&&r.value==="ck")}
+  function updateFormCK(){var on=payCK()&&C.BANK&&C.BANK.acc;fck.hidden=!on;$("#go").textContent=on?"Xác nhận đặt hàng":"Đặt hàng ngay";$("#goNote").textContent=on?"📞 Nhân viên sẽ kiểm tra chuyển khoản và gọi xác nhận đơn.":"📞 Nhân viên sẽ gọi xác nhận đơn trước khi giao.";if(!on)return;
+    var c=calc();if(!c.items.length){fck.innerHTML='<div class="ckh">Chọn sản phẩm để hiện mã QR chuyển khoản</div>';fckKey="";return}
+    var memo=memoOf($("#fPhone").value),key=c.total+"|"+memo;if(key===fckKey)return;fckKey=key;
+    renderCK(fck,c.total,memo,c.ship==null,"Chuyển khoản xong, bấm “Xác nhận đặt hàng” bên dưới")}
+  $("#pay").addEventListener("change",updateFormCK);window.__fck=updateFormCK;
+  $("#fPhone").addEventListener("input",function(){clearTimeout(fckT);fckT=setTimeout(updateFormCK,500)});
   function okHide(){$("#md").classList.remove("on");d.documentElement.style.overflow=""}
   $("#okX").addEventListener("click",function(){okHide();go("#shop")});
   $("#md").addEventListener("click",function(e){if(e.target.id==="md")okHide()});
