@@ -31,6 +31,7 @@ const CONFIG = {
   SHEET_LOG: 'LOG_WEB',
   DRIVE_FOLDER: 'ĐƠN HÀNG LANDING SKHH',   // thư mục Drive chứa file Excel theo ngày ('' = không lưu)
   TZ: 'Asia/Ho_Chi_Minh',
+  ORDER_PREFIX: 'SKHH',     // mã đơn dạng SKHH-01, SKHH-02…
   DEDUPE_MINUTES: 3          // cùng SĐT + cùng nội dung trong 3 phút = bấm trùng, không ghi 2 lần
 };
 
@@ -102,7 +103,10 @@ function doPost(e) {
       stt++;
       props.setProperty('DAY_STT', String(stt));
 
-      const orderId = 'SK' + Utilities.formatDate(now, CONFIG.TZ, 'ddMMyy') + '-' + ('00' + stt).slice(-3);
+      // Mã đơn: SKHH-01, SKHH-02… tăng dần cho mọi đơn (không reset theo ngày)
+      const seq = Number(props.getProperty('ORDER_SEQ') || 0) + 1;
+      props.setProperty('ORDER_SEQ', String(seq));
+      const orderId = CONFIG.ORDER_PREFIX + '-' + String(seq).padStart(2, '0');
       const addrCell = note ? address + '\nnote : ' + note : address;
       const shipNote = ship === 0 ? 'freeship' : (ship ? 'ship ' + Math.round(ship / 1000) + 'k' : '');
       const amountK = Math.round(total / 1000);
