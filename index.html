@@ -252,17 +252,33 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 .pdf .qty button{width:32px}
 .pdf .btn{min-height:44px;padding:0 6px;font-size:14px;white-space:nowrap}
 
-/* đặt thành công */
-.md{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5)}
-.md.on{display:flex}
-.mb{background:#fff;border-radius:18px;max-width:420px;width:100%;padding:24px 18px 18px;text-align:center;max-height:90vh;overflow:auto}
-.ok{width:64px;height:64px;border-radius:50%;background:var(--g);color:#fff;font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
-.mb h3{font-size:20px;color:var(--p)}
-.mb .id{display:inline-block;background:var(--p-l);color:var(--p);font-weight:700;padding:3px 12px;border-radius:999px;margin:8px 0}
-.mb .sm{text-align:left;background:var(--soft);border-radius:10px;padding:10px 12px;font-size:14px;margin:10px 0 14px}
-.mb .sm div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
-.mb .bt{display:grid;gap:8px}
-.mb .muted{color:var(--mute);font-size:14px}
+/* popup cảm ơn */
+.md{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(40,8,32,.6);opacity:0;visibility:hidden;transition:opacity .2s}
+.md.on{opacity:1;visibility:visible}
+.mb{background:#fff;border-radius:22px;max-width:440px;width:100%;max-height:92vh;max-height:92dvh;overflow:auto;overscroll-behavior:contain;text-align:center;transform:scale(.94);transition:transform .25s ease-out}
+.md.on .mb{transform:none}
+.mh{background:linear-gradient(160deg,var(--p),var(--p-d));color:#fff;padding:22px 18px 46px;border-radius:22px 22px 0 0;position:relative}
+.mh img{width:58px;height:58px;border-radius:50%;background:#fff;margin:0 auto 8px}
+.mh h3{font-size:22px;line-height:1.3}
+.mh p{font-size:15px;opacity:.95;margin-top:4px}
+.ok{width:66px;height:66px;border-radius:50%;background:var(--g);color:#fff;font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:-33px auto 0;position:relative;border:4px solid #fff}
+.md.on .ok{animation:pop .45s ease-out .1s both}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+.mc{padding:10px 18px 18px}
+.mc .id{display:inline-block;background:var(--p-l);color:var(--p);font-weight:700;padding:4px 14px;border-radius:999px;font-size:15px}
+.mc .tm{font-size:13px;color:var(--mute);margin-top:4px}
+.mc .sm{text-align:left;background:var(--p-ll);border:1px solid var(--p-l);border-radius:12px;padding:12px 14px;font-size:14px;margin:12px 0}
+.mc .sm div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.mc .sm .tt{border-top:1px dashed #d9c3d3;margin-top:6px;padding-top:6px;font-size:16px}
+.mc .sm .tt b{color:var(--red)}
+.mc .to{text-align:left;font-size:14px;line-height:1.45;margin-bottom:12px;display:grid;gap:4px}
+.mc .to span{color:var(--mute)}
+.nx{text-align:left;display:grid;gap:8px;margin:4px 0 14px}
+.nx div{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.nx i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--p);color:#fff;font-style:normal;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.mc .bt{display:grid;gap:8px}
+.mc .ht{font-size:13px;color:var(--mute);margin-top:10px}
+.mc .ht a{color:var(--p);font-weight:700}
 
 @media (min-width:420px){.row2{grid-template-columns:1fr 1fr}.nav .call span{display:inline}}
 @media (min-width:640px){.stats .row{grid-template-columns:repeat(4,1fr)}.feats,.rv{grid-template-columns:repeat(3,1fr)}.best{grid-template-columns:1fr 1fr}}
@@ -515,16 +531,29 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
   </div>
 </div>
 
-<div class="md" id="md" role="dialog" aria-modal="true">
+<div class="md" id="md" role="dialog" aria-modal="true" aria-labelledby="okT">
   <div class="mb">
+    <div class="mh">
+      <img src="img/logo-badge.png" alt="Sức Khỏe Hoàn Hảo" width="58" height="58">
+      <h3 id="okT">Cảm ơn anh/chị đã đặt hàng!</h3>
+      <p>Cảm ơn anh/chị đã tin chọn Sức Khỏe Hoàn Hảo 💜</p>
+    </div>
     <div class="ok">✓</div>
-    <h3 id="okT">Đặt hàng thành công!</h3>
-    <div class="id" id="okId"></div>
-    <p class="muted" id="okP"></p>
-    <div class="sm" id="okS"></div>
-    <div class="bt">
-      <a class="btn btn-p js-zalo" href="#" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
-      <button class="btn btn-o" id="okX">Tiếp tục xem sản phẩm</button>
+    <div class="mc">
+      <div class="id" id="okId"></div>
+      <div class="tm" id="okTime"></div>
+      <div class="sm" id="okS"></div>
+      <div class="to" id="okTo"></div>
+      <div class="nx">
+        <div><i>1</i><span id="okStep1">Nhân viên sẽ gọi xác nhận đơn hàng</span></div>
+        <div><i>2</i><span>Shop đóng gói và giao tận nơi cho anh/chị</span></div>
+        <div><i>3</i><span id="okStep3">Nhận hàng, kiểm tra rồi thanh toán</span></div>
+      </div>
+      <div class="bt">
+        <a class="btn btn-p js-zalo" href="#" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+        <button class="btn btn-o" id="okX">Tiếp tục mua sắm</button>
+      </div>
+      <p class="ht">Cần hỗ trợ gấp? Gọi <a class="js-tel" href="tel:0933347114"><span class="js-hot">0933 347 114</span></a></p>
     </div>
   </div>
 </div>
@@ -715,14 +744,21 @@ var PROVINCES = [
 
   function done(id,p,c){
     track("Purchase",{value:c.total,currency:"VND",content_type:"product",num_items:c.count,content_ids:c.items.map(function(i){return i.id}),contents:c.items.map(function(i){return{id:i.id,quantity:i.qty,item_price:i.price}})},{eventID:String(id)});
-    $("#okT").textContent="Cảm ơn "+p.name.split(" ").slice(-1)[0]+"! Đặt hàng thành công";
+    var nm=p.name.split(" ").slice(-1)[0], now=new Date(), pad=function(n){return(n<10?"0":"")+n};
+    $("#okT").textContent="Cảm ơn anh/chị "+nm+"!";
     $("#okId").textContent="Mã đơn: "+id;
-    $("#okP").textContent="Nhân viên sẽ gọi số "+p.phone+" để xác nhận và báo thời gian giao.";
-    $("#okS").innerHTML=c.items.map(function(i){return '<div><span>'+i.qty+' × '+esc(i.name)+'</span><b>'+fmt(i.qty*i.price)+'</b></div>'}).join("")+'<div style="border-top:1px dashed #ccc;margin-top:6px;padding-top:6px"><span>Tổng</span><b style="color:var(--red)">'+fmt(c.total)+(c.ship==null?' + ship':'')+'</b></div>';
+    $("#okTime").textContent="Đặt lúc "+pad(now.getHours())+":"+pad(now.getMinutes())+" · "+pad(now.getDate())+"/"+pad(now.getMonth()+1)+"/"+now.getFullYear();
+    $("#okS").innerHTML=c.items.map(function(i){return '<div><span>'+i.qty+' × '+esc(i.name)+'</span><b>'+fmt(i.qty*i.price)+'</b></div>'}).join("")+
+      '<div class="tt"><span>Tổng thanh toán</span><b>'+fmt(c.total)+(c.ship==null?' + ship':'')+'</b></div>';
+    $("#okTo").innerHTML='<div><span>Giao tới: </span>'+esc(p.address)+'</div><div><span>Người nhận: </span>'+esc(p.name)+' – '+esc(p.phone)+'</div><div><span>Thanh toán: </span>'+(p.payment==="ck"?"Chuyển khoản (shop gửi STK khi gọi xác nhận)":"Khi nhận hàng (COD)")+'</div>';
+    $("#okStep1").textContent="Nhân viên sẽ gọi số "+p.phone+" để xác nhận đơn";
+    $("#okStep3").textContent=p.payment==="ck"?"Chuyển khoản theo STK shop gửi, nhận hàng tận nơi":"Nhận hàng, kiểm tra rồi thanh toán";
     Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();$("#qPhone").value="";
     $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});
-    $("#md").classList.add("on")}
-  $("#okX").addEventListener("click",function(){$("#md").classList.remove("on")});
+    $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
+  function okHide(){$("#md").classList.remove("on");d.documentElement.style.overflow=""}
+  $("#okX").addEventListener("click",function(){okHide();go("#shop")});
+  $("#md").addEventListener("click",function(e){if(e.target.id==="md")okHide()});
 
   /* popup chi tiết */
   var pdId=null,pdQ=1;
@@ -741,7 +777,7 @@ var PROVINCES = [
   $("#pd .pdf .qty").addEventListener("click",function(e){var b=e.target.closest("[data-q]");if(!b)return;pdQ=Math.max(1,Math.min(99,pdQ+(b.dataset.q==="-"?-1:1)));$("#pdQ").textContent=pdQ});
   $("#pdAdd").addEventListener("click",function(){change(pdId,pdQ,"add");pdHide()});
   $("#pdBuy").addEventListener("click",function(){change(pdId,pdQ,"add");pdHide();go("#dat-hang")});
-  d.addEventListener("keydown",function(e){if(e.key==="Escape"){pdHide();$("#md").classList.remove("on")}});
+  d.addEventListener("keydown",function(e){if(e.key==="Escape"){pdHide();okHide()}});
 
   /* bản đồ: chỉ tải khi cuộn tới (không làm chậm trang) */
   var mp=$("#map");
