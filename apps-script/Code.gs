@@ -163,7 +163,12 @@ function processQueue() {
     const start = Math.max(2, n - 299);
     const vals = lg.getRange(start, 1, n - start + 1, LOG_HEADERS.length).getValues();
     const pending = [];
-    vals.forEach(function (v, i) { if (v[L.id] && v[L.sent] !== 'x') pending.push({ row: start + i, v: v }); });
+    vals.forEach(function (v, i) {
+      // Google Sheets có thể tự đổi cột "Ngày giờ" thành kiểu Date -> chuẩn hoá lại dạng dd/MM/yyyy HH:mm
+      if (v[L.time] instanceof Date) v[L.day] = Utilities.formatDate(v[L.time], CONFIG.TZ, 'dd/MM/yyyy HH:mm');
+      else if (v[L.day] instanceof Date) v[L.day] = Utilities.formatDate(v[L.day], CONFIG.TZ, 'dd/MM/yyyy HH:mm');
+      if (v[L.id] && v[L.sent] !== 'x') pending.push({ row: start + i, v: v });
+    });
     if (!pending.length) return;
 
     // file Excel: tất cả đơn của ngày (theo đơn mới nhất trong lô)
@@ -239,6 +244,7 @@ function ensureLog_(ss) {
     lg.getRange(1, 1, 1, LOG_HEADERS.length).setFontWeight('bold').setBackground('#eeeeee');
     lg.setFrozenRows(1);
   }
+  lg.getRange('C:C').setNumberFormat('@');
   return lg;
 }
 
