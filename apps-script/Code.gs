@@ -395,3 +395,30 @@ function esc_(s) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
   });
 }
+
+/* Kiểm tra xuất Excel + lưu Drive (chạy tay khi cần) */
+function testExcel() {
+  const sh = ensureOrders_(ss_());
+  const day = Utilities.formatDate(new Date(), CONFIG.TZ, 'dd/MM/yyyy');
+  console.log('Ngày: ' + day + ' | block: ' + JSON.stringify(findDayBlock_(sh, day)));
+  const x = makeDayXlsx_(sh, day);
+  console.log('xlsx: ' + (x ? x.getName() + ' ' + x.getBytes().length + ' bytes' : 'NULL'));
+  if (x) { saveToDrive_(x); console.log('Đã lưu Drive vào thư mục ' + CONFIG.DRIVE_FOLDER); }
+}
+
+/* Xoá đơn thử (tên chứa "TEST") + đặt lại bộ đếm mã đơn về SKHH-01. Chỉ chạy tay. */
+function resetTestOrders() {
+  const ss = ss_();
+  [CONFIG.SHEET_ORDERS, CONFIG.SHEET_LOG].forEach(function (name) {
+    const sh = ss.getSheetByName(name); if (!sh) return;
+    const col = name === CONFIG.SHEET_ORDERS ? 3 : 5;   // cột tên
+    for (let r = sh.getLastRow(); r >= 2; r--) {
+      if (/TEST/.test(String(sh.getRange(r, col).getValue()))) sh.deleteRow(r);
+    }
+  });
+  const p = PropertiesService.getScriptProperties();
+  ['ORDER_SEQ', 'DAY_STT', 'LAST_DAY', 'PENDING'].forEach(function (k) { p.deleteProperty(k); });
+  const it = DriveApp.getFoldersByName(CONFIG.DRIVE_FOLDER);
+  if (it.hasNext()) { const f = it.next().getFilesByName('DonHang_' + Utilities.formatDate(new Date(), CONFIG.TZ, 'dd-MM-yyyy') + '.xlsx'); while (f.hasNext()) f.next().setTrashed(true); }
+  console.log('Đã xoá đơn thử. Đơn tiếp theo: ' + CONFIG.ORDER_PREFIX + '-01');
+}
