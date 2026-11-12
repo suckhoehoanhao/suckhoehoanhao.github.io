@@ -701,6 +701,7 @@ var PROVINCES = [
 
   /* tracking */
   function track(ev,pa,op){try{if(window.fbq)fbq("track",ev,pa||{},op||{})}catch(e){}}
+  function trackCustom(ev,pa,op){try{if(window.fbq)fbq("trackCustom",ev,pa||{},op||{})}catch(e){}}
   var qs=new URLSearchParams(location.search), attr=LS.get("skhh_attr")||{};
   ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid"].forEach(function(k){if(qs.get(k))attr[k]=qs.get(k)});
   LS.set("skhh_attr",attr);
@@ -820,6 +821,25 @@ var PROVINCES = [
 
   function done(id,p,c){
     track("Purchase",{value:c.total,currency:"VND",content_type:"product",num_items:c.count,content_ids:c.items.map(function(i){return i.id}),contents:c.items.map(function(i){return{id:i.id,quantity:i.qty,item_price:i.price}})},{eventID:String(id)});
+    /* Chỉ tính chuyển đổi sản phẩm sau phản hồi ok từ máy chủ lưu đơn.
+       Không phát sự kiện ở lúc bấm nút, khi biểu mẫu lỗi, hoặc khi gửi đơn thất bại.
+       Không truyền họ tên, SĐT, địa chỉ, ghi chú hay nội dung sức khỏe cho Meta. */
+    var groups=[
+      {event:"Order_DauPhong",ids:["dau-phong","dau-phong-100"]},
+      {event:"Order_RuouTuVi",ids:["ruou-tu-vi"]}
+    ];
+    groups.forEach(function(g){
+      var matched=c.items.filter(function(i){return g.ids.indexOf(i.id)!==-1});
+      if(!matched.length)return;
+      trackCustom(g.event,{
+        currency:"VND",
+        value:matched.reduce(function(sum,i){return sum+i.qty*i.price},0),
+        content_type:"product",
+        content_ids:matched.map(function(i){return i.id}),
+        contents:matched.map(function(i){return{id:i.id,quantity:i.qty,item_price:i.price}}),
+        num_items:matched.reduce(function(sum,i){return sum+i.qty},0)
+      },{eventID:String(id)+"_"+g.event});
+    });
     var nm=p.name.split(" ").slice(-1)[0], now=new Date(), pad=function(n){return(n<10?"0":"")+n};
     $("#okT").textContent="Cảm ơn anh/chị "+nm+"!";
     $("#okId").textContent="Mã đơn: "+id;
