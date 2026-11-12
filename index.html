@@ -78,7 +78,7 @@ a{color:inherit;text-decoration:none}
 .nav .call span{display:none}
 
 /* 2. hero: tiêu đề + CTA card + hình + USP */
-.hero{background:linear-gradient(180deg,var(--p-l),#fff);padding:26px 0 36px}
+.hero{background:linear-gradient(180deg,var(--p-l),#fff)}
 .hero h1{text-align:center;color:var(--p);font-size:26px;line-height:1.25}
 .hero .sub{text-align:center;font-size:17px;margin-top:8px;color:var(--ink)}
 .hero .grid2{display:grid;gap:18px;margin-top:20px;align-items:start}
@@ -94,6 +94,12 @@ a{color:inherit;text-decoration:none}
 .hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 62%}
 .hero-r .ticks{margin-top:14px;font-size:15px}
 
+.hero{padding:22px 0 18px}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 8px;margin-top:12px}
+.chips span{background:#fff;border:1px solid var(--p-l);color:var(--p);font-weight:700;font-size:13px;padding:5px 10px;border-radius:999px}
+.sec-best{padding-top:26px}
+.quick{background:linear-gradient(180deg,#fff,var(--p-l))}
+.quick .grid2{display:grid;gap:18px;align-items:start}
 /* 3. dải số liệu */
 .stats{background:var(--p);padding:26px 0}
 .stats .row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;justify-items:center}
@@ -213,7 +219,6 @@ footer a{text-decoration:underline}
 footer .map{border-radius:12px;overflow:hidden;aspect-ratio:16/10;background:#5a2a4c}
 footer .map iframe{width:100%;height:100%;border:0;display:block}
 footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);font-size:13px;opacity:.8}
-.feats-sec,.reviews{content-visibility:auto;contain-intrinsic-size:1px 520px}
 
 /* thanh dưới (mobile) + nút nổi (desktop) */
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);padding:9px 12px calc(9px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;transform:translateZ(0)}
@@ -264,10 +269,10 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 @media (min-width:768px){
   .sec{padding:56px 0}
   .title{font-size:28px}
-  .hero{padding:40px 0 50px}
+  .hero{padding:36px 0 22px}
   .hero h1{font-size:36px}
   .hero .sub{font-size:19px}
-  .hero .grid2{grid-template-columns:5fr 6fr;gap:28px;margin-top:28px}
+  .quick .grid2{grid-template-columns:5fr 6fr;gap:28px}
   .cta-card{order:1;padding:22px}
   .hero-r{order:2}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -309,12 +314,36 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
   </div>
 </header>
 
-<!-- 2. TIÊU ĐỀ + CTA + HÌNH + USP -->
+<!-- 1b. TIÊU ĐỀ -->
 <section class="hero" id="top">
   <div class="wrap">
     <h1>Nhức mỏi, khó tiêu, ngủ không ngon?</h1>
     <p class="sub">Chăm sóc cả nhà bằng <b>thảo mộc Sức Khỏe Hoàn Hảo</b> mỗi ngày</p>
-    <div class="grid2">
+    <div class="chips"><span>✔ Giao tận nơi 34 tỉnh thành</span><span>✔ Nhận hàng mới trả tiền</span><span>✔ Gọi xác nhận trước khi giao</span></div>
+</section>
+
+<!-- 2. BÁN CHẠY -->
+<section class="sec sec-best">
+  <div class="wrap">
+    <h2 class="title">Bán chạy nhất</h2>
+    <div class="best" id="best"></div>
+  </div>
+</section>
+
+<!-- 2b. TẤT CẢ SẢN PHẨM -->
+<section class="sec" id="shop" style="padding-top:0">
+  <div class="wrap">
+    <h2 class="title">Tất cả sản phẩm</h2>
+    <p class="lead">Bấm vào sản phẩm để xem chi tiết. Bấm “Thêm vào đơn” rồi kéo xuống đặt hàng.</p>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- 3. ĐẶT NHANH + HÌNH + USP -->
+<section class="sec quick">
+  <div class="wrap">
+    <div class="grid2" style="margin-top:0">
       <div class="cta-card">
         <h2>ĐẶT HÀNG NHANH</h2>
         <p class="s">Chọn sản phẩm, để lại số điện thoại – nhân viên gọi xác nhận</p>
@@ -341,9 +370,10 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
       </div>
     </div>
   </div>
+  </div>
 </section>
 
-<!-- 3. SỐ LIỆU -->
+<!-- 4. SỐ LIỆU -->
 <section class="stats">
   <div class="wrap row">
     <div class="stat"><b>15+</b><span>Sản phẩm thảo mộc</span></div>
@@ -362,24 +392,6 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
       <div class="feat"><i>🏠</i><h3>Dùng tại nhà dễ dàng</h3><p>Xoa bóp, ngâm chân, đắp hay pha uống – có hướng dẫn trên từng sản phẩm.</p></div>
       <div class="feat"><i>📞</i><h3>Tư vấn tận tình</h3><p>Gọi hotline hoặc nhắn Zalo để được tư vấn sản phẩm phù hợp cho cả nhà.</p></div>
     </div>
-  </div>
-</section>
-
-<!-- 5. BÁN CHẠY -->
-<section class="sec" style="padding-top:0">
-  <div class="wrap">
-    <h2 class="title">Bán chạy nhất</h2>
-    <div class="best" id="best"></div>
-  </div>
-</section>
-
-<!-- 6. DANH SÁCH SẢN PHẨM -->
-<section class="sec" id="shop" style="padding-top:0">
-  <div class="wrap">
-    <h2 class="title">Tất cả sản phẩm</h2>
-    <p class="lead">Bấm vào sản phẩm để xem chi tiết. Bấm “Thêm vào đơn” rồi kéo xuống đặt hàng.</p>
-    <div class="tabs" id="tabs"></div>
-    <div class="grid" id="grid"></div>
   </div>
 </section>
 
@@ -717,7 +729,8 @@ var PROVINCES = [
   function lock(on){d.documentElement.style.overflow=on?"hidden":""}
   function pdShow(id){var p=by[id];pdId=id;pdQ=1;$("#pdQ").textContent=1;
     var box=$("#pdI"),old=box.querySelector("img");if(old)old.remove();
-    box.insertAdjacentHTML("beforeend",img(p,720,false,"contain"));
+    box.insertAdjacentHTML("beforeend",img(p,400,false));
+    var im=box.querySelector("img"),big=new Image();big.onload=function(){if(pdId===id)im.src=big.src};big.src=src(p,720,"contain");
     $("#pdN").textContent=p.name;$("#pdZ").textContent=p.size||"";$("#pdP").textContent=fmt(p.price);$("#pdD").textContent=p.desc;
     $("#pdL").innerHTML=(p.info||[]).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join("");
     $("#pd .pds").scrollTop=0;$("#pd").classList.add("on");lock(true);

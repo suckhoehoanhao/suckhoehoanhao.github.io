@@ -12,7 +12,7 @@ và gửi email kèm file Excel (.xlsx) các đơn trong ngày.
 
 | File | Dùng để |
 |---|---|
-| `index.html` | Landing page: Logo → Tiêu đề → Đặt nhanh + Hình + USP → Số liệu → Lợi ích → Bán chạy → Tất cả sản phẩm (popup chi tiết) → Phản hồi khách hàng → Đặt hàng → Footer + bản đồ |
+| `index.html` | Landing page: Logo → Tiêu đề → Bán chạy → Tất cả sản phẩm (popup chi tiết) → Đặt nhanh + Hình + USP → Số liệu → Lợi ích → Phản hồi khách hàng → Đặt hàng → Footer + bản đồ |
 | `img/` | Logo, ảnh sản phẩm (WebP nén nhẹ) |
 | `apps-script/Code.gs` | Code nhận đơn, dán vào Google Apps Script |
 
