@@ -252,6 +252,28 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 .pdf .qty button{width:32px}
 .pdf .btn{min-height:44px;padding:0 6px;font-size:14px;white-space:nowrap}
 
+/* ô nhập số lượng */
+.qi{width:46px;height:34px;border:0;background:transparent;text-align:center;font-weight:700;font-size:16px;-moz-appearance:textfield;appearance:textfield;outline:none}
+.qi::-webkit-outer-spin-button,.qi::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.qi:focus{background:var(--p-ll);border-radius:6px}
+.mini .qi{width:40px}
+/* giá sỉ */
+.cb .sx{font-size:12px;color:var(--g);font-weight:700}
+.ln .m s,.pu s{color:#999}
+.ln .tp{color:var(--red)}
+.tg{display:inline-block;background:#eaf6e3;color:#3e8a1b;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;vertical-align:1px}
+.ln .lt{font-size:13px;font-weight:700}
+.ln .nx2{font-size:12px;color:var(--or);font-weight:700}
+.tot .sv{color:#3e8a1b;font-weight:700}
+.pu{font-size:14px;margin:-4px 0 8px}
+.pu b{color:var(--red)}
+.tt2{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+.tt2 caption{text-align:left;font-weight:700;color:var(--p);margin-bottom:6px}
+.tt2 th,.tt2 td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+.tt2 th{background:var(--p-ll)}
+.tt2 td:last-child{color:var(--red);font-weight:700}
+.tt2 tr.on td{background:#eaf6e3}
+
 /* popup cảm ơn */
 .md{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(40,8,32,.6);opacity:0;visibility:hidden;transition:opacity .2s}
 .md.on{opacity:1;visibility:visible}
@@ -495,7 +517,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
       <div>
         <div class="fl"><img src="img/logo-badge.png" alt="Sức Khỏe Hoàn Hảo" width="60" height="60" loading="lazy"><b>Hộ Kinh Doanh Sức Khỏe Hoàn Hảo</b></div>
         <p>📍 <span class="js-addr">318 Nguyễn Thị Minh Khai, KP Phú Hòa 3, P. Phú Lợi, TP. Hồ Chí Minh</span></p>
-        <p>📞 Hotline: <a class="js-tel" href="tel:0933347114"><span class="js-hot">0933 347 114</span></a></p>
+        <p>📞 Hotline: <a class="js-tel" href="tel:0933347114"><span class="js-hot">0933 347 114</span></a> – <a href="tel:0908215620">0908 215 620</a></p>
         <p>👍 Fanpage: <a class="js-fb" href="https://www.facebook.com/suckhoehoanhao.xyz" target="_blank" rel="noopener">Sức Khỏe Hoàn Hảo</a></p>
         <p>💬 Zalo: <a class="js-zalo" href="#" target="_blank" rel="noopener">Nhắn tin tư vấn</a></p>
       </div>
@@ -520,11 +542,11 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
   <div class="pdb">
     <div class="pds">
       <div class="pdi" id="pdI"><button class="pdx" id="pdX" aria-label="Đóng">×</button></div>
-      <div class="pdc"><h3 id="pdN"></h3><div class="sz" id="pdZ"></div><div class="pr" id="pdP"></div><p class="ds" id="pdD"></p><dl id="pdL"></dl>
+      <div class="pdc"><h3 id="pdN"></h3><div class="sz" id="pdZ"></div><div class="pr" id="pdP"></div><div class="pu" id="pdU"></div><p class="ds" id="pdD"></p><div id="pdT"></div><dl id="pdL"></dl>
         <p class="hint">Cần tư vấn cách dùng? Gọi <a class="js-tel" href="tel:0933347114"><span class="js-hot">0933 347 114</span></a> hoặc nhắn Zalo.</p></div>
     </div>
     <div class="pdf">
-      <div class="qty"><button data-q="-" aria-label="Giảm">−</button><span id="pdQ">1</span><button data-q="+" aria-label="Tăng">+</button></div>
+      <div class="qty"><button data-q="-" aria-label="Giảm">−</button><input id="pdQ" class="qi" type="number" inputmode="numeric" min="1" max="999" value="1" aria-label="Số lượng"><button data-q="+" aria-label="Tăng">+</button></div>
       <button class="btn btn-o" id="pdAdd">Thêm vào đơn</button>
       <button class="btn btn-p" id="pdBuy">Mua ngay</button>
     </div>
@@ -559,42 +581,66 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 </div>
 
 <script>
-/* ====== DANH SÁCH SẢN PHẨM – sửa giá / tên / ảnh tại đây ======
+/* ====== DANH SÁCH SẢN PHẨM – đồng bộ BẢNG GIÁ Sức Khỏe Hoàn Hảo ======
+   price = giá bán lẻ (VNĐ)
+   tiers = giá đại lý theo SỐ LƯỢNG CỦA TỪNG SẢN PHẨM: [số lượng tối thiểu, giá/sp]
+           mức nào trong bảng để trống (ô vàng) thì bỏ, khách giữ giá mức liền trước
    short = tên viết tắt ghi vào cột NỘI DUNG trong file Excel */
 var Q = "https://qiheal.vn/wp-content/uploads/2025/03/";
+var KHO = "Để nơi khô ráo thoáng mát, tránh ánh nắng trực tiếp";
+var LANH = "Để ngăn mát tủ lạnh, hoặc nơi khô ráo thoáng mát: 1 năm";
 var PRODUCTS = [
-  {id:"dau-phong", name:"Dầu Phong Hoàn Hảo", size:"50ml", price:175000, short:"dphh 50ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/dau-phong.webp",
+  {id:"dau-phong", name:"Dầu Phong Hoàn Hảo", size:"50ml", price:175000, tiers:[[10,125000],[30,105000],[100,95000]],
+   short:"dphh 50ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/dau-phong.webp", store:KHO,
    desc:"Dầu thực vật thảo mộc: dầu dừa, nghệ, ngải cứu, sả. Xoa bóp hỗ trợ giảm nhức mỏi, côn trùng đốt.",
-   info:[["Thể tích","50ml – chai thuỷ tinh có ống nhỏ giọt"],["Thành phần","Dầu dừa, nghệ, ngải cứu, sả và thảo mộc"],["Cách dùng","Dùng ngoài da: thoa, xoa bóp vùng cần chăm sóc"],["Bảo quản","Nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp"]]},
-  {id:"ruou-tu-vi", name:"Rượu Tứ Vị Tuệ Ánh", size:"500ml", price:131000, short:"rượu tứ vị 500ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/ruou-tu-vi.webp",
+   info:[["Thành phần","Dầu dừa, nghệ, ngải cứu, sả và thảo mộc"],["Cách dùng","Dùng ngoài da: thoa, xoa bóp vùng cần chăm sóc"]]},
+  {id:"dau-phong-100", name:"Dầu Phong Hoàn Hảo", size:"100ml", price:325000, tiers:[[10,225000],[30,200000],[100,180000]],
+   short:"dphh 100ml", cat:"xoa", img:"img/dau-phong-100.webp", store:KHO,
+   desc:"Chai lớn 100ml tiết kiệm hơn. Dầu thực vật thảo mộc: dầu dừa, nghệ, ngải cứu, sả.",
+   info:[["Thành phần","Dầu dừa, nghệ, ngải cứu, sả và thảo mộc"],["Cách dùng","Dùng ngoài da: thoa, xoa bóp vùng cần chăm sóc"]]},
+  {id:"ruou-tu-vi", name:"Rượu Tứ Vị Tuệ Ánh", size:"500ml", price:131000, tiers:[[10,94000],[30,86000],[100,72000],[500,60000]],
+   short:"rượu tứ vị 500ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/ruou-tu-vi.webp", store:KHO,
    desc:"Rượu, gừng, nha đam, nấm hương, màn kinh tử. Dùng ngoài, hỗ trợ giảm đau nhức, tê mỏi, làm ấm.",
-   info:[["Thể tích","500ml"],["Thành phần","Rượu 49%, gừng 27%, nha đam 13%, nấm hương 6%, màn kinh tử 5%"],["Cách dùng","Dùng trực tiếp ngoài da, xoa bóp vùng nhức mỏi"],["Bảo quản","Nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp"],["Lưu ý","Không dùng cho trẻ dưới 1 tuổi"],["Xuất xứ","Việt Nam"]]},
-  {id:"thong-kinh-lac-thuy", name:"Thông Kinh Lạc Thủy", size:"", price:385000, short:"thông kinh lạc thuỷ", cat:"xoa", img:Q+"thong-kinh-lac-thuy-1-900x751.jpg",
+   info:[["Thành phần","Rượu 49%, gừng 27%, nha đam 13%, nấm hương 6%, màn kinh tử 5%"],["Cách dùng","Dùng trực tiếp ngoài da, xoa bóp vùng nhức mỏi"],["Lưu ý","Không dùng cho trẻ dưới 1 tuổi"],["Xuất xứ","Việt Nam"]]},
+  {id:"thong-kinh-lac-thuy", name:"Thông Kinh Lạc Thủy Tuệ Ánh", size:"100ml", price:385000, tiers:[[10,230000],[30,210000],[100,190000],[500,170000]],
+   short:"thông kinh lạc thuỷ", cat:"xoa", img:Q+"thong-kinh-lac-thuy-1-900x751.jpg", store:KHO,
    desc:"Dùng ngoài da: pha cùng giấm, xoa bóp hỗ trợ lưu thông, thư giãn cơ."},
-  {id:"dap-thao-moc", name:"Đắp Thảo Mộc Tuệ Ánh", size:"", price:200000, short:"đắp thảo mộc", cat:"thao", img:Q+"bo-dap-thao-moc-1-900x714.jpg",
+  {id:"dap-thao-moc", name:"Đắp Thảo Mộc Tuệ Ánh", size:"200gr", price:200000, tiers:[[10,150000],[30,130000],[100,110000],[500,90000]],
+   short:"đắp thảo mộc", cat:"thao", img:Q+"bo-dap-thao-moc-1-900x714.jpg", store:KHO,
    desc:"Bột thảo mộc trộn nước đắp ngoài da, hỗ trợ giảm nhức mỏi cơ khớp."},
-  {id:"bot-ngam-chan", name:"Bột Ngâm Chân Thảo Mộc", size:"", price:130000, short:"bột ngâm chân", cat:"thao", img:Q+"bot-ngam-chan-thao-moc-9-900x714.jpg",
-   desc:"Hương nhu, lá trầu, ngải cứu, quế, gừng. Pha nước nóng ngâm chân, thư giãn."},
-  {id:"molm-nguyen-ban", name:"Mật Ong Lên Men Vị Nguyên Bản", size:"", price:200000, short:"molm nguyên bản", cat:"mat", img:Q+"mat-ong-len-men-vi-nguyen-ban-1-768x768.jpg",
+  {id:"bot-ngam-chan", name:"Bột Thảo Mộc Tuệ Ánh", size:"110gr", price:130000, tiers:[[10,100000],[30,90000],[100,80000],[500,65000]],
+   short:"bột thảo mộc", cat:"thao", img:Q+"bot-ngam-chan-thao-moc-9-900x714.jpg", store:KHO,
+   desc:"Bột ngâm chân thảo mộc: hương nhu, lá trầu, ngải cứu, quế, gừng. Pha nước nóng ngâm chân, thư giãn."},
+  {id:"molm-nguyen-ban", name:"Mật Ong Lên Men Nguyên Bản", size:"300ml", price:200000, tiers:[[10,140000],[30,120000],[100,100000],[500,80000]],
+   short:"molm nguyên bản", cat:"mat", img:Q+"mat-ong-len-men-vi-nguyen-ban-1-768x768.jpg", store:LANH,
    desc:"Mật ong, táo hữu cơ, giấm táo, men vi sinh. Hỗ trợ tiêu hoá."},
-  {id:"molm-bo-mau", name:"Mật Ong Lên Men Bổ Máu", size:"", price:230000, short:"molm bổ máu", cat:"mat", img:Q+"mat-ong-len-men-bo-mau-1-768x768.jpg",
-   desc:"Mật ong lên men cùng táo, giấm táo, men vi sinh và thảo mộc."},
-  {id:"molm-cat-loi", name:"Mật Ong Lên Men Cát Lồi (Lọc Máu)", size:"", price:220000, short:"molm cát lồi", cat:"mat", img:Q+"mat-ong-len-men-cat-loi-loc-mau-2-768x768.jpg",
-   desc:"Mật ong lên men cùng táo, giấm táo, men vi sinh và thảo mộc cát lồi."},
-  {id:"molm-sam-que", name:"Mật Ong Lên Men Sâm Quế", size:"", price:400000, short:"molm sâm quế", cat:"mat", tag:"New", img:Q+"mat-ong-len-men-sam-768x768.jpg",
+  {id:"molm-sam-que", name:"Mật Ong Lên Men Sâm Quế", size:"300ml", price:400000, tiers:[[10,300000],[30,280000]],
+   short:"molm sâm quế", cat:"mat", tag:"New", img:Q+"mat-ong-len-men-sam-768x768.jpg", store:LANH,
    desc:"Mật ong lên men kết hợp sâm, quế và thảo mộc."},
-  {id:"molm-nhau", name:"Mật Ong Lên Men Nhàu", size:"", price:220000, short:"molm nhàu", cat:"mat", img:Q+"mat-ong-len-men-nhau-768x769.jpg",
+  {id:"molm-bo-mau", name:"Mật Ong Lên Men Bổ Máu", size:"300ml", price:230000, tiers:[[10,160000],[30,140000],[100,120000],[500,100000]],
+   short:"molm bổ máu", cat:"mat", img:Q+"mat-ong-len-men-bo-mau-1-768x768.jpg", store:LANH,
+   desc:"Mật ong lên men cùng táo, giấm táo, men vi sinh và thảo mộc."},
+  {id:"molm-nhau", name:"Mật Ong Lên Men Nhàu", size:"300ml", price:220000, tiers:[[10,155000],[30,135000],[100,115000],[500,95000]],
+   short:"molm nhàu", cat:"mat", img:Q+"mat-ong-len-men-nhau-768x769.jpg", store:LANH,
    desc:"Mật ong lên men với trái nhàu, táo, giấm táo, men vi sinh."},
-  {id:"ngu-vi-toi-thuong", name:"Ngũ Vị Thanh Tỏi Thường", size:"", price:300000, short:"ngũ vị thanh tỏi thường", cat:"mat", img:Q+"ngu-vi-thanh-toi-thuong-6-900x900.jpg",
+  {id:"molm-cat-loi", name:"Mật Ong Lên Men Cát Lồi", size:"300ml", price:220000, tiers:[[10,155000],[30,135000],[100,115000],[500,95000]],
+   short:"molm cát lồi", cat:"mat", img:Q+"mat-ong-len-men-cat-loi-loc-mau-2-768x768.jpg", store:LANH,
+   desc:"Mật ong lên men cùng táo, giấm táo, men vi sinh và thảo mộc cát lồi."},
+  {id:"ngu-vi-toi-thuong", name:"Ngũ Vị Thanh Tỏi Thường", size:"1 lít", price:300000, tiers:[[10,200000],[30,175000]],
+   short:"ngũ vị thanh tỏi thường 1L", cat:"mat", img:Q+"ngu-vi-thanh-toi-thuong-6-900x900.jpg", store:"Để ngoài, nơi thoáng mát: 1 tháng. Ngăn mát tủ lạnh: 1 năm",
    desc:"Mật ong, nha đam, nghệ, sả, tỏi trắng. Hỗ trợ tiêu hoá, tăng đề kháng."},
-  {id:"ngu-vi-toi-den", name:"Ngũ Vị Thanh Tỏi Đen", size:"", price:550000, short:"ngũ vị thanh tỏi đen", cat:"mat", img:Q+"ngu-thanh-vi-toi-den-1-900x900.jpg",
+  {id:"ngu-vi-toi-den", name:"Ngũ Vị Thanh Tỏi Đen", size:"1 lít", price:550000, tiers:[[10,400000],[30,350000]],
+   short:"ngũ vị thanh tỏi đen 1L", cat:"mat", img:Q+"ngu-thanh-vi-toi-den-1-900x900.jpg", store:"Không nên để bên ngoài. Bảo quản ngăn mát tủ lạnh: 1 năm",
    desc:"Mật ong, nha đam, nghệ, sả, tỏi đen và men vi sinh."},
-  {id:"toi-den-co-don", name:"Tỏi Đen Cô Đơn", size:"", price:250000, short:"tỏi đen cô đơn", cat:"thao", img:Q+"TOI-DEN-CO-DON-1-900x714.jpg",
-   desc:"100% tỏi đen cô đơn. Ăn trực tiếp hoặc dùng kèm món ăn."},
-  {id:"thanh-xuan-duoc", name:"Thanh Xuân Dược", size:"", price:400000, short:"thanh xuân dược", cat:"thao", img:Q+"thanh-xuan-duoc-2.jpeg",
+  {id:"toi-den-co-don", name:"Tỏi Cô Đơn Hoàn Hảo", size:"300gr", price:250000, tiers:[[10,180000],[30,150000],[100,130000]],
+   short:"tỏi cô đơn", cat:"thao", img:Q+"TOI-DEN-CO-DON-1-900x714.jpg", store:KHO,
+   desc:"Tỏi đen cô đơn. Ăn trực tiếp hoặc dùng kèm món ăn."},
+  {id:"thanh-xuan-duoc", name:"Thanh Xuân Dược", size:"50gr", price:400000, tiers:[[10,320000],[30,270000]],
+   short:"thanh xuân dược", cat:"thao", img:Q+"thanh-xuan-duoc-2.jpeg", store:"Không nên để bên ngoài. Bảo quản ngăn mát tủ lạnh: 1 năm",
    desc:"Thảo mộc đắp mặt, hỗ trợ chăm sóc da mụn, thâm."},
-  {id:"pha-huong-dan", name:"Phá Hương Đan", size:"Gói 8g", price:10000, short:"phá hương đan", cat:"thao", img:Q+"pha-huong-dan-5-900x772.jpg",
-   desc:"Thảo mộc dạng gói: phá cổ chỉ, bắc mộc hương, đỗ trọng."}
+  {id:"tra-4-vi", name:"Trà 4 Vị Trực Hàn Giải Cảm", size:"500gr", price:86000, tiers:[[10,60000]],
+   short:"trà 4 vị", cat:"thao", img:"img/tra-4-vi.webp", store:"Để nơi khô ráo thoáng mát, đóng kín túi sau khi sử dụng",
+   desc:"Trà thảo mộc 4 vị. Hướng dẫn pha có trên bao bì."}
 ];
 var CATS = [{id:"all",name:"Tất cả"},{id:"xoa",name:"Dầu & rượu xoa bóp"},{id:"mat",name:"Mật ong lên men"},{id:"thao",name:"Thảo mộc khác"}];
 
@@ -668,7 +714,7 @@ var PROVINCES = [
   $("#tabs").innerHTML=CATS.map(function(c,i){return '<button class="tab'+(i?'':' on')+'" data-c="'+c.id+'">'+c.name+'</button>'}).join("");
   $("#grid").innerHTML=list.map(function(p){
     return '<article class="card" data-id="'+p.id+'" data-c="'+p.cat+'"><div class="ph" data-v>'+img(p,400,true)+(p.tag?'<span class="badge'+(p.tag==="New"?' new':'')+'">'+p.tag+'</span>':'')+'</div>'+
-      '<div class="cb"><h3 data-v>'+esc(p.name)+'</h3>'+(p.size?'<span class="sz">'+esc(p.size)+'</span>':'')+'<button class="more" data-v>Xem chi tiết ›</button><div class="pr">'+fmt(p.price)+'</div><div class="act"></div></div></article>'}).join("");
+      '<div class="cb"><h3 data-v>'+esc(p.name)+'</h3>'+(p.size?'<span class="sz">'+esc(p.size)+'</span>':'')+'<button class="more" data-v>Xem chi tiết ›</button><div class="pr">'+fmt(p.price)+'</div>'+(p.tiers&&p.tiers.length?'<div class="sx">Sỉ từ '+p.tiers[0][0]+' sp: '+fmt(p.tiers[0][1])+'</div>':'')+'<div class="act"></div></div></article>'}).join("");
   var cards={}; $$(".card").forEach(function(el){cards[el.dataset.id]=el});
   function paintCard(id){var el=cards[id],q=cart[id]||0;if(!el)return;el.classList.toggle("on",q>0);
     el.querySelector(".act").innerHTML=q?'<div class="qty"><button data-a="-" aria-label="Giảm">−</button><span>'+q+'</span><button data-a="+" aria-label="Tăng">+</button></div>':'<button class="add" data-a="add">+ Thêm vào đơn</button>'}
@@ -689,15 +735,27 @@ var PROVINCES = [
   /* giỏ hàng */
   function change(id,delta,from){cart[id]=(cart[id]||0)+delta;if(cart[id]<=0)delete cart[id];save();paintCard(id);paintCart();
     if(from==="add")track("AddToCart",{content_ids:[id],content_type:"product",value:by[id].price,currency:"VND"})}
+  $("#lines").addEventListener("change",function(e){var t=e.target;if(!t.classList.contains("qi"))return;var id=t.closest(".ln").dataset.id,n=Math.max(0,Math.min(999,parseInt(t.value,10)||0));
+    change(id,n-(cart[id]||0))});
   $("#lines").addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;change(b.closest(".ln").dataset.id,b.dataset.a==="-"?-1:1)});
-  function items(){return Object.keys(cart).filter(function(id){return by[id]&&cart[id]>0}).map(function(id){var p=by[id];return{id:id,name:p.name+(p.size?" "+p.size:""),short:p.short,qty:cart[id],price:p.price}})}
-  function calc(){var it=items(),sub=0,cnt=0;it.forEach(function(i){sub+=i.qty*i.price;cnt+=i.qty});
-    var ship=C.SHIP_FEE;if(C.FREESHIP_FROM!=null&&sub>=C.FREESHIP_FROM)ship=0;return{items:it,sub:sub,count:cnt,ship:ship,total:sub+(ship||0)}}
+  /* giá theo số lượng (bảng giá đại lý) */
+  function tierOf(p,q){var t=null;(p.tiers||[]).forEach(function(x){if(q>=x[0])t=x});return t}
+  function unit(p,q){var t=tierOf(p,q);return t?t[1]:p.price}
+  function nextTier(p,q){var n=null;(p.tiers||[]).some(function(x){if(x[0]>q){n=x;return true}});return n}
+  function k(n){return Math.round(n/1000)+"k"}
+  function items(){return Object.keys(cart).filter(function(id){return by[id]&&cart[id]>0}).map(function(id){var p=by[id],q=cart[id],u=unit(p,q),t=tierOf(p,q);
+    return{id:id,name:p.name+(p.size?" "+p.size:""),short:p.short+(t?" (giá sỉ ≥"+t[0]+": "+k(u)+")":""),qty:q,price:u,retail:p.price,tier:t?t[0]:0}})}
+  function calc(){var it=items(),sub=0,cnt=0,save=0;it.forEach(function(i){sub+=i.qty*i.price;cnt+=i.qty;save+=i.qty*(i.retail-i.price)});
+    var ship=C.SHIP_FEE;if(C.FREESHIP_FROM!=null&&sub>=C.FREESHIP_FROM)ship=0;return{items:it,sub:sub,count:cnt,ship:ship,total:sub+(ship||0),save:save}}
   function paintCart(){var c=calc();
     $("#empty").style.display=c.items.length?"none":"block";
-    $("#lines").innerHTML=c.items.map(function(i){var p=by[i.id];return '<div class="ln" data-id="'+i.id+'">'+img(p,88,true)+'<div><div class="n">'+esc(i.name)+'</div><div class="m">'+fmt(i.price)+' × '+i.qty+'</div></div><div class="mini"><button data-a="-" aria-label="Giảm">−</button><span>'+i.qty+'</span><button data-a="+" aria-label="Tăng">+</button></div></div>'}).join("");
+    $("#lines").innerHTML=c.items.map(function(i){var p=by[i.id],nx=nextTier(p,i.qty);
+      return '<div class="ln" data-id="'+i.id+'">'+img(p,88,true)+'<div><div class="n">'+esc(i.name)+'</div><div class="m">'+
+        (i.tier?'<s>'+fmt(i.retail)+'</s> <b class="tp">'+fmt(i.price)+'</b> × '+i.qty+' <span class="tg">Giá sỉ ≥'+i.tier+'</span>':fmt(i.price)+' × '+i.qty)+
+        '</div><div class="lt">= '+fmt(i.price*i.qty)+'</div>'+(nx?'<div class="nx2">Mua thêm '+(nx[0]-i.qty)+' sp → còn '+fmt(nx[1])+'/sp</div>':'')+'</div>'+
+        '<div class="mini"><button data-a="-" aria-label="Giảm">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="999" value="'+i.qty+'" aria-label="Số lượng"><button data-a="+" aria-label="Tăng">+</button></div></div>'}).join("");
     var sh=c.ship==null?'<span style="color:var(--mute)">Báo khi xác nhận</span>':(c.ship===0?'<b style="color:var(--g)">Miễn phí</b>':fmt(c.ship));
-    $("#tot").innerHTML=c.items.length?'<div><span>Tạm tính ('+c.count+' sp)</span><span>'+fmt(c.sub)+'</span></div><div><span>Phí giao hàng</span>'+sh+'</div>'+
+    $("#tot").innerHTML=c.items.length?'<div><span>Tạm tính ('+c.count+' sp)</span><span>'+fmt(c.sub)+'</span></div>'+(c.save>0?'<div class="sv"><span>Đã áp giá sỉ, tiết kiệm</span><span>−'+fmt(c.save)+'</span></div>':'')+'<div><span>Phí giao hàng</span>'+sh+'</div>'+
       (C.FREESHIP_FROM!=null&&c.sub<C.FREESHIP_FROM?'<div style="color:var(--mute);font-size:13px">Mua thêm '+fmt(C.FREESHIP_FROM-c.sub)+' để được miễn ship</div>':'')+'<div class="gr"><span>Tổng</span><span>'+fmt(c.total)+'</span></div>':"";
     $("#binf").innerHTML=c.items.length?'<small>'+c.count+' sản phẩm</small><b>'+fmt(c.total)+'</b>':'<small>Chưa chọn sản phẩm</small><b>0đ</b>';
     $("#bbtn").textContent=c.items.length?"Đặt hàng →":"Chọn sản phẩm"}
@@ -763,18 +821,26 @@ var PROVINCES = [
   /* popup chi tiết */
   var pdId=null,pdQ=1;
   function lock(on){d.documentElement.style.overflow=on?"hidden":""}
-  function pdShow(id){var p=by[id];pdId=id;pdQ=1;$("#pdQ").textContent=1;
+  function pdShow(id){var p=by[id];pdId=id;pdQ=1;$("#pdQ").value=1;
     var box=$("#pdI"),old=box.querySelector("img");if(old)old.remove();
     box.insertAdjacentHTML("beforeend",img(p,400,false));
     var im=box.querySelector("img"),big=new Image();big.onload=function(){if(pdId===id)im.src=big.src};big.src=src(p,720,"contain");
     $("#pdN").textContent=p.name;$("#pdZ").textContent=p.size||"";$("#pdP").textContent=fmt(p.price);$("#pdD").textContent=p.desc;
-    $("#pdL").innerHTML=(p.info||[]).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join("");
+    $("#pdL").innerHTML=[["Dung tích / khối lượng",p.size]].concat(p.info||[],[["Bảo quản",p.store]]).filter(function(r){return r[1]}).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join("");
+    var rows=[[1,p.price]].concat(p.tiers||[]);
+    $("#pdT").innerHTML=rows.length>1?'<table class="tt2"><caption>Bảng giá theo số lượng</caption><tr><th>Số lượng</th><th>Giá / sp</th></tr>'+rows.map(function(r,i){var to=rows[i+1]?(rows[i+1][0]-1):null;return '<tr data-min="'+r[0]+'"><td>'+(i===0?(to?'1 – '+to+' sp':'1 sp'):(to?r[0]+' – '+to+' sp':'Từ '+r[0]+' sp'))+'</td><td>'+fmt(r[1])+'</td></tr>'}).join("")+'</table>':"";
+    pdPrice();
     $("#pd .pds").scrollTop=0;$("#pd").classList.add("on");lock(true);
     track("ViewContent",{content_ids:[id],content_type:"product",value:p.price,currency:"VND"})}
+  function pdPrice(){var p=by[pdId],u=unit(p,pdQ),t=tierOf(p,pdQ);
+    $("#pdU").innerHTML=pdQ>1||t?(t?'<s>'+fmt(p.price)+'</s> ':'')+'<b>'+fmt(u)+'</b>/sp × '+pdQ+' = <b>'+fmt(u*pdQ)+'</b>'+(t?' <span class="tg">Giá sỉ ≥'+t[0]+'</span>':''):"";
+    $$("#pdT tr[data-min]").forEach(function(tr){var m=+tr.dataset.min,nx=tr.nextElementSibling;tr.classList.toggle("on",pdQ>=m&&(!nx||pdQ<+nx.dataset.min))})}
   function pdHide(){$("#pd").classList.remove("on");lock(false)}
   $("#pdX").addEventListener("click",pdHide);
   $("#pd").addEventListener("click",function(e){if(e.target.id==="pd")pdHide()});
-  $("#pd .pdf .qty").addEventListener("click",function(e){var b=e.target.closest("[data-q]");if(!b)return;pdQ=Math.max(1,Math.min(99,pdQ+(b.dataset.q==="-"?-1:1)));$("#pdQ").textContent=pdQ});
+  $("#pd .pdf .qty").addEventListener("click",function(e){var b=e.target.closest("[data-q]");if(!b)return;pdQ=Math.max(1,Math.min(999,pdQ+(b.dataset.q==="-"?-1:1)));$("#pdQ").value=pdQ;pdPrice()});
+  $("#pdQ").addEventListener("input",function(){pdQ=Math.max(1,Math.min(999,parseInt(this.value,10)||1));pdPrice()});
+  $("#pdQ").addEventListener("blur",function(){this.value=pdQ});
   $("#pdAdd").addEventListener("click",function(){change(pdId,pdQ,"add");pdHide()});
   $("#pdBuy").addEventListener("click",function(){change(pdId,pdQ,"add");pdHide();go("#dat-hang")});
   d.addEventListener("keydown",function(e){if(e.key==="Escape"){pdHide();okHide()}});

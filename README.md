@@ -66,3 +66,13 @@ window.REVIEWS = [
 ```
 
 Ảnh chụp feedback bỏ vào thư mục `img/`.
+
+## Bảng giá & giá sỉ
+
+Giá trong `index.html` (mảng `PRODUCTS`) đồng bộ theo bảng giá Cơ sở SX & TM Sức Khỏe Hoàn Hảo:
+
+- `price` = giá bán lẻ
+- `tiers` = giá đại lý theo **số lượng của từng sản phẩm**, vd `[[10,125000],[30,105000],[100,95000]]`
+- Mức nào trong bảng bỏ trống (ô vàng) thì không ghi, khách giữ giá mức liền trước.
+
+Khi đủ số lượng, giỏ hàng tự đổi giá, hiện số tiền tiết kiệm. Cột NỘI DUNG trong Excel ghi rõ, vd `12 dphh 50ml (giá sỉ ≥10: 125k)`.
