@@ -41,7 +41,7 @@ Chưa có `ORDER_API` thì trang chạy **chế độ thử**: vẫn báo đặt
 
 ## 3. Link chạy quảng cáo
 
-- Trang chính: `https://<tên-tài-khoản>.github.io/skhh-landing/`
+- Trang chính: `https://ducloi0512.github.io/skhh/`
 - Tự thêm sản phẩm vào giỏ: `?sp=dau-phong`, `?sp=ruou-tu-vi&qty=2`, `?sp=dau-phong,ruou-tu-vi`
 - Thêm UTM để đối soát: `&utm_source=fb&utm_campaign=...&utm_content=...` (lưu ở sheet `LOG_WEB`)
 
