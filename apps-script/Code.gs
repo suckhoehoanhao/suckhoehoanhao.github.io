@@ -43,6 +43,19 @@ const LOG_HEADERS = ['Thời gian', 'Mã đơn', 'Ngày giờ', 'STT', 'Tên', '
 const L = { time: 0, id: 1, day: 2, stt: 3, name: 4, phone: 5, addr: 6, note: 7, content: 8, pay: 9, amount: 10, total: 11, sent: 18 };
 const COLOR = { header: '#1c4f8f', red: '#ff0000', yellow: '#ffff00' };
 
+/** Mở Google Sheet đơn hàng: script gắn trong Sheet thì dùng luôn Sheet đó,
+ *  script độc lập thì tự tạo Sheet "ĐƠN HÀNG – Landing SKHH" ở lần chạy đầu và nhớ ID. */
+function ss_() {
+  const active = SpreadsheetApp.getActive();
+  if (active) return active;
+  const props = PropertiesService.getScriptProperties();
+  const id = props.getProperty('SHEET_ID');
+  if (id) return SpreadsheetApp.openById(id);
+  const ss = SpreadsheetApp.create('ĐƠN HÀNG – Landing SKHH');
+  props.setProperty('SHEET_ID', ss.getId());
+  return ss;
+}
+
 /* ============ API nhận đơn ============ */
 function doPost(e) {
   try {
@@ -77,7 +90,7 @@ function doPost(e) {
     const lock = LockService.getScriptLock();
     lock.waitLock(25000);
     try {
-      const ss = SpreadsheetApp.getActive();
+      const ss = ss_();
       const sh = ensureOrders_(ss);
       const lg = ensureLog_(ss);
       const props = PropertiesService.getScriptProperties();
@@ -142,7 +155,7 @@ function processQueue() {
   if (!lock.tryLock(10000)) return;
   try {
     props.setProperty('PENDING', '0');
-    const ss = SpreadsheetApp.getActive();
+    const ss = ss_();
     const sh = ensureOrders_(ss);
     const lg = ensureLog_(ss);
     const n = lg.getLastRow();
@@ -183,7 +196,7 @@ function processQueue() {
 
 /* ============ Cài đặt & test ============ */
 function setup() {
-  const ss = SpreadsheetApp.getActive();
+  const ss = ss_();
   ss.setSpreadsheetTimeZone(CONFIG.TZ);
   formatHeader_(ensureOrders_(ss));                       // luôn cập nhật dòng tiêu đề theo mẫu mới
   const lg = ensureLog_(ss);
@@ -195,7 +208,8 @@ function setup() {
   });
   ScriptApp.newTrigger('processQueue').timeBased().everyMinutes(1).create();
   DriveApp.getRootFolder(); // xin quyền Drive để xuất file Excel
-  console.log('Xong. Còn lại mail gửi được hôm nay: ' + MailApp.getRemainingDailyQuota());
+  console.log('Xong. Sheet đơn hàng: ' + ss.getUrl());
+  console.log('Còn lại mail gửi được hôm nay: ' + MailApp.getRemainingDailyQuota());
 }
 
 function testOrder() {
