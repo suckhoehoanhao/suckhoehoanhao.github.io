@@ -29,6 +29,7 @@ window.CONFIG = {
   ZALO: "https://zalo.me/0933347114",
   FANPAGE: "https://www.facebook.com/suckhoehoanhao.xyz",
   ADDRESS: "318 Nguyễn Thị Minh Khai, KP Phú Hòa 3, P. Phú Lợi, TP. Hồ Chí Minh",
+  BANK: { bin:"970436", name:"Vietcombank", acc:"0281001389783", holder:"NGUYEN THI ANH XUAN", qr:"img/qr-vcb.png" },
   SHIP_FEE: null,       // null = nhân viên báo khi gọi xác nhận; 0 = freeship; 30000 = 30k
   FREESHIP_FROM: null   // vd 500000 = miễn ship đơn từ 500k
 };
@@ -257,6 +258,18 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 .qi::-webkit-outer-spin-button,.qi::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .qi:focus{background:var(--p-ll);border-radius:6px}
 .mini .qi{width:40px}
+/* chuyển khoản */
+.callc{margin:10px 0 2px;background:#fff7ec;color:#9a5b00;border:1px solid #ffd9a8;border-radius:10px;padding:8px 10px;font-weight:700;font-size:14px}
+.ck{margin-top:12px;border:2px solid var(--p);border-radius:14px;padding:12px;text-align:left}
+.ckh{text-align:center;font-weight:700;color:var(--p);font-size:16px;margin-bottom:8px}
+.ck img{width:240px;height:240px;max-width:100%;margin:0 auto;object-fit:contain;background:#fff;border-radius:8px}
+.cks{text-align:center;font-size:13px;color:var(--mute);margin:6px 0 8px}
+.ckr{display:grid;grid-template-columns:96px 1fr auto;gap:6px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.ckr span{color:var(--mute)}
+.ckr b{word-break:break-all}
+.cp{font-size:12px;font-weight:700;color:var(--p);border:1.5px solid var(--p);border-radius:999px;padding:4px 10px;background:#fff}
+.cp.done{background:var(--g);border-color:var(--g);color:#fff}
+.ckn{font-size:13px;color:#9a5b00;margin-top:6px}
 /* giá sỉ */
 .cb .sx{font-size:12px;color:var(--g);font-weight:700}
 .ln .m s,.pu s{color:#999}
@@ -449,7 +462,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
       <div>
         <ul class="ticks">
           <li>Nhận hàng, kiểm tra rồi mới thanh toán (COD)</li>
-          <li>Hoặc chuyển khoản – shop gửi số tài khoản khi gọi xác nhận</li>
+          <li>Hoặc chuyển khoản qua mã QR Vietcombank ngay sau khi đặt</li>
           <li>Giao tận nơi 34 tỉnh thành</li>
           <li>Nhân viên gọi xác nhận đơn và tư vấn cách dùng</li>
         </ul>
@@ -497,7 +510,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
             <label>Thanh toán</label>
             <div class="pay" id="pay">
               <label class="on"><input type="radio" name="payment" value="cod" checked>Khi nhận hàng</label>
-              <label><input type="radio" name="payment" value="ck">Chuyển khoản</label>
+              <label><input type="radio" name="payment" value="ck">Chuyển khoản (QR)</label>
             </div>
           </div>
           <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -564,11 +577,23 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
     <div class="mc">
       <div class="id" id="okId"></div>
       <div class="tm" id="okTime"></div>
+      <p class="callc" id="okCall">📞 Nhân viên sẽ gọi xác nhận đơn hàng</p>
+      <div class="ck" id="okCK" hidden>
+        <div class="ckh">Chuyển khoản để hoàn tất đơn</div>
+        <img id="okQR" alt="Mã QR chuyển khoản Vietcombank" width="240" height="240">
+        <p class="cks">Mở app ngân hàng → quét mã QR. Số tiền và nội dung đã điền sẵn.</p>
+        <div class="ckr"><span>Ngân hàng</span><b class="js-bn">Vietcombank</b></div>
+        <div class="ckr"><span>Chủ tài khoản</span><b class="js-bh">NGUYEN THI ANH XUAN</b></div>
+        <div class="ckr"><span>Số tài khoản</span><b id="okAcc"></b><button class="cp" data-cp="okAcc">Sao chép</button></div>
+        <div class="ckr"><span>Số tiền</span><b id="okAmt"></b><button class="cp" data-cp="okAmtRaw">Sao chép</button><i id="okAmtRaw" hidden></i></div>
+        <div class="ckr"><span>Nội dung</span><b id="okMemo"></b><button class="cp" data-cp="okMemo">Sao chép</button></div>
+        <p class="ckn" id="okShipNote"></p>
+      </div>
       <div class="sm" id="okS"></div>
       <div class="to" id="okTo"></div>
       <div class="nx">
         <div><i>1</i><span id="okStep1">Nhân viên sẽ gọi xác nhận đơn hàng</span></div>
-        <div><i>2</i><span>Shop đóng gói và giao tận nơi cho anh/chị</span></div>
+        <div><i>2</i><span id="okStep2">Shop đóng gói và giao tận nơi cho anh/chị</span></div>
         <div><i>3</i><span id="okStep3">Nhận hàng, kiểm tra rồi thanh toán</span></div>
       </div>
       <div class="bt">
@@ -808,12 +833,26 @@ var PROVINCES = [
     $("#okTime").textContent="Đặt lúc "+pad(now.getHours())+":"+pad(now.getMinutes())+" · "+pad(now.getDate())+"/"+pad(now.getMonth()+1)+"/"+now.getFullYear();
     $("#okS").innerHTML=c.items.map(function(i){return '<div><span>'+i.qty+' × '+esc(i.name)+'</span><b>'+fmt(i.qty*i.price)+'</b></div>'}).join("")+
       '<div class="tt"><span>Tổng thanh toán</span><b>'+fmt(c.total)+(c.ship==null?' + ship':'')+'</b></div>';
-    $("#okTo").innerHTML='<div><span>Giao tới: </span>'+esc(p.address)+'</div><div><span>Người nhận: </span>'+esc(p.name)+' – '+esc(p.phone)+'</div><div><span>Thanh toán: </span>'+(p.payment==="ck"?"Chuyển khoản (shop gửi STK khi gọi xác nhận)":"Khi nhận hàng (COD)")+'</div>';
-    $("#okStep1").textContent="Nhân viên sẽ gọi số "+p.phone+" để xác nhận đơn";
-    $("#okStep3").textContent=p.payment==="ck"?"Chuyển khoản theo STK shop gửi, nhận hàng tận nơi":"Nhận hàng, kiểm tra rồi thanh toán";
+    $("#okTo").innerHTML='<div><span>Giao tới: </span>'+esc(p.address)+'</div><div><span>Người nhận: </span>'+esc(p.name)+' – '+esc(p.phone)+'</div><div><span>Thanh toán: </span>'+(p.payment==="ck"?"Chuyển khoản qua QR Vietcombank":"Khi nhận hàng (COD)")+'</div>';
+    var isCK=p.payment==="ck",B=C.BANK||{};
+    $("#okCall").textContent=isCK?"📞 Nhân viên sẽ kiểm tra chuyển khoản và gọi xác nhận đơn hàng":"📞 Nhân viên sẽ gọi xác nhận đơn hàng";
+    $("#okCK").hidden=!(isCK&&B.acc);
+    if(isCK&&B.acc){var memo=(String(id)+" "+p.phone).replace(/[^A-Za-z0-9 ]/g,"");
+      $("#okAcc").textContent=B.acc;$("#okAmt").textContent=fmt(c.total);$("#okAmtRaw").textContent=String(c.total);$("#okMemo").textContent=memo;
+      $("#okShipNote").textContent=c.ship==null?"Số tiền trên là tiền hàng. Phí ship (nếu có) nhân viên sẽ báo khi gọi xác nhận.":"";
+      var q=$("#okQR"),cks=$("#okCK .cks");cks.textContent="Mở app ngân hàng → quét mã QR. Số tiền và nội dung đã điền sẵn.";
+      q.onerror=function(){q.onerror=null;q.src=B.qr;cks.textContent="Mở app ngân hàng → quét mã QR, rồi nhập đúng số tiền và nội dung bên dưới."};
+      q.src="https://img.vietqr.io/image/"+B.bin+"-"+B.acc+"-qr_only.png?amount="+c.total+"&addInfo="+encodeURIComponent(memo)+"&accountName="+encodeURIComponent(B.holder)}
+    $("#okStep1").textContent=isCK?"Chuyển khoản theo thông tin bên trên":"Nhân viên sẽ gọi số "+p.phone+" để xác nhận đơn";
+    $("#okStep2").textContent=isCK?"Nhân viên kiểm tra chuyển khoản và gọi số "+p.phone+" xác nhận đơn":"Shop đóng gói và giao tận nơi cho anh/chị";
+    $("#okStep3").textContent=isCK?"Shop đóng gói và giao tận nơi cho anh/chị":"Nhận hàng, kiểm tra rồi thanh toán";
     Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();$("#qPhone").value="";
     $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});
     $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
+  $("#okCK").addEventListener("click",function(e){var b=e.target.closest(".cp");if(!b)return;var t=$("#"+b.dataset.cp).textContent;
+    function ok(){b.classList.add("done");b.textContent="Đã chép";setTimeout(function(){b.classList.remove("done");b.textContent="Sao chép"},1500)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){fb()})}else fb();
+    function fb(){var ta=d.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";d.body.appendChild(ta);ta.select();try{d.execCommand("copy");ok()}catch(x){}ta.remove()}});
   function okHide(){$("#md").classList.remove("on");d.documentElement.style.overflow=""}
   $("#okX").addEventListener("click",function(){okHide();go("#shop")});
   $("#md").addEventListener("click",function(e){if(e.target.id==="md")okHide()});
