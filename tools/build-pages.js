@@ -46,7 +46,7 @@ const fmt = (n) => Math.round(n).toLocaleString("vi-VN").replace(/,/g, ".") + "�
 const k = (n) => Math.round(n / 1000) + "k";
 const imgURL = (u, w) => /^https?:/.test(u)
   ? "https://wsrv.nl/?url=" + encodeURIComponent(u.replace(/^https?:\/\//, "")) + "&w=" + w + "&h=" + w + "&fit=contain&cbg=white&bg=white&output=webp&q=76"
-  : "../../" + (w <= 400 ? u.replace(/^img\//, "img/s/") : u);
+  : "../../" + (w <= 160 ? u.replace(/^img\//, "img/t/") : w <= 400 ? u.replace(/^img\//, "img/s/") : u);
 const absImg = (u) => /^https?:/.test(u) ? imgURL(u, 800) : SITE + u;
 const full = (p) => p.name + (p.size ? " " + p.size : "");
 const row = (p, key) => ((p.info || []).find((r) => r[0] === key) || [])[1] || "";
@@ -110,7 +110,7 @@ function page(p) {
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="../../img/favicon.png">
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/quicksand.woff2" crossorigin>
-<link rel="preload" as="image" href="${esc(imgURL(p.img, 720))}">
+<link rel="preload" as="image" href="${esc(imgURL(p.img, 720))}" fetchpriority="high">
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
 <style>
 @font-face{font-family:"Quicksand";src:url(../../fonts/quicksand.woff2) format("woff2");font-weight:500 700;font-display:swap}
@@ -157,7 +157,7 @@ footer{background:#3a1030;color:#f1e6ee;padding:24px 0;font-size:14px}footer a{c
 .bar .btn{min-height:48px;flex:1}
 @media(min-width:760px){.top{grid-template-columns:1fr 1fr;align-items:start}h1{font-size:30px}.rel{grid-template-columns:repeat(4,1fr)}.all{columns:3}body{padding-bottom:0}.bar{display:none}}
 </style>
-${PIXEL ? `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${PIXEL}');fbq('track','PageView');fbq('track','ViewContent',{content_ids:['${p.id}'],content_type:'product',value:${p.price},currency:'VND'});</script>` : ""}
+${PIXEL ? `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;f.addEventListener('load',function(){setTimeout(function(){b.head.appendChild(t)},1200)})}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${PIXEL}');fbq('track','PageView');fbq('track','ViewContent',{content_ids:['${p.id}'],content_type:'product',value:${p.price},currency:'VND'});</script>` : ""}
 </head>
 <body>
 <header class="nav"><div class="wrap"><a href="../../" aria-label="Sức Khỏe Hoàn Hảo – trang chủ"><img src="../../img/logo.webp" alt="Sức Khỏe Hoàn Hảo" width="145" height="120"></a><a class="call" href="tel:${HOT}">📞 ${esc(HOT_T)}</a></div></header>
