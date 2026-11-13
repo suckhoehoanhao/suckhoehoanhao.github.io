@@ -273,6 +273,22 @@ function sendCapi_(force) {
 /** Gửi lại các đơn chưa gửi Meta (ô "Meta CAPI" để trống). Xoá chữ "lỗi…" trong ô đó rồi chạy hàm này để gửi lại. */
 function resendCapi() { sendCapi_(true); }
 
+/** Thử Conversions API: gửi 1 sự kiện Purchase có mã kiểm tra (Meta KHÔNG tính vào số liệu thật). Xem kết quả ở Nhật ký thực thi. */
+function testCapi() {
+  const token = PropertiesService.getScriptProperties().getProperty('META_CAPI_TOKEN');
+  if (!token) { console.log('Chưa có META_CAPI_TOKEN trong Thuộc tính tập lệnh'); return; }
+  const now = Math.floor(Date.now() / 1000);
+  const body = { test_event_code: CONFIG.CAPI_TEST_CODE || 'TEST20261113', access_token: token, data: [{
+    event_name: 'Purchase', event_time: now, event_id: 'TEST-' + now, action_source: 'website',
+    event_source_url: 'https://suckhoehoanhao.github.io/',
+    user_data: { fbp: 'fb.1.' + (now * 1000) + '.1234567890', client_user_agent: 'Mozilla/5.0 (test)' },
+    custom_data: { currency: 'VND', value: 175000, order_id: 'TEST-' + now, content_type: 'product', content_ids: ['dau-phong'],
+      contents: [{ id: 'dau-phong', quantity: 1, item_price: 175000 }], num_items: 1 } }] };
+  const res = UrlFetchApp.fetch('https://graph.facebook.com/v22.0/' + CONFIG.PIXEL_ID + '/events', {
+    method: 'post', contentType: 'application/json', payload: JSON.stringify(body), muteHttpExceptions: true });
+  console.log('Meta trả về ' + res.getResponseCode() + ': ' + res.getContentText());
+}
+
 /* ============ Cài đặt & test ============ */
 function setup() {
   const ss = ss_();
