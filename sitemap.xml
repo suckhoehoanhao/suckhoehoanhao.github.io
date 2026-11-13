@@ -3,12 +3,123 @@
   <url>
     <loc>https://suckhoehoanhao.github.io/</loc>
     <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://suckhoehoanhao.github.io/img/dau-phong.webp</image:loc></image:image>
     <image:image><image:loc>https://suckhoehoanhao.github.io/img/dau-phong-100.webp</image:loc></image:image>
     <image:image><image:loc>https://suckhoehoanhao.github.io/img/ruou-tu-vi.webp</image:loc></image:image>
     <image:image><image:loc>https://suckhoehoanhao.github.io/img/ngu-vi-toi-den.webp</image:loc></image:image>
     <image:image><image:loc>https://suckhoehoanhao.github.io/img/cu-cai-muoi.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/dau-phong-hoan-hao-50ml/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dau-phong.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dp-2.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dp-3.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dp-4.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/dau-phong-hoan-hao-100ml/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dau-phong-100.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dp-2.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dp-3.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/dp-4.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/ruou-tu-vi-tue-anh/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/ruou-tu-vi.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/rtv-2.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/rtv-3.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/rtv-4.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/thong-kinh-lac-thuy-tue-anh/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fthong-kinh-lac-thuy-1-900x751.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/dap-thao-moc-tue-anh/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fbo-dap-thao-moc-1-900x714.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/bot-ngam-chan-thao-moc-tue-anh/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fbot-ngam-chan-thao-moc-9-900x714.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/mat-ong-len-men-vi-nguyen-ban/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fmat-ong-len-men-vi-nguyen-ban-1-768x768.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/mat-ong-len-men-sam-que/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fmat-ong-len-men-sam-768x768.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/mat-ong-len-men-bo-mau/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fmat-ong-len-men-bo-mau-1-768x768.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/mat-ong-len-men-cat-loi/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fmat-ong-len-men-cat-loi-loc-mau-2-768x768.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/mat-ong-len-men-nhau/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fmat-ong-len-men-nhau-768x769.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/ngu-vi-thanh-toi-thuong/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fngu-vi-thanh-toi-thuong-6-900x900.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/ngu-vi-thanh-toi-den/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/ngu-vi-toi-den.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/nvt-2.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/nvt-3.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/nvt-4.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/nvt-5.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/cu-cai-muoi-lac-mat-ong/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/cu-cai-muoi.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/ccm-2.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/ccm-3.webp</image:loc></image:image>
+    <image:image><image:loc>https://suckhoehoanhao.github.io/img/ccm-4.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/toi-den-co-don/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2FTOI-DEN-CO-DON-1-900x714.jpg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://suckhoehoanhao.github.io/san-pham/thanh-xuan-duoc/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://wsrv.nl/?url=qiheal.vn%2Fwp-content%2Fuploads%2F2025%2F03%2Fthanh-xuan-duoc-2.jpeg&amp;w=800&amp;h=800&amp;fit=contain&amp;cbg=white&amp;bg=white&amp;output=webp&amp;q=76</image:loc></image:image>
   </url>
 </urlset>

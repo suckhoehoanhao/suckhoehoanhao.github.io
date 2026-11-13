@@ -86,3 +86,9 @@ Khi đủ số lượng, giỏ hàng tự đổi giá, hiện số tiền tiết
 - Dữ liệu có cấu trúc (schema.org): cửa hàng, hỏi đáp (FAQPage), danh sách sản phẩm (tự sinh từ `PRODUCTS`, giá luôn khớp).
 - `robots.txt`, `sitemap.xml`. Gửi sitemap trong Google Search Console: `https://suckhoehoanhao.github.io/sitemap.xml`.
 - Ảnh: toàn bộ WebP. Ảnh sản phẩm trong thẻ dùng bản nhỏ `img/s/` (400px), popup dùng bản lớn `img/` (800px).
+
+## Trang riêng từng sản phẩm (SEO)
+
+Mỗi sản phẩm có trang riêng `san-pham/<tên-sản-phẩm>/` (tiêu đề, mô tả, bảng giá sỉ, hỏi đáp, sản phẩm liên quan, dữ liệu Google).
+**Sau khi sửa giá / thêm sản phẩm trong `index.html`, chạy lại:** `node tools/build-pages.js` → tự tạo lại toàn bộ trang sản phẩm, `sitemap.xml` và danh sách liên kết ở chân trang chủ.
+Sản phẩm mới cần thêm tên đường dẫn vào bảng `SLUG` trong `tools/build-pages.js`.

@@ -107,8 +107,8 @@ a{color:inherit;text-decoration:none}
 .cta-card .btn{width:100%;margin-top:4px}
 .cta-card .ss{font-size:13px;color:var(--mute);text-align:center;margin-top:8px}
 .hero-r{order:1}
-.hero-img{border-radius:18px;overflow:hidden;background:var(--soft);aspect-ratio:4/3;position:relative}
-.hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 62%}
+.hero-img{border-radius:18px;overflow:hidden;background:#fff;aspect-ratio:4/3;position:relative}
+.hero-img img{width:100%;height:100%;object-fit:contain;background:#fff}
 .hero-r .ticks{margin-top:14px;font-size:15px}
 
 .hero{padding:22px 0 18px}
@@ -153,8 +153,8 @@ a{color:inherit;text-decoration:none}
 .card.on{border-color:var(--p);box-shadow:0 0 0 1px var(--p)}
 .card.hl{border-color:var(--or);box-shadow:0 0 0 2px var(--or)}
 .card[hidden]{display:none}
-.card .ph{position:relative;aspect-ratio:1/1;background:var(--soft);cursor:pointer}
-.card .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;color:transparent}
+.card .ph{position:relative;aspect-ratio:1/1;background:#fff;cursor:pointer}
+.card .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;color:transparent}
 .badge{position:absolute;top:8px;left:8px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;z-index:1}
 .badge.new{background:#2f7d1a}
 .cb{padding:10px;display:flex;flex-direction:column;gap:2px;flex:1}
@@ -191,7 +191,7 @@ a{color:inherit;text-decoration:none}
 .empty a{color:var(--p);font-weight:700}
 .lines{display:grid;gap:10px;margin-bottom:10px}
 .ln{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center}
-.ln img{width:44px;height:44px;border-radius:8px;object-fit:cover;background:var(--soft);color:transparent}
+.ln img{width:44px;height:44px;border-radius:8px;object-fit:contain;background:#fff;color:transparent}
 .ln .n{font-size:14px;font-weight:700;line-height:1.3}
 .ln .m{font-size:13px;color:var(--mute)}
 .mini{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:999px}
@@ -254,6 +254,9 @@ footer p{margin-bottom:6px}
 footer a{text-decoration:underline}
 footer .map{border-radius:12px;overflow:hidden;aspect-ratio:16/10;background:#5a2a4c}
 footer .map iframe{width:100%;height:100%;border:0;display:block}
+footer .fsp{margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18)}footer .fsp b{display:block;margin-bottom:8px}footer .fsp ul{list-style:none;columns:2;column-gap:18px}footer .fsp li{margin-bottom:5px;break-inside:avoid}
+@media(min-width:760px){footer .fsp ul{columns:4}}
+.pdlink{display:block;margin-top:12px;color:var(--p);font-weight:700;text-decoration:underline}
 footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);font-size:13px;opacity:.8}
 
 /* thanh dưới (mobile) + nút nổi (desktop) */
@@ -276,7 +279,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 .pdx{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:26px;line-height:40px;text-align:center;z-index:2}
 .pdc{padding:14px 16px 6px}
 .pdg{display:flex;gap:8px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none}.pdg:empty{display:none}.pdg::-webkit-scrollbar{display:none}
-.pdg button{flex:0 0 58px;height:58px;padding:0;border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;cursor:pointer}.pdg button.on{border-color:var(--p)}.pdg img{width:100%;height:100%;object-fit:cover;display:block}
+.pdg button{flex:0 0 58px;height:58px;padding:0;border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;cursor:pointer}.pdg button.on{border-color:var(--p)}.pdg img{width:100%;height:100%;object-fit:contain;display:block}
 .pdc h3{font-size:20px;color:var(--p);line-height:1.3;text-transform:uppercase}
 .pdc .sz{color:var(--mute);font-size:14px}
 .pdc .pr{color:var(--red);font-weight:700;font-size:22px;margin:4px 0 8px}
@@ -453,7 +456,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
         <p class="ss">Nhận hàng mới trả tiền · Giao tận nơi</p>
       </div>
       <div class="hero-r">
-        <div class="hero-img"><img src="img/hero.webp" alt="Dầu Phong Hoàn Hảo 50ml" width="720" height="924" loading="lazy" decoding="async"></div>
+        <div class="hero-img"><img src="img/hero.webp" alt="Dầu Phong Hoàn Hảo 50ml và 100ml – dầu thực vật thảo mộc Sức Khỏe Hoàn Hảo" width="960" height="720" loading="lazy" decoding="async"></div>
         <ul class="ticks">
           <li>Thảo mộc Việt, thành phần ghi rõ trên nhãn</li>
           <li>Giao tận nơi 34 tỉnh thành – nhận hàng mới trả tiền</li>
@@ -589,6 +592,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
       </div>
       <div class="map" id="map"></div>
     </div>
+    <nav class="fsp" aria-label="Danh sách sản phẩm"><b>Sản phẩm Sức Khỏe Hoàn Hảo</b><!--SP-LINKS--><ul><li><a href="san-pham/dau-phong-hoan-hao-50ml/">Dầu Phong Hoàn Hảo 50ml</a></li><li><a href="san-pham/dau-phong-hoan-hao-100ml/">Dầu Phong Hoàn Hảo 100ml</a></li><li><a href="san-pham/ruou-tu-vi-tue-anh/">Rượu Tứ Vị Tuệ Ánh 500ml</a></li><li><a href="san-pham/thong-kinh-lac-thuy-tue-anh/">Thông Kinh Lạc Thủy Tuệ Ánh 100ml</a></li><li><a href="san-pham/dap-thao-moc-tue-anh/">Đắp Thảo Mộc Tuệ Ánh 200gr</a></li><li><a href="san-pham/bot-ngam-chan-thao-moc-tue-anh/">Bột Ngâm Chân Thảo Mộc Tuệ Ánh 110gr</a></li><li><a href="san-pham/mat-ong-len-men-vi-nguyen-ban/">Mật Ong Lên Men Vị Nguyên Bản 300ml</a></li><li><a href="san-pham/mat-ong-len-men-sam-que/">Mật Ong Lên Men Sâm Quế 300ml</a></li><li><a href="san-pham/mat-ong-len-men-bo-mau/">Mật Ong Lên Men Bổ Máu 300ml</a></li><li><a href="san-pham/mat-ong-len-men-cat-loi/">Mật Ong Lên Men Cát Lồi 300ml</a></li><li><a href="san-pham/mat-ong-len-men-nhau/">Mật Ong Lên Men Nhàu 300ml</a></li><li><a href="san-pham/ngu-vi-thanh-toi-thuong/">Ngũ Vị Thanh Tỏi Thường 1,3kg</a></li><li><a href="san-pham/ngu-vi-thanh-toi-den/">Ngũ Vị Thanh Tỏi Đen 1,3kg</a></li><li><a href="san-pham/cu-cai-muoi-lac-mat-ong/">Củ Cải Muối Lắc Mật Ong 400gr</a></li><li><a href="san-pham/toi-den-co-don/">Tỏi Đen Cô Đơn 300gr</a></li><li><a href="san-pham/thanh-xuan-duoc/">Thanh Xuân Dược 50gr</a></li></ul><!--/SP-LINKS--></nav>
     <p class="disc">Sản phẩm không phải là thuốc và không có tác dụng thay thế thuốc chữa bệnh. Hiệu quả có thể khác nhau tuỳ cơ địa. Đọc kỹ hướng dẫn sử dụng trên nhãn trước khi dùng.</p>
   </div>
 </footer>
@@ -609,7 +613,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
     <div class="pds">
       <div class="pdi" id="pdI"><button class="pdx" id="pdX" aria-label="Đóng">×</button></div>
       <div class="pdg" id="pdG"></div>
-      <div class="pdc"><h3 id="pdN"></h3><div class="sz" id="pdZ"></div><div class="pr" id="pdP"></div><div class="pu" id="pdU"></div><p class="ds" id="pdD"></p><div id="pdT"></div><dl id="pdL"></dl>
+      <div class="pdc"><h3 id="pdN"></h3><div class="sz" id="pdZ"></div><div class="pr" id="pdP"></div><div class="pu" id="pdU"></div><p class="ds" id="pdD"></p><div id="pdT"></div><dl id="pdL"></dl><a class="pdlink" id="pdLink" href="#">Xem đầy đủ thông tin, hỏi đáp về sản phẩm ›</a>
         <p class="hint">Cần tư vấn cách dùng? Gọi <a class="js-tel" href="tel:0933347114"><span class="js-hot">0933 347 114</span></a> hoặc nhắn Zalo.</p></div>
     </div>
     <div class="pdf">
@@ -780,6 +784,7 @@ var PROVINCES = [
 ];
 </script>
 
+<script>/*SLUGS*/window.SLUGS={"dau-phong":"dau-phong-hoan-hao-50ml","dau-phong-100":"dau-phong-hoan-hao-100ml","ruou-tu-vi":"ruou-tu-vi-tue-anh","thong-kinh-lac-thuy":"thong-kinh-lac-thuy-tue-anh","dap-thao-moc":"dap-thao-moc-tue-anh","bot-ngam-chan":"bot-ngam-chan-thao-moc-tue-anh","molm-nguyen-ban":"mat-ong-len-men-vi-nguyen-ban","molm-sam-que":"mat-ong-len-men-sam-que","molm-bo-mau":"mat-ong-len-men-bo-mau","molm-cat-loi":"mat-ong-len-men-cat-loi","molm-nhau":"mat-ong-len-men-nhau","ngu-vi-toi-thuong":"ngu-vi-thanh-toi-thuong","ngu-vi-toi-den":"ngu-vi-thanh-toi-den","cu-cai-muoi":"cu-cai-muoi-lac-mat-ong","toi-den-co-don":"toi-den-co-don","thanh-xuan-duoc":"thanh-xuan-duoc"};/*/SLUGS*/</script>
 <script>
 (function(){
   "use strict";
@@ -795,7 +800,7 @@ var PROVINCES = [
   function go(sel){var el=$(sel);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
 
   /* ảnh: nén WebP qua CDN wsrv.nl; lỗi thì dùng ảnh gốc */
-  function src(p,w,fit){return /^https?:/.test(p.img)?"https://wsrv.nl/?url="+encodeURIComponent(p.img.replace(/^https?:\/\//,""))+"&w="+w+"&h="+w+"&fit="+(fit||"cover")+"&bg=white&output=webp&q=72":(w<=400?p.img.replace(/^img\//,"img/s/"):p.img)}
+  function src(p,w,fit){return /^https?:/.test(p.img)?"https://wsrv.nl/?url="+encodeURIComponent(p.img.replace(/^https?:\/\//,""))+"&w="+w+"&h="+w+"&fit="+(fit||"contain")+"&cbg=white&bg=white&output=webp&q=74":(w<=400?p.img.replace(/^img\//,"img/s/"):p.img)}
   window.__imgErr=function(el,o){if(el.dataset.f)return;el.dataset.f=1;el.src=o};
   function img(p,w,lazy,fit){return '<img src="'+src(p,w,fit)+'" alt="'+esc(p.name+(p.size?" "+p.size:""))+'" width="'+w+'" height="'+w+'" decoding="async"'+(lazy?' loading="lazy"':'')+' onerror="__imgErr(this,\''+p.img+'\')">'}
 
@@ -1048,6 +1053,7 @@ var PROVINCES = [
     var gl=[p.img].concat(p.gal||[]);
     $("#pdG").innerHTML=gl.length>1?gl.map(function(u,i){return '<button type="button" data-g="'+i+'"'+(i?'':' class="on"')+' aria-label="Ảnh '+(i+1)+'"><img src="'+(i?u:src(p,120))+'" alt="" width="58" height="58" loading="lazy" decoding="async"></button>'}).join(""):"";
     $("#pdG").onclick=function(e){var b=e.target.closest("[data-g]");if(!b)return;var i=+b.dataset.g;im.src=i?gl[i]:src(p,720,"contain");$$("#pdG button").forEach(function(x){x.classList.toggle("on",x===b)})};
+    var sl=(window.SLUGS||{})[id],pl=$("#pdLink");pl.hidden=!sl;if(sl)pl.href="san-pham/"+sl+"/";
     $("#pdN").textContent=p.name;$("#pdZ").textContent=p.size||"";$("#pdP").textContent=fmt(p.price);$("#pdD").textContent=p.desc;
     $("#pdL").innerHTML=[["Dung tích / khối lượng",p.size]].concat(p.info||[],[["Bảo quản",p.store]]).filter(function(r){return r[1]}).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join("");
     var rows=[[1,p.price]].concat(p.tiers||[]);
