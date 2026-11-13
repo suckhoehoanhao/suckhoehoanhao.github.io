@@ -822,7 +822,7 @@ var PROVINCES = [
   function track(ev,pa,op){try{if(window.fbq)fbq("track",ev,pa||{},op||{})}catch(e){}}
   function trackCustom(ev,pa,op){try{if(window.fbq)fbq("trackCustom",ev,pa||{},op||{})}catch(e){}}
   var qs=new URLSearchParams(location.search), attr=LS.get("skhh_attr")||{};
-  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid"].forEach(function(k){if(qs.get(k))attr[k]=qs.get(k)});
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid"].forEach(function(k){if(qs.get(k))attr[k]=qs.get(k)});if(qs.get("fbclid"))attr.fbts=Date.now();
   LS.set("skhh_attr",attr);
   var focus=(qs.get("sp")||"").split(",").map(function(s){return s.trim()}).filter(function(id){return by[id]});
   if(focus.length){var q0=Math.max(1,Math.min(99,parseInt(qs.get("qty"),10)||1));focus.forEach(function(id){if(!cart[id])cart[id]=q0});save()}
@@ -962,12 +962,13 @@ var PROVINCES = [
     var payload={name:v.name,phone:v.phone,province:v.province,ward:v.ward,street:v.street,address:v.street+", "+v.ward+", "+v.province,note:v.note,
       payment:f.payment.value,website:f.website.value,items:c.items,subtotal:c.sub,ship:c.ship,total:c.total,
       utm_source:attr.utm_source||"",utm_medium:attr.utm_medium||"",utm_campaign:attr.utm_campaign||"",utm_content:attr.utm_content||"",fbclid:attr.fbclid||"",
-      page:location.href.split("#")[0],ua:navigator.userAgent};
+      page:location.href.split("#")[0],ua:navigator.userAgent,fbp:ck("_fbp"),fbc:ck("_fbc")||(attr.fbclid?"fb.1."+(attr.fbts||Date.now())+"."+attr.fbclid:"")};
     busy=true;var b=$("#go");b.disabled=true;b.innerHTML='<span class="spin"></span> Đang gửi đơn…';
     send(payload).then(function(r){if(!r||!r.ok)throw new Error((r&&r.error)||"Lỗi gửi đơn");done(r.orderId,payload,c)})
     .catch(function(x){er.innerHTML="Chưa gửi được đơn ("+esc(x.message||"mất kết nối")+"). Bấm <b>Đặt hàng</b> lại, hoặc gọi <a href=\"tel:"+C.HOTLINE+"\">"+C.HOTLINE_TEXT+"</a> / <a href=\""+C.ZALO+"\" target=\"_blank\">nhắn Zalo</a> để shop lên đơn giúp.";er.style.display="block"})
     .then(function(){busy=false;b.disabled=false;b.textContent=payCK()?"Xác nhận đặt hàng":"Đặt hàng ngay"})});
 
+  function ck(n){var m=document.cookie.match(new RegExp("(?:^|; )"+n+"=([^;]*)"));return m?decodeURIComponent(m[1]):""}
   function send(p){
     if(!C.ORDER_API){console.warn("[Landing] Chưa có ORDER_API – chế độ thử, đơn không được lưu.");var n=(LS.get("skhh_demo_seq")||0)+1;LS.set("skhh_demo_seq",n);return new Promise(function(r){setTimeout(function(){r({ok:true,orderId:"SKHH-"+(n<10?"0":"")+n})},500)})}
     var ac=window.AbortController?new AbortController():null,t=setTimeout(function(){ac&&ac.abort()},25000);

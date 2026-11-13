@@ -32,15 +32,21 @@ const CONFIG = {
   DRIVE_FOLDER: 'ĐƠN HÀNG LANDING SKHH',   // thư mục Drive chứa file Excel theo ngày ('' = không lưu)
   TZ: 'Asia/Ho_Chi_Minh',
   ORDER_PREFIX: 'SKHH',     // mã đơn dạng SKHH-01, SKHH-02…
-  DEDUPE_MINUTES: 3          // cùng SĐT + cùng nội dung trong 3 phút = bấm trùng, không ghi 2 lần
+  DEDUPE_MINUTES: 3,         // cùng SĐT + cùng nội dung trong 3 phút = bấm trùng, không ghi 2 lần
+  // Meta Conversions API: gửi lượt mua (Purchase) từ máy chủ, trùng event_id = mã đơn với Pixel trên web để Meta tự gộp.
+  // Mã truy cập KHÔNG dán vào code: Cài đặt dự án > Thuộc tính tập lệnh > thêm META_CAPI_TOKEN.
+  PIXEL_ID: '2171296483467236',
+  CAPI_TEST_CODE: ''         // mã "Kiểm tra sự kiện" (TEST12345) khi muốn thử, để trống khi chạy thật
 };
 
 const HEADERS = ['Ngày', 'STT', 'TÊN NGƯỜI NHẬN', 'SĐT', 'ĐỊA CHỈ ĐẦY ĐỦ', 'GHI CHÚ', 'NỘI DUNG', 'COD /CK', 'SỐ TIỀN COD', 'Note'];
 const WIDTHS = [118, 40, 170, 110, 420, 110, 380, 60, 80, 90];
 const FORMATS = ['@', '0', '@', '@', '@', '@', '@', '@', '#,##0', '@'];
 const LOG_HEADERS = ['Thời gian', 'Mã đơn', 'Ngày giờ', 'STT', 'Tên', 'SĐT', 'Địa chỉ', 'Ghi chú', 'Nội dung', 'COD/CK',
-  'Số tiền (nghìn)', 'Tổng (VNĐ)', 'utm_source', 'utm_campaign', 'utm_content', 'fbclid', 'Trang', 'Thiết bị', 'Đã gửi mail', 'Tỉnh/TP'];
-const L = { time: 0, id: 1, day: 2, stt: 3, name: 4, phone: 5, addr: 6, note: 7, content: 8, pay: 9, amount: 10, total: 11, sent: 18 };
+  'Số tiền (nghìn)', 'Tổng (VNĐ)', 'utm_source', 'utm_campaign', 'utm_content', 'fbclid', 'Trang', 'Thiết bị', 'Đã gửi mail', 'Tỉnh/TP',
+  'fbp', 'fbc', 'Meta CAPI', 'Sản phẩm (mã)'];
+const L = { time: 0, id: 1, day: 2, stt: 3, name: 4, phone: 5, addr: 6, note: 7, content: 8, pay: 9, amount: 10, total: 11,
+  page: 16, ua: 17, sent: 18, fbp: 20, fbc: 21, capi: 22, items: 23 };
 const COLOR = { header: '#1c4f8f', red: '#ff0000', yellow: '#ffff00' };
 
 /** Mở Google Sheet đơn hàng: script gắn trong Sheet thì dùng luôn Sheet đó,
@@ -70,6 +76,7 @@ function doPost(e) {
     const pay = d.payment === 'ck' ? 'ck' : 'cod';
     const items = (Array.isArray(d.items) ? d.items : []).slice(0, 50).map(function (i) {
       return {
+        id: clean_(i.id, 40),
         short: clean_(i.short || i.name, 60),
         qty: Math.min(999, Math.max(0, parseInt(i.qty, 10) || 0)),
         price: Math.max(0, Number(i.price) || 0)
@@ -130,9 +137,11 @@ function doPost(e) {
 
       lg.appendRow([now, orderId, stamp, stt, name, "'" + phone, addrCell, shipNote, content, pay, amountK, total,
         clean_(d.utm_source, 100), clean_(d.utm_campaign, 150), clean_(d.utm_content, 150), clean_(d.fbclid, 300),
-        clean_(d.page, 300), clean_(d.ua, 300), '', province]);
+        clean_(d.page, 300), clean_(d.ua, 300), '', province,
+        clean_(d.fbp, 120), clean_(d.fbc, 300), '', JSON.stringify(items.map(function (i) { return [i.id, i.qty, i.price]; }))]);
 
       props.setProperty('PENDING', '1');
+      props.setProperty('CAPI_PENDING', '1');
       return json_({ ok: true, orderId: orderId, total: total });
     } finally {
       lock.releaseLock();
@@ -150,6 +159,7 @@ function doGet() {
 /* ============ Gửi email (trigger mỗi 1 phút) ============ */
 function processQueue() {
   const props = PropertiesService.getScriptProperties();
+  try { sendCapi_(); } catch (e) { console.error('Meta CAPI: ' + e); }
   if (props.getProperty('PENDING') !== '1') return;
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(10000)) return;
@@ -199,6 +209,70 @@ function processQueue() {
   }
 }
 
+/* ============ Meta Conversions API (lượt mua từ máy chủ) ============
+ * Không gửi họ tên, SĐT, địa chỉ, ghi chú cho Meta: chỉ mã đơn, giá trị, mã sản phẩm,
+ * cookie Facebook của trình duyệt (fbp/fbc) và trình duyệt (user agent). */
+function sendCapi_(force) {
+  const props = PropertiesService.getScriptProperties();
+  if (!force && props.getProperty('CAPI_PENDING') !== '1') return;
+  const token = props.getProperty('META_CAPI_TOKEN');
+  if (!token || !CONFIG.PIXEL_ID) return;                          // chưa có mã -> giữ lại, gửi sau
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return;
+  try {
+    const lg = ensureLog_(ss_());
+    const n = lg.getLastRow();
+    if (n < 2) { props.setProperty('CAPI_PENDING', '0'); return; }
+    const start = Math.max(2, n - 299);
+    const vals = lg.getRange(start, 1, n - start + 1, LOG_HEADERS.length).getValues();
+    const now = Date.now(), rows = [], events = [];
+    vals.forEach(function (v, i) {
+      if (!v[L.id] || v[L.capi] !== '') return;
+      const row = start + i;
+      const t = v[L.time] instanceof Date ? v[L.time].getTime() : now;
+      if (now - t > 6.5 * 864e5) { rows.push([row, 'quá 7 ngày, bỏ qua']); return; }
+      const fbp = String(v[L.fbp] || ''), fbc = String(v[L.fbc] || '');
+      if (!fbp && !fbc) { rows.push([row, 'không có cookie Facebook, bỏ qua']); return; }
+      let items = [];
+      try { items = JSON.parse(v[L.items] || '[]'); } catch (e) {}
+      const ud = { client_user_agent: String(v[L.ua] || '').slice(0, 400) || undefined };
+      if (fbp) ud.fbp = fbp;
+      if (fbc) ud.fbc = fbc;
+      events.push({
+        event_name: 'Purchase', event_time: Math.floor(t / 1000), event_id: String(v[L.id]),
+        action_source: 'website', event_source_url: String(v[L.page] || 'https://suckhoehoanhao.github.io/'),
+        user_data: ud,
+        custom_data: {
+          currency: 'VND', value: Number(v[L.total]) || 0, order_id: String(v[L.id]), content_type: 'product',
+          content_ids: items.map(function (x) { return x[0]; }).filter(String),
+          contents: items.filter(function (x) { return x[0]; }).map(function (x) { return { id: x[0], quantity: x[1], item_price: x[2] }; }),
+          num_items: items.reduce(function (s, x) { return s + (Number(x[1]) || 0); }, 0)
+        }
+      });
+      rows.push([row, null]);
+    });
+    if (events.length) {
+      const body = { data: events, access_token: token };
+      if (CONFIG.CAPI_TEST_CODE) body.test_event_code = CONFIG.CAPI_TEST_CODE;
+      const res = UrlFetchApp.fetch('https://graph.facebook.com/v22.0/' + CONFIG.PIXEL_ID + '/events', {
+        method: 'post', contentType: 'application/json', payload: JSON.stringify(body), muteHttpExceptions: true
+      });
+      const code = res.getResponseCode(), txt = res.getContentText();
+      const stamp = Utilities.formatDate(new Date(), CONFIG.TZ, 'dd/MM HH:mm');
+      const status = code === 200 ? 'đã gửi ' + stamp + (CONFIG.CAPI_TEST_CODE ? ' (test)' : '') : 'lỗi ' + code + ': ' + txt.slice(0, 180);
+      rows.forEach(function (r) { if (r[1] === null) r[1] = status; });
+      console.log('Meta CAPI ' + code + ' ' + txt.slice(0, 300));
+    }
+    rows.forEach(function (r) { lg.getRange(r[0], L.capi + 1).setValue(r[1]); });
+    props.setProperty('CAPI_PENDING', '0');
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** Gửi lại các đơn chưa gửi Meta (ô "Meta CAPI" để trống). Xoá chữ "lỗi…" trong ô đó rồi chạy hàm này để gửi lại. */
+function resendCapi() { sendCapi_(true); }
+
 /* ============ Cài đặt & test ============ */
 function setup() {
   const ss = ss_();
@@ -243,6 +317,8 @@ function ensureLog_(ss) {
     lg.appendRow(LOG_HEADERS);
     lg.getRange(1, 1, 1, LOG_HEADERS.length).setFontWeight('bold').setBackground('#eeeeee');
     lg.setFrozenRows(1);
+  } else if (lg.getLastColumn() < LOG_HEADERS.length) {
+    lg.getRange(1, 1, 1, LOG_HEADERS.length).setValues([LOG_HEADERS]).setFontWeight('bold').setBackground('#eeeeee');
   }
   lg.getRange('C:C').setNumberFormat('@');
   return lg;
