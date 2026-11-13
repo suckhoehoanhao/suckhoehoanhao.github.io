@@ -450,7 +450,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
         <div class="f" data-f="qphone">
           <label for="qPhone">Số điện thoại</label>
           <input id="qPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Vd: 0912 345 678" maxlength="16">
-          <div class="e">Số điện thoại chưa đúng (10 số, bắt đầu bằng 0)</div>
+          <div class="e">Số điện thoại chưa đúng (số di động 10 số, vd 0912 345 678)</div>
         </div>
         <button class="btn btn-p" id="qGo">Đặt hàng ngay</button>
         <p class="ss">Nhận hàng mới trả tiền · Giao tận nơi</p>
@@ -530,12 +530,12 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
           <div class="f" data-f="name">
             <label for="fName">Họ và tên *</label>
             <input id="fName" name="name" type="text" autocomplete="name" placeholder="Vd: Nguyễn Văn A" maxlength="80">
-            <div class="e">Vui lòng nhập họ tên</div>
+            <div class="e">Vui lòng nhập họ tên người nhận (chỉ chữ)</div>
           </div>
           <div class="f" data-f="phone">
             <label for="fPhone">Số điện thoại *</label>
             <input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Vd: 0912 345 678" maxlength="16">
-            <div class="e">Số điện thoại chưa đúng (10 số, bắt đầu bằng 0)</div>
+            <div class="e">Số điện thoại chưa đúng (số di động 10 số, vd 0912 345 678)</div>
           </div>
           <div class="f" data-f="province">
             <label for="fProv">Tỉnh / Thành phố *</label>
@@ -940,11 +940,15 @@ var PROVINCES = [
   $("#form").addEventListener("focusin",initCheckout);
   $("#pay").addEventListener("change",function(){$$("#pay label").forEach(function(l){l.classList.toggle("on",l.querySelector("input").checked)})});
 
+  /* SĐT di động Việt Nam thật: 10 số, đầu 03x/05x/07x/08x/09x, không phải dãy lặp hoặc dãy liên tiếp */
+  function okPhone(p){return /^0(3[2-9]|5[25689]|7[06-9]|8[1-9]|9\d)\d{7}$/.test(p)&&!/^0(\d)\1{8}$/.test(p)&&["0123456789","0987654321"].indexOf(p)<0}
+  function okName(n){return n.length>=2&&!/[0-9@]|https?:|www\./i.test(n)&&/[a-zA-ZÀ-ỹ]/.test(n)}
+  var T0=Date.now();
   function normPhone(v){v=String(v||"").replace(/[^\d+]/g,"");if(v.indexOf("+84")===0)v="0"+v.slice(3);else if(v.indexOf("84")===0&&v.length===11)v="0"+v.slice(2);return v}
 
   /* đặt nhanh: thêm SP vào đơn, điền sẵn SĐT, chuyển xuống form */
   $("#qGo").addEventListener("click",function(){var ph=normPhone($("#qPhone").value),f=$('.f[data-f="qphone"]');
-    if(!/^0\d{9}$/.test(ph)){f.classList.add("err");$("#qPhone").focus();return}
+    if(!okPhone(ph)){f.classList.add("err");$("#qPhone").focus();return}
     f.classList.remove("err"); if(!cart[qp.value])change(qp.value,1,"add");
     $("#fPhone").value=$("#qPhone").value; initCheckout(); go("#order");
     setTimeout(function(){$("#fName").focus({preventScroll:true})},600)});
@@ -956,15 +960,15 @@ var PROVINCES = [
     var er=$("#ferr");er.style.display="none";var c=calc();
     if(!c.items.length){er.innerHTML='Bạn chưa chọn sản phẩm nào. <a href="#shop">Chọn sản phẩm ›</a>';er.style.display="block";return}
     var f=this,v={name:f.name.value.trim().replace(/\s+/g," "),phone:normPhone(f.phone.value),province:f.province.value,ward:f.ward.value.trim(),street:f.street.value.trim(),note:f.note.value.trim()};
-    var bad=[];if(v.name.length<2)bad.push("name");if(!/^0\d{9}$/.test(v.phone))bad.push("phone");if(!v.province)bad.push("province");if(v.ward.length<2)bad.push("ward");if(v.street.length<2)bad.push("street");
+    var bad=[];if(!okName(v.name))bad.push("name");if(!okPhone(v.phone))bad.push("phone");if(!v.province)bad.push("province");if(v.ward.length<2)bad.push("ward");if(v.street.length<2)bad.push("street");
     ["name","phone","province","ward","street"].forEach(function(k){$('.f[data-f="'+k+'"]').classList.toggle("err",bad.indexOf(k)>-1)});
     if(bad.length){var fe=$('.f[data-f="'+bad[0]+'"]').querySelector('input:not([type=hidden]),select,button');if(fe){fe.focus();fe.scrollIntoView({block:"center"})}return}
     var payload={name:v.name,phone:v.phone,province:v.province,ward:v.ward,street:v.street,address:v.street+", "+v.ward+", "+v.province,note:v.note,
       payment:f.payment.value,website:f.website.value,items:c.items,subtotal:c.sub,ship:c.ship,total:c.total,
       utm_source:attr.utm_source||"",utm_medium:attr.utm_medium||"",utm_campaign:attr.utm_campaign||"",utm_content:attr.utm_content||"",fbclid:attr.fbclid||"",
-      page:location.href.split("#")[0],ua:navigator.userAgent,fbp:ck("_fbp"),fbc:ck("_fbc")||(attr.fbclid?"fb.1."+(attr.fbts||Date.now())+"."+attr.fbclid:"")};
+      page:location.href.split("#")[0],ua:navigator.userAgent,t:Math.round((Date.now()-T0)/1000),fbp:ck("_fbp"),fbc:ck("_fbc")||(attr.fbclid?"fb.1."+(attr.fbts||Date.now())+"."+attr.fbclid:"")};
     busy=true;var b=$("#go");b.disabled=true;b.innerHTML='<span class="spin"></span> Đang gửi đơn…';
-    send(payload).then(function(r){if(!r||!r.ok)throw new Error((r&&r.error)||"Lỗi gửi đơn");done(r.orderId,payload,c)})
+    send(payload).then(function(r){if(!r||!r.ok)throw new Error((r&&r.error)||"Lỗi gửi đơn");done(r.orderId,payload,c,r)})
     .catch(function(x){er.innerHTML="Chưa gửi được đơn ("+esc(x.message||"mất kết nối")+"). Bấm <b>Đặt hàng</b> lại, hoặc gọi <a href=\"tel:"+C.HOTLINE+"\">"+C.HOTLINE_TEXT+"</a> / <a href=\""+C.ZALO+"\" target=\"_blank\">nhắn Zalo</a> để shop lên đơn giúp.";er.style.display="block"})
     .then(function(){busy=false;b.disabled=false;b.textContent=payCK()?"Xác nhận đặt hàng":"Đặt hàng ngay"})});
 
@@ -974,8 +978,11 @@ var PROVINCES = [
     var ac=window.AbortController?new AbortController():null,t=setTimeout(function(){ac&&ac.abort()},25000);
     return fetch(C.ORDER_API,{method:"POST",body:JSON.stringify(p),redirect:"follow",signal:ac?ac.signal:undefined}).then(function(r){clearTimeout(t);return r.json()})}
 
-  function done(id,p,c){
-    track("Purchase",{value:c.total,currency:"VND",content_type:"product",num_items:c.count,content_ids:c.items.map(function(i){return i.id}),contents:c.items.map(function(i){return{id:i.id,quantity:i.qty,item_price:i.price}})},{eventID:String(id)});
+  function done(id,p,c,r){
+    /* Đơn máy chủ đánh dấu nghi rác hoặc bấm trùng: vẫn báo thành công cho khách nhưng KHÔNG báo lượt mua cho Meta,
+       để quảng cáo chỉ học từ khách mua thật. */
+    var real=!(r&&(r.flag||r.duplicate));
+    if(real)track("Purchase",{value:c.total,currency:"VND",content_type:"product",num_items:c.count,content_ids:c.items.map(function(i){return i.id}),contents:c.items.map(function(i){return{id:i.id,quantity:i.qty,item_price:i.price}})},{eventID:String(id)});
     /* Chỉ tính chuyển đổi sản phẩm sau phản hồi ok từ máy chủ lưu đơn.
        Không phát sự kiện ở lúc bấm nút, khi biểu mẫu lỗi, hoặc khi gửi đơn thất bại.
        Không truyền họ tên, SĐT, địa chỉ, ghi chú hay nội dung sức khỏe cho Meta. */
@@ -983,7 +990,7 @@ var PROVINCES = [
       {event:"Order_DauPhong",ids:["dau-phong","dau-phong-100"]},
       {event:"Order_RuouTuVi",ids:["ruou-tu-vi"]}
     ];
-    groups.forEach(function(g){
+    if(real)groups.forEach(function(g){
       var matched=c.items.filter(function(i){return g.ids.indexOf(i.id)!==-1});
       if(!matched.length)return;
       trackCustom(g.event,{
@@ -1013,7 +1020,7 @@ var PROVINCES = [
     $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});fckKey="";updateFormCK();
     $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
   /* ===== chuyển khoản QR (dùng chung cho form và popup) ===== */
-  function memoOf(ph){ph=normPhone(ph||"");return /^0\d{9}$/.test(ph)?ph:""}
+  function memoOf(ph){ph=normPhone(ph||"");return okPhone(ph)?ph:""}
   function qrURL(amount,memo){var B=C.BANK;return "https://img.vietqr.io/image/"+B.bin+"-"+B.acc+"-qr_only.png?amount="+amount+"&addInfo="+encodeURIComponent(memo)+"&accountName="+encodeURIComponent(B.holder)}
   function renderCK(el,amount,memo,shipNull,title){var B=C.BANK;
     el.innerHTML='<div class="ckh">'+esc(title||"Quét mã QR để chuyển khoản")+'</div><img alt="Mã QR chuyển khoản '+esc(B.name)+'" width="240" height="240">'+

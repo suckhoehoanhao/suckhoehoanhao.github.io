@@ -83,8 +83,8 @@ function doPost(e) {
       };
     }).filter(function (i) { return i.qty > 0 && i.short; });
 
-    if (name.length < 2) return json_({ ok: false, error: 'Thiếu họ tên' });
-    if (!/^0\d{9}$/.test(phone)) return json_({ ok: false, error: 'Số điện thoại chưa đúng' });
+    if (name.length < 2 || /[0-9@]|https?:|www\./i.test(name)) return json_({ ok: false, error: 'Vui lòng nhập họ tên người nhận' });
+    if (!isMobileVN_(phone)) return json_({ ok: false, error: 'Số điện thoại chưa đúng' });
     if (address.length < 5) return json_({ ok: false, error: 'Thiếu địa chỉ' });
     if (d.street !== undefined && !province) return json_({ ok: false, error: 'Chưa chọn tỉnh / thành phố' });
     if (!items.length) return json_({ ok: false, error: 'Chưa có sản phẩm' });
@@ -106,6 +106,15 @@ function doPost(e) {
       // chống bấm trùng
       const dup = findDuplicate_(lg, phone, content, now);
       if (dup) return json_({ ok: true, orderId: dup, duplicate: true });
+
+      // nghi rác: vẫn nhận đơn (nhân viên gọi kiểm tra) nhưng KHÔNG báo lượt mua cho Meta
+      const flags = [];
+      const secs = Number(d.t);
+      if (d.t !== undefined && secs >= 0 && secs < 6) flags.push('điền đơn quá nhanh (' + secs + ' giây)');
+      const same24h = countPhone_(lg, phone, now, 24);
+      if (same24h >= 2) flags.push('SĐT này đã đặt ' + same24h + ' đơn trong 24h');
+      if (/(\d)\1{6}/.test(phone)) flags.push('SĐT nhiều số lặp, gọi xác minh');
+      const flag = flags.length ? '⚠ NGHI RÁC: ' + flags.join('; ') : '';
 
       // ngày mới -> chốt tổng ngày cũ, STT về 1
       const today = Utilities.formatDate(now, CONFIG.TZ, 'dd/MM/yyyy');
@@ -130,7 +139,7 @@ function doPost(e) {
       const addrCell = note ? address + '\nnote : ' + note : address;
       const shipNote = ship === 0 ? 'freeship' : (ship ? 'ship ' + Math.round(ship / 1000) + 'k' : '');
       const amountK = Math.round(total / 1000);
-      const row = [stamp, stt, name, phone, addrCell, shipNote, content, pay, amountK, ''];
+      const row = [stamp, stt, name, phone, addrCell, shipNote, content, pay, amountK, flag];
 
       const r = sh.getLastRow() + 1;
       writeOrderRow_(sh, r, row);
@@ -138,11 +147,11 @@ function doPost(e) {
       lg.appendRow([now, orderId, stamp, stt, name, "'" + phone, addrCell, shipNote, content, pay, amountK, total,
         clean_(d.utm_source, 100), clean_(d.utm_campaign, 150), clean_(d.utm_content, 150), clean_(d.fbclid, 300),
         clean_(d.page, 300), clean_(d.ua, 300), '', province,
-        clean_(d.fbp, 120), clean_(d.fbc, 300), '', JSON.stringify(items.map(function (i) { return [i.id, i.qty, i.price]; }))]);
+        clean_(d.fbp, 120), clean_(d.fbc, 300), flag ? 'bỏ qua: nghi rác' : '', JSON.stringify(items.map(function (i) { return [i.id, i.qty, i.price]; }))]);
 
       props.setProperty('PENDING', '1');
       props.setProperty('CAPI_PENDING', '1');
-      return json_({ ok: true, orderId: orderId, total: total });
+      return json_(flag ? { ok: true, orderId: orderId, total: total, flag: true } : { ok: true, orderId: orderId, total: total });
     } finally {
       lock.releaseLock();
     }
@@ -363,6 +372,7 @@ function writeOrderRow_(sh, r, row) {
   sh.getRange(r, 9).setHorizontalAlignment('right');
   sh.getRange(r, 10).setFontColor(COLOR.red);
   if (row[7] === 'ck') sh.getRange(r, 8).setFontColor(COLOR.red);
+  if (String(row[9]).indexOf('⚠') === 0) rg.setBackground('#fff4cc');
 }
 
 function addTotalRow_(sh, r, start, end) {
@@ -383,6 +393,25 @@ function findDayBlock_(sh, day) {
   let start = end;
   while (start - 1 >= 0 && isDay(v[start - 1])) start--;
   return { start: start + 2, end: end + 2 };
+}
+
+/** Số đơn của 1 SĐT trong N giờ gần nhất (đọc LOG_WEB) */
+function countPhone_(lg, phone, now, hours) {
+  const n = lg.getLastRow();
+  if (n < 2) return 0;
+  const start = Math.max(2, n - 299);
+  const v = lg.getRange(start, 1, n - start + 1, L.phone + 1).getValues();
+  let c = 0;
+  v.forEach(function (r) {
+    const t = r[L.time] instanceof Date ? r[L.time].getTime() : 0;
+    if (r[L.id] && now.getTime() - t < hours * 3600000 && String(r[L.phone]).replace(/^'/, '') === phone) c++;
+  });
+  return c;
+}
+
+/** SĐT di động Việt Nam: 03x/05x/07x/08x/09x, 10 số, không phải dãy lặp hay dãy liên tiếp */
+function isMobileVN_(p) {
+  return /^0(3[2-9]|5[25689]|7[06-9]|8[1-9]|9\d)\d{7}$/.test(p) && !/^0(\d)\1{8}$/.test(p) && ['0123456789', '0987654321'].indexOf(p) < 0;
 }
 
 function findDuplicate_(lg, phone, content, now) {
