@@ -14,6 +14,7 @@ và gửi email kèm file Excel (.xlsx) các đơn trong ngày. File Excel theo 
 |---|---|
 | `index.html` | Landing page: Logo → Tiêu đề → Bán chạy → Tất cả sản phẩm (popup chi tiết) → Đặt nhanh + Hình + USP → Số liệu → Lợi ích → Phản hồi khách hàng → Đặt hàng → Footer + bản đồ |
 | `img/` | Logo, ảnh sản phẩm (WebP nén nhẹ) |
+| `data/xa/` | Danh sách 3.321 phường, xã mới (từ 01/7/2025) theo mã tỉnh, kèm tên phường xã cũ để khách tìm. Nguồn: Công văn 1027/CTK-CSCL, bộ dữ liệu dvhcvn/20250701 |
 | `apps-script/Code.gs` | Code nhận đơn, dán vào Google Apps Script |
 
 ## 1. Bật nhận đơn (Google Apps Script)

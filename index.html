@@ -196,6 +196,20 @@ a{color:inherit;text-decoration:none}
 .f.err input,.f.err select{border-color:var(--red)}
 .f .e{display:none;color:var(--red);font-size:13px;margin-top:3px}
 .f.err .e{display:block}
+.wbtn{display:block;width:100%;height:48px;border:1.5px solid #d6d6d6;border-radius:10px;padding:0 36px 0 12px;font:inherit;font-size:16px;text-align:left;color:var(--ink);background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%239b2b7d' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") right 8px center/24px no-repeat;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.wbtn.ph,.wbtn:disabled{color:#8a8a8a}.wbtn:disabled{background-color:var(--soft);cursor:not-allowed}.f.err .wbtn{border-color:var(--red)}
+.ws{position:fixed;inset:0;z-index:78;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .2s}
+.ws.on{opacity:1;visibility:visible}
+.wsb{background:#fff;width:100%;max-width:560px;height:85vh;height:85dvh;border-radius:18px 18px 0 0;display:flex;flex-direction:column;overflow:hidden}
+.wsh{display:flex;align-items:center;gap:10px;padding:14px 12px 10px 16px}.wsh b{flex:1;font-size:17px;color:var(--p)}
+.wsh button{width:38px;height:38px;border-radius:50%;background:var(--soft);font-size:24px;line-height:38px;color:var(--ink)}
+.wsq{margin:0 16px 8px;height:46px;border:1.5px solid #d6d6d6;border-radius:10px;padding:0 12px;font-size:16px;outline:none;-webkit-appearance:none}.wsq:focus{border-color:var(--p)}
+.wsn{margin:0 16px 6px;font-size:13px;color:var(--mute)}
+.wsl{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;border-top:1px solid var(--line)}
+.wsl button{display:block;width:100%;text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);font-size:16px;background:#fff;color:var(--ink)}
+.wsl button:active,.wsl button.on{background:var(--p-l)}.wsl button.on{color:var(--p);font-weight:700}
+.wsl small{display:block;font-size:12.5px;color:var(--mute);font-weight:400;margin-top:2px}
+.wse{padding:24px 16px;text-align:center;color:var(--mute)}
 .row2{display:grid;grid-template-columns:1fr;gap:0 10px}
 .pay{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pay label{display:flex;gap:8px;align-items:center;border:1.5px solid #d6d6d6;border-radius:10px;padding:10px;font-size:14px;font-weight:700;margin:0;line-height:1.3}
@@ -346,6 +360,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
   .float .z{background:#0068ff}.float .c{background:var(--or)}
   .float svg{width:22px;height:22px;fill:#fff}
   .add:hover,.btn-p:hover{background:var(--p-d)}
+  .ws{align-items:center;padding:20px}.wsb{border-radius:18px;height:70vh}
   .pd{align-items:center;padding:20px}.pdb{border-radius:18px;max-height:88vh}.pdi{max-height:400px}
 }
 @media (max-width:374.98px){
@@ -497,8 +512,9 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
           <div class="row2">
             <div class="f" data-f="ward">
               <label for="fWard">Phường / Xã *</label>
-              <input id="fWard" name="ward" type="text" autocomplete="address-level3" placeholder="Vd: Phường Phú Lợi" maxlength="80">
-              <div class="e">Vui lòng nhập phường / xã</div>
+              <button type="button" id="fWard" class="wbtn" aria-haspopup="dialog" disabled>Chọn tỉnh / thành trước</button>
+              <input type="hidden" name="ward" id="fWardV">
+              <div class="e">Vui lòng chọn phường / xã</div>
             </div>
             <div class="f" data-f="street">
               <label for="fStreet">Số nhà, tên đường *</label>
@@ -569,6 +585,15 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
       <button class="btn btn-o" id="pdAdd">Thêm vào đơn</button>
       <button class="btn btn-p" id="pdBuy">Mua ngay</button>
     </div>
+  </div>
+</div>
+
+<div class="ws" id="ws" role="dialog" aria-modal="true" aria-labelledby="wsT">
+  <div class="wsb">
+    <div class="wsh"><b id="wsT">Chọn phường / xã</b><button type="button" id="wsX" aria-label="Đóng">×</button></div>
+    <input id="wsQ" class="wsq" type="search" placeholder="Gõ tên phường / xã (mới hoặc cũ)" autocomplete="off" enterkeyhint="search">
+    <p class="wsn">Danh sách phường, xã mới từ 01/7/2025. Không nhớ tên mới? Gõ tên phường, xã cũ để tìm.</p>
+    <div class="wsl" id="wsL" role="listbox"></div>
   </div>
 </div>
 
@@ -713,13 +738,13 @@ var CATS = [{id:"all",name:"Tất cả"},{id:"xoa",name:"Dầu & rượu xoa bó
 
 /* 34 tỉnh, thành (từ 01/7/2025) – trong ngoặc là tỉnh cũ đã sáp nhập để khách dễ tìm */
 var PROVINCES = [
-  ["TP. Hồ Chí Minh","Bình Dương, Bà Rịa – Vũng Tàu"],["Hà Nội",""],
-  ["An Giang","Kiên Giang"],["Bắc Ninh","Bắc Giang"],["Cà Mau","Bạc Liêu"],["Cao Bằng",""],["Cần Thơ","Sóc Trăng, Hậu Giang"],
-  ["Đà Nẵng","Quảng Nam"],["Đắk Lắk","Phú Yên"],["Điện Biên",""],["Đồng Nai","Bình Phước"],["Đồng Tháp","Tiền Giang"],
-  ["Gia Lai","Bình Định"],["Hà Tĩnh",""],["Hải Phòng","Hải Dương"],["Huế",""],["Hưng Yên","Thái Bình"],["Khánh Hòa","Ninh Thuận"],
-  ["Lai Châu",""],["Lâm Đồng","Đắk Nông, Bình Thuận"],["Lạng Sơn",""],["Lào Cai","Yên Bái"],["Nghệ An",""],["Ninh Bình","Hà Nam, Nam Định"],
-  ["Phú Thọ","Vĩnh Phúc, Hòa Bình"],["Quảng Ngãi","Kon Tum"],["Quảng Ninh",""],["Quảng Trị","Quảng Bình"],["Sơn La",""],
-  ["Tây Ninh","Long An"],["Thái Nguyên","Bắc Kạn"],["Thanh Hóa",""],["Tuyên Quang","Hà Giang"],["Vĩnh Long","Bến Tre, Trà Vinh"]
+  ["TP. Hồ Chí Minh","Bình Dương, Bà Rịa – Vũng Tàu","79"],["Hà Nội","","01"],
+  ["An Giang","Kiên Giang","91"],["Bắc Ninh","Bắc Giang","24"],["Cà Mau","Bạc Liêu","96"],["Cao Bằng","","04"],["Cần Thơ","Sóc Trăng, Hậu Giang","92"],
+  ["Đà Nẵng","Quảng Nam","48"],["Đắk Lắk","Phú Yên","66"],["Điện Biên","","11"],["Đồng Nai","Bình Phước","75"],["Đồng Tháp","Tiền Giang","82"],
+  ["Gia Lai","Bình Định","52"],["Hà Tĩnh","","42"],["Hải Phòng","Hải Dương","31"],["Huế","","46"],["Hưng Yên","Thái Bình","33"],["Khánh Hòa","Ninh Thuận","56"],
+  ["Lai Châu","","12"],["Lâm Đồng","Đắk Nông, Bình Thuận","68"],["Lạng Sơn","","20"],["Lào Cai","Yên Bái","15"],["Nghệ An","","40"],["Ninh Bình","Hà Nam, Nam Định","37"],
+  ["Phú Thọ","Vĩnh Phúc, Hòa Bình","25"],["Quảng Ngãi","Kon Tum","51"],["Quảng Ninh","","22"],["Quảng Trị","Quảng Bình","44"],["Sơn La","","14"],
+  ["Tây Ninh","Long An","80"],["Thái Nguyên","Bắc Kạn","19"],["Thanh Hóa","","38"],["Tuyên Quang","Hà Giang","08"],["Vĩnh Long","Bến Tre, Trà Vinh","86"]
 ];
 </script>
 
@@ -761,6 +786,39 @@ var PROVINCES = [
 
   /* tỉnh thành */
   $("#fProv").insertAdjacentHTML("beforeend",PROVINCES.map(function(p){return '<option value="'+p[0]+'">'+p[0]+(p[1]?' (gồm '+p[1]+' cũ)':'')+'</option>'}).join(""));
+  /* phường xã: chọn từ danh sách 3.321 đơn vị mới (data/xa/<mã tỉnh>.json) */
+  var WX={},wList=null,wProv="";
+  function nv(t){return String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D").toLowerCase().replace(/\s+/g," ").trim()}
+  function stripW(n){return n.replace(/^(Phường|Xã|Thị trấn|Đặc khu)\s+/,"")}
+  function provCode(name){for(var i=0;i<PROVINCES.length;i++)if(PROVINCES[i][0]===name)return PROVINCES[i][2];return ""}
+  function loadWards(code){if(WX[code])return WX[code];
+    WX[code]=fetch("data/xa/"+code+".json",{cache:"force-cache"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){
+      a=a.map(function(r){var o=r[1]||[];return{n:r[0],s:stripW(r[0]),k:nv(r[0]),ks:nv(stripW(r[0])),o:o,ko:o.map(nv)}});
+      a.sort(function(x,y){return x.s.localeCompare(y.s,"vi")});return a}).catch(function(e){delete WX[code];throw e});
+    return WX[code]}
+  var wBtn=$("#fWard"),wVal=$("#fWardV"),ws=$("#ws"),wsQ=$("#wsQ"),wsL=$("#wsL");
+  function setWard(n){wVal.value=n||"";wBtn.textContent=n||(wProv?"— Chọn phường / xã —":"Chọn tỉnh / thành trước");wBtn.classList.toggle("ph",!n);if(n)$('.f[data-f="ward"]').classList.remove("err")}
+  $("#fProv").addEventListener("change",function(){wProv=this.value;wBtn.disabled=!wProv;setWard("");var c=provCode(wProv);if(c)loadWards(c).catch(function(){})});
+  function wsRender(){var q=nv(wsQ.value),cur=wVal.value,out=[],max=400;
+    if(!wList){wsL.innerHTML='<div class="wse">Đang tải danh sách…</div>';return}
+    var a=[],b=[];
+    wList.forEach(function(w){if(!q){a.push([w,""]);return}
+      if(w.k.indexOf(q)>-1||w.ks.indexOf(q)>-1){a.push([w,""]);return}
+      for(var i=0;i<w.ko.length;i++)if(w.ko[i].indexOf(q)>-1){b.push([w,w.o[i]]);return}});
+    a.concat(b).slice(0,max).forEach(function(x){var w=x[0];out.push('<button type="button" role="option" data-w="'+esc(w.n)+'"'+(w.n===cur?' class="on" aria-selected="true"':'')+'>'+esc(w.n)+(x[1]?'<small>Có '+esc(/^P\.\d/.test(x[1])?x[1].replace("P.","Phường "):x[1])+' cũ</small>':'')+'</button>')});
+    wsL.innerHTML=out.length?out.join(""):'<div class="wse">Không tìm thấy “'+esc(wsQ.value)+'” ở '+esc(wProv)+'.<br>Thử gõ ngắn hơn, hoặc kiểm tra lại tỉnh / thành.</div>'}
+  function wsOpen(){if(!wProv)return;var c=provCode(wProv);$("#wsT").textContent="Phường / xã – "+wProv;wsQ.value="";wList=null;wsRender();
+    ws.classList.add("on");lock(true);
+    loadWards(c).then(function(a){if(wProv&&provCode(wProv)===c){wList=a;wsRender();var on=wsL.querySelector(".on");if(on)on.scrollIntoView({block:"center"})}})
+      .catch(function(){wsL.innerHTML='<div class="wse">Chưa tải được danh sách. <button type="button" class="btn btn-o" id="wsR" style="margin-top:10px">Thử lại</button></div>'});
+    if(matchMedia("(min-width:700px)").matches)setTimeout(function(){wsQ.focus()},60)}
+  function wsHide(){ws.classList.remove("on");lock(false)}
+  wBtn.addEventListener("click",wsOpen);
+  $("#wsX").addEventListener("click",function(){wsHide();wBtn.focus()});
+  ws.addEventListener("click",function(e){if(e.target===ws)wsHide();if(e.target.id==="wsR")wsOpen()});
+  wsQ.addEventListener("input",function(){clearTimeout(wsQ._t);wsQ._t=setTimeout(wsRender,80)});
+  wsL.addEventListener("click",function(e){var b=e.target.closest("[data-w]");if(!b)return;setWard(b.dataset.w);wsHide()});
+  d.addEventListener("keydown",function(e){if(e.key==="Escape"&&ws.classList.contains("on"))wsHide()});
 
   /* đặt nhanh (hero) */
   var qp=$("#qProd");
@@ -856,7 +914,7 @@ var PROVINCES = [
     var f=this,v={name:f.name.value.trim().replace(/\s+/g," "),phone:normPhone(f.phone.value),province:f.province.value,ward:f.ward.value.trim(),street:f.street.value.trim(),note:f.note.value.trim()};
     var bad=[];if(v.name.length<2)bad.push("name");if(!/^0\d{9}$/.test(v.phone))bad.push("phone");if(!v.province)bad.push("province");if(v.ward.length<2)bad.push("ward");if(v.street.length<2)bad.push("street");
     ["name","phone","province","ward","street"].forEach(function(k){$('.f[data-f="'+k+'"]').classList.toggle("err",bad.indexOf(k)>-1)});
-    if(bad.length){$('.f[data-f="'+bad[0]+'"] input, .f[data-f="'+bad[0]+'"] select').focus();return}
+    if(bad.length){var fe=$('.f[data-f="'+bad[0]+'"]').querySelector('input:not([type=hidden]),select,button');if(fe){fe.focus();fe.scrollIntoView({block:"center"})}return}
     var payload={name:v.name,phone:v.phone,province:v.province,ward:v.ward,street:v.street,address:v.street+", "+v.ward+", "+v.province,note:v.note,
       payment:f.payment.value,website:f.website.value,items:c.items,subtotal:c.sub,ship:c.ship,total:c.total,
       utm_source:attr.utm_source||"",utm_medium:attr.utm_medium||"",utm_campaign:attr.utm_campaign||"",utm_content:attr.utm_content||"",fbclid:attr.fbclid||"",
@@ -906,7 +964,7 @@ var PROVINCES = [
     $("#okStep1").textContent=isCK?"Chuyển khoản theo thông tin bên trên":"Nhân viên sẽ gọi số "+p.phone+" để xác nhận đơn";
     $("#okStep2").textContent=isCK?"Nhân viên kiểm tra chuyển khoản và gọi số "+p.phone+" xác nhận đơn":"Shop đóng gói và giao tận nơi cho anh/chị";
     $("#okStep3").textContent=isCK?"Shop đóng gói và giao tận nơi cho anh/chị":"Nhận hàng, kiểm tra rồi thanh toán";
-    Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();$("#qPhone").value="";
+    Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();$("#qPhone").value="";wProv="";wBtn.disabled=true;setWard("");
     $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});fckKey="";updateFormCK();
     $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
   /* ===== chuyển khoản QR (dùng chung cho form và popup) ===== */
