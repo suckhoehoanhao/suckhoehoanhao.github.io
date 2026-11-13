@@ -79,3 +79,10 @@ Giá trong `index.html` (mảng `PRODUCTS`) đồng bộ theo bảng giá Cơ s�
 - Mức nào trong bảng bỏ trống (ô vàng) thì không ghi, khách giữ giá mức liền trước.
 
 Khi đủ số lượng, giỏ hàng tự đổi giá, hiện số tiền tiết kiệm. Cột NỘI DUNG trong Excel ghi rõ, vd `12 dphh 50ml (giá sỉ ≥10: 125k)`.
+
+## SEO
+
+- Tiêu đề, mô tả, canonical, Open Graph (ảnh chia sẻ `img/og.jpg` 1200×630) trong `<head>`.
+- Dữ liệu có cấu trúc (schema.org): cửa hàng, hỏi đáp (FAQPage), danh sách sản phẩm (tự sinh từ `PRODUCTS`, giá luôn khớp).
+- `robots.txt`, `sitemap.xml`. Gửi sitemap trong Google Search Console: `https://suckhoehoanhao.github.io/sitemap.xml`.
+- Ảnh: toàn bộ WebP. Ảnh sản phẩm trong thẻ dùng bản nhỏ `img/s/` (400px), popup dùng bản lớn `img/` (800px).
