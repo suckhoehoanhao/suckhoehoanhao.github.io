@@ -45,7 +45,9 @@ Chưa có `ORDER_API` thì trang chạy **chế độ thử**: vẫn báo đặt
 - Tự thêm sản phẩm vào giỏ: `?sp=dau-phong`, `?sp=ruou-tu-vi&qty=2`, `?sp=dau-phong,ruou-tu-vi`
 - Thêm UTM để đối soát: `&utm_source=fb&utm_campaign=...&utm_content=...` (lưu ở sheet `LOG_WEB`)
 
-Mã sản phẩm: `dau-phong`, `ruou-tu-vi`, `thong-kinh-lac-thuy`, `dap-thao-moc`, `bot-ngam-chan`, `molm-nguyen-ban`, `molm-bo-mau`, `molm-cat-loi`, `molm-sam-que`, `molm-nhau`, `ngu-vi-toi-thuong`, `ngu-vi-toi-den`, `toi-den-co-don`, `thanh-xuan-duoc`, `pha-huong-dan`.
+Mã sản phẩm: `dau-phong`, `dau-phong-100`, `ruou-tu-vi`, `thong-kinh-lac-thuy`, `dap-thao-moc`, `bot-ngam-chan`, `molm-nguyen-ban`, `molm-sam-que`, `molm-bo-mau`, `molm-cat-loi`, `molm-nhau`, `ngu-vi-toi-thuong`, `ngu-vi-toi-den`, `cu-cai-muoi`, `toi-den-co-don`, `thanh-xuan-duoc`.
+
+Ảnh nhiều góc trong popup: thêm `gal:["img/a.webp","img/b.webp"]` vào sản phẩm.
 
 ## Sự kiện Facebook Pixel
 

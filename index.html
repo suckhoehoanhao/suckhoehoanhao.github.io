@@ -241,6 +241,8 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 .pdi img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;color:transparent}
 .pdx{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:26px;line-height:40px;text-align:center;z-index:2}
 .pdc{padding:14px 16px 6px}
+.pdg{display:flex;gap:8px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none}.pdg:empty{display:none}.pdg::-webkit-scrollbar{display:none}
+.pdg button{flex:0 0 58px;height:58px;padding:0;border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;cursor:pointer}.pdg button.on{border-color:var(--p)}.pdg img{width:100%;height:100%;object-fit:cover;display:block}
 .pdc h3{font-size:20px;color:var(--p);line-height:1.3;text-transform:uppercase}
 .pdc .sz{color:var(--mute);font-size:14px}
 .pdc .pr{color:var(--red);font-weight:700;font-size:22px;margin:4px 0 8px}
@@ -558,6 +560,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
   <div class="pdb">
     <div class="pds">
       <div class="pdi" id="pdI"><button class="pdx" id="pdX" aria-label="Đóng">×</button></div>
+      <div class="pdg" id="pdG"></div>
       <div class="pdc"><h3 id="pdN"></h3><div class="sz" id="pdZ"></div><div class="pr" id="pdP"></div><div class="pu" id="pdU"></div><p class="ds" id="pdD"></p><div id="pdT"></div><dl id="pdL"></dl>
         <p class="hint">Cần tư vấn cách dùng? Gọi <a class="js-tel" href="tel:0933347114"><span class="js-hot">0933 347 114</span></a> hoặc nhắn Zalo.</p></div>
     </div>
@@ -609,58 +612,104 @@ var KHO = "Để nơi khô ráo thoáng mát, tránh ánh nắng trực tiếp";
 var LANH = "Để ngăn mát tủ lạnh, hoặc nơi khô ráo thoáng mát: 1 năm";
 var PRODUCTS = [
   {id:"dau-phong", name:"Dầu Phong Hoàn Hảo", size:"50ml", price:175000, tiers:[[10,125000],[30,105000],[100,95000]],
-   short:"dphh 50ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/dau-phong.webp", store:KHO,
-   desc:"Dầu thực vật thảo mộc: dầu dừa, nghệ, ngải cứu, sả. Xoa bóp hỗ trợ giảm nhức mỏi, côn trùng đốt.",
-   info:[["Thành phần","Dầu dừa, nghệ, ngải cứu, sả và thảo mộc"],["Cách dùng","Dùng ngoài da: thoa, xoa bóp vùng cần chăm sóc"]]},
+   short:"dphh 50ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/dau-phong.webp", gal:["img/dp-2.webp","img/dp-3.webp","img/dp-4.webp"], store:KHO,
+   desc:"Dầu thực vật thảo mộc 100% thiên nhiên. Xoa ngoài da hỗ trợ giảm nhức mỏi, sưng bầm, côn trùng cắn; dùng trực tiếp hỗ trợ làm ấm cơ thể, tiêu hoá.",
+   info:[["Thành phần","Dầu thực vật (dầu dừa, dầu lạc) 86%, tinh dầu nguyên chất ăn được (sả chanh, tràm) 13%, thảo mộc (nghệ, ngải cứu) 1%"],
+         ["Bôi ngoài da","Hỗ trợ làm dịu vết bỏng nhẹ, bong gân, sưng vết bầm, giảm ngứa, đau nhức, khi bị côn trùng cắn. Hỗ trợ dưỡng da, mờ nám"],
+         ["Dùng trực tiếp","Hỗ trợ làm ấm cơ thể khi ho, đau họng, cảm lạnh; hỗ trợ tiêu hoá khi ăn không tiêu, đầy bụng"],
+         ["Cách dùng","Thoa, xoa bóp ngoài da; hoặc dùng trực tiếp, chế biến món ăn tuỳ thích"],
+         ["Lưu ý","Không dùng cho người dị ứng với bất cứ thành phần nào. Không dùng cho trẻ em dưới 1 tuổi"]]},
   {id:"dau-phong-100", name:"Dầu Phong Hoàn Hảo", size:"100ml", price:325000, tiers:[[10,225000],[30,200000],[100,180000]],
-   short:"dphh 100ml", cat:"xoa", img:"img/dau-phong-100.webp", store:KHO,
-   desc:"Chai lớn 100ml tiết kiệm hơn. Dầu thực vật thảo mộc: dầu dừa, nghệ, ngải cứu, sả.",
-   info:[["Thành phần","Dầu dừa, nghệ, ngải cứu, sả và thảo mộc"],["Cách dùng","Dùng ngoài da: thoa, xoa bóp vùng cần chăm sóc"]]},
+   short:"dphh 100ml", cat:"xoa", img:"img/dau-phong-100.webp", gal:["img/dp-2.webp","img/dp-3.webp","img/dp-4.webp"], store:KHO,
+   desc:"Chai lớn 100ml dùng lâu, tiết kiệm hơn. Dầu thực vật thảo mộc 100% thiên nhiên: dầu dừa, dầu lạc, tinh dầu sả chanh, tràm, nghệ, ngải cứu.",
+   info:[["Thành phần","Dầu thực vật (dầu dừa, dầu lạc) 86%, tinh dầu nguyên chất ăn được (sả chanh, tràm) 13%, thảo mộc (nghệ, ngải cứu) 1%"],
+         ["Bôi ngoài da","Hỗ trợ làm dịu vết bỏng nhẹ, bong gân, sưng vết bầm, giảm ngứa, đau nhức, khi bị côn trùng cắn. Hỗ trợ dưỡng da, mờ nám"],
+         ["Dùng trực tiếp","Hỗ trợ làm ấm cơ thể khi ho, đau họng, cảm lạnh; hỗ trợ tiêu hoá khi ăn không tiêu, đầy bụng"],
+         ["Cách dùng","Thoa, xoa bóp ngoài da; hoặc dùng trực tiếp, chế biến món ăn tuỳ thích"],
+         ["Lưu ý","Không dùng cho người dị ứng với bất cứ thành phần nào. Không dùng cho trẻ em dưới 1 tuổi"]]},
   {id:"ruou-tu-vi", name:"Rượu Tứ Vị Tuệ Ánh", size:"500ml", price:131000, tiers:[[10,94000],[30,86000],[100,72000],[500,60000]],
-   short:"rượu tứ vị 500ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/ruou-tu-vi.webp", store:KHO,
-   desc:"Rượu, gừng, nha đam, nấm hương, màn kinh tử. Dùng ngoài, hỗ trợ giảm đau nhức, tê mỏi, làm ấm.",
-   info:[["Thành phần","Rượu 49%, gừng 27%, nha đam 13%, nấm hương 6%, màn kinh tử 5%"],["Cách dùng","Dùng trực tiếp ngoài da, xoa bóp vùng nhức mỏi"],["Lưu ý","Không dùng cho trẻ dưới 1 tuổi"],["Xuất xứ","Việt Nam"]]},
+   short:"rượu tứ vị 500ml", cat:"xoa", tag:"Bán chạy", best:true, img:"img/ruou-tu-vi.webp", gal:["img/rtv-2.webp","img/rtv-3.webp","img/rtv-4.webp"], store:KHO,
+   desc:"Rượu gừng ngâm nha đam, nấm hương, màn kinh tử. Dùng ngoài: hỗ trợ giảm rụng tóc, giảm đau nhức tê mỏi, làm ấm, gom khô mụn sưng.",
+   info:[["Thành phần","Rượu 49%, gừng 27%, nha đam 13%, nấm hương 6%, màn kinh tử 5%"],
+         ["Bôi da đầu","Ngày 1–3 lần, hỗ trợ giảm rụng tóc, kích thích tóc mọc (hiệu quả tuỳ cơ địa và nguyên nhân)"],
+         ["Bôi cơ, khớp","Hỗ trợ làm mềm cơ, giảm đau nhức tê mỏi, viêm gân; làm ấm, trục hàn"],
+         ["Bôi nốt mụn","Hỗ trợ làm xẹp và gom khô nốt mụn sưng nhanh hơn"],
+         ["Lưu ý","Chỉ dùng ngoài da. Không dùng cho trẻ dưới 1 tuổi"],["Xuất xứ","Việt Nam"]]},
   {id:"thong-kinh-lac-thuy", name:"Thông Kinh Lạc Thủy Tuệ Ánh", size:"100ml", price:385000, tiers:[[10,230000],[30,210000],[100,190000],[500,170000]],
    short:"thông kinh lạc thuỷ", cat:"xoa", img:Q+"thong-kinh-lac-thuy-1-900x751.jpg", store:KHO,
-   desc:"Dùng ngoài da: pha cùng giấm, xoa bóp hỗ trợ lưu thông, thư giãn cơ."},
+   desc:"Bôi toàn thân, hỗ trợ thông kinh lạc, thư giãn gân cơ, làm ấm và lưu thông máu tốt hơn.",
+   info:[["Thành phần","Rượu, quế chi, hồng hoa, tiểu hồi hương, kê đầu ngựa…"],
+         ["Công dụng","Hỗ trợ thông kinh lạc, hoạt cân hồi cơ (làm mềm gân cơ), làm ấm và giúp lưu thông máu tốt"],
+         ["Cách dùng","Dùng ngoài da: thoa, xoa bóp toàn thân"]]},
   {id:"dap-thao-moc", name:"Đắp Thảo Mộc Tuệ Ánh", size:"200gr", price:200000, tiers:[[10,150000],[30,130000],[100,110000],[500,90000]],
    short:"đắp thảo mộc", cat:"thao", img:Q+"bo-dap-thao-moc-1-900x714.jpg", store:KHO,
-   desc:"Bột thảo mộc trộn nước đắp ngoài da, hỗ trợ giảm nhức mỏi cơ khớp."},
-  {id:"bot-ngam-chan", name:"Bột Thảo Mộc Tuệ Ánh", size:"110gr", price:130000, tiers:[[10,100000],[30,90000],[100,80000],[500,65000]],
+   desc:"100% thảo mộc đắp ngoài da, hỗ trợ giảm đau nhức tê mỏi, làm mềm gân cơ, trục hàn sâu.",
+   info:[["Thành phần","100% thảo mộc: chùm ngây, ngải cứu, đậu xanh mầm, quế chi, dây đau xương, giấm, rượu gừng, rượu trầu…"],
+         ["Công dụng","Đắp hỗ trợ người thoát vị, thoái hoá, dính khớp; hỗ trợ giảm sưng, bong gân, ứ huyết; trục hàn sâu, làm mềm gân cơ, giảm đau nhức tê mỏi"],
+         ["Cách dùng","Trộn thảo mộc, đắp ngoài da lên vùng cần chăm sóc"]]},
+  {id:"bot-ngam-chan", name:"Bột Ngâm Chân Thảo Mộc Tuệ Ánh", size:"110gr", price:130000, tiers:[[10,100000],[30,90000],[100,80000],[500,65000]],
    short:"bột thảo mộc", cat:"thao", img:Q+"bot-ngam-chan-thao-moc-9-900x714.jpg", store:KHO,
-   desc:"Bột ngâm chân thảo mộc: hương nhu, lá trầu, ngải cứu, quế, gừng. Pha nước nóng ngâm chân, thư giãn."},
-  {id:"molm-nguyen-ban", name:"Mật Ong Lên Men Nguyên Bản", size:"300ml", price:200000, tiers:[[10,140000],[30,120000],[100,100000],[500,80000]],
+   desc:"Ngâm tay chân, ngâm mông hay ngâm toàn thân: hỗ trợ lưu thông khí huyết, giảm tê nhức mỏi, thư giãn gân cơ, phục hồi sức khỏe.",
+   info:[["Thành phần","Quế chi, lá lốt, ngải cứu, kê đầu ngựa, ngưu tất, dây đau xương, gừng, thiên niên kiện…"],
+         ["Công dụng","Hỗ trợ lưu thông khí huyết, giảm đau mỏi tê nhức, làm mềm khớp và gân cơ, trục hàn, thư giãn, đẹp da, phục hồi sức khỏe"],
+         ["Cách dùng","Pha với nước nóng, ngâm tay chân, ngâm mông hoặc ngâm toàn thân"]]},
+  {id:"molm-nguyen-ban", name:"Mật Ong Lên Men Vị Nguyên Bản", size:"300ml", price:200000, tiers:[[10,140000],[30,120000],[100,100000],[500,80000]],
    short:"molm nguyên bản", cat:"mat", img:Q+"mat-ong-len-men-vi-nguyen-ban-1-768x768.jpg", store:LANH,
-   desc:"Mật ong, táo hữu cơ, giấm táo, men vi sinh. Hỗ trợ tiêu hoá."},
+   desc:"Bổ sung lợi khuẩn, hỗ trợ tiêu hoá khi đầy bụng, ăn không tiêu, táo bón; hỗ trợ giải rượu bia.",
+   info:[["Thành phần","Mật ong, táo hữu cơ, giấm táo, sữa chua uống Yakult, lợi khuẩn"],
+         ["Công dụng","Bổ sung lợi khuẩn, hỗ trợ tiêu hoá (đầy bụng, ăn không tiêu, táo bón), hỗ trợ giải rượu bia. Dùng ngâm dược liệu giúp hấp thu tốt hơn"]]},
   {id:"molm-sam-que", name:"Mật Ong Lên Men Sâm Quế", size:"300ml", price:400000, tiers:[[10,300000],[30,280000]],
    short:"molm sâm quế", cat:"mat", tag:"New", img:Q+"mat-ong-len-men-sam-768x768.jpg", store:LANH,
-   desc:"Mật ong lên men kết hợp sâm, quế và thảo mộc."},
+   desc:"Mật ong lên men cùng 3 loại sâm và quế: hỗ trợ lưu thông khí huyết, làm ấm người và tay chân, tăng sinh lực.",
+   info:[["Thành phần","Mật ong, táo hữu cơ, giấm táo, sữa chua uống Yakult, lợi khuẩn, 3 loại sâm (sâm đương quy, sa sâm, sâm Ngọc Linh), quế, cát căn, xuyên khung, sài hồ, màn kinh tử, rễ dâu tằm, ngũ vị"],
+         ["Công dụng","Hỗ trợ thông kinh mạch, tốt cho thần kinh, làm ấm người và tay chân, hỗ trợ giảm ho, long đờm, tăng sinh lực"]]},
   {id:"molm-bo-mau", name:"Mật Ong Lên Men Bổ Máu", size:"300ml", price:230000, tiers:[[10,160000],[30,140000],[100,120000],[500,100000]],
    short:"molm bổ máu", cat:"mat", img:Q+"mat-ong-len-men-bo-mau-1-768x768.jpg", store:LANH,
-   desc:"Mật ong lên men cùng táo, giấm táo, men vi sinh và thảo mộc."},
-  {id:"molm-nhau", name:"Mật Ong Lên Men Nhàu", size:"300ml", price:220000, tiers:[[10,155000],[30,135000],[100,115000],[500,95000]],
-   short:"molm nhàu", cat:"mat", img:Q+"mat-ong-len-men-nhau-768x769.jpg", store:LANH,
-   desc:"Mật ong lên men với trái nhàu, táo, giấm táo, men vi sinh."},
+   desc:"Hỗ trợ bổ máu, giúp những ngày đèn đỏ nhẹ nhàng hơn, da dẻ và tay chân hồng hào.",
+   info:[["Thành phần","Mật ong, táo hữu cơ, giấm táo, sữa chua uống Yakult, lợi khuẩn, kinh giới, huyết dụ"],
+         ["Công dụng","Hỗ trợ bổ máu, giúp những ngày đèn đỏ nhẹ nhàng hơn, da dẻ và tay chân hồng hào"]]},
   {id:"molm-cat-loi", name:"Mật Ong Lên Men Cát Lồi", size:"300ml", price:220000, tiers:[[10,155000],[30,135000],[100,115000],[500,95000]],
    short:"molm cát lồi", cat:"mat", img:Q+"mat-ong-len-men-cat-loi-loc-mau-2-768x768.jpg", store:LANH,
-   desc:"Mật ong lên men cùng táo, giấm táo, men vi sinh và thảo mộc cát lồi."},
-  {id:"ngu-vi-toi-thuong", name:"Ngũ Vị Thanh Tỏi Thường", size:"1 lít", price:300000, tiers:[[10,200000],[30,175000]],
+   desc:"Mật ong lên men cùng củ cát lồi: hỗ trợ thanh lọc cơ thể, mát gan, giảm mụn nhọt, giảm ho.",
+   info:[["Thành phần","Mật ong, táo hữu cơ, giấm táo, sữa chua uống Yakult, lợi khuẩn, củ cát lồi"],
+         ["Công dụng","Hỗ trợ thanh lọc cơ thể, mát gan, giảm mụn nhọt, giảm sưng viêm; hỗ trợ giảm ho đờm, ho khan"]]},
+  {id:"molm-nhau", name:"Mật Ong Lên Men Nhàu", size:"300ml", price:220000, tiers:[[10,155000],[30,135000],[100,115000],[500,95000]],
+   short:"molm nhàu", cat:"mat", img:Q+"mat-ong-len-men-nhau-768x769.jpg", store:LANH,
+   desc:"Mật ong lên men với trái nhàu tươi: hỗ trợ chống oxy hoá, tăng đề kháng, tốt cho xương khớp và tim mạch.",
+   info:[["Thành phần","Mật ong, táo hữu cơ, giấm táo, sữa chua uống Yakult, lợi khuẩn, trái nhàu tươi"],
+         ["Công dụng","Hỗ trợ chống oxy hoá, tăng đề kháng, tốt cho xương khớp và tim mạch"]]},
+  {id:"ngu-vi-toi-thuong", name:"Ngũ Vị Thanh Tỏi Thường", size:"1,3kg", price:300000, tiers:[[10,200000],[30,175000]],
    short:"ngũ vị thanh tỏi thường 1L", cat:"mat", img:Q+"ngu-vi-thanh-toi-thuong-6-900x900.jpg", store:"Để ngoài, nơi thoáng mát: 1 tháng. Ngăn mát tủ lạnh: 1 năm",
-   desc:"Mật ong, nha đam, nghệ, sả, tỏi trắng. Hỗ trợ tiêu hoá, tăng đề kháng."},
-  {id:"ngu-vi-toi-den", name:"Ngũ Vị Thanh Tỏi Đen", size:"1 lít", price:550000, tiers:[[10,400000],[30,350000]],
-   short:"ngũ vị thanh tỏi đen 1L", cat:"mat", img:Q+"ngu-thanh-vi-toi-den-1-900x900.jpg", store:"Không nên để bên ngoài. Bảo quản ngăn mát tủ lạnh: 1 năm",
-   desc:"Mật ong, nha đam, nghệ, sả, tỏi đen và men vi sinh."},
-  {id:"toi-den-co-don", name:"Tỏi Cô Đơn Hoàn Hảo", size:"300gr", price:250000, tiers:[[10,180000],[30,150000],[100,130000]],
+   desc:"Mật ong, nha đam, nghệ, sả, tỏi cô đơn trắng lên men: hỗ trợ tăng đề kháng, bồi bổ cơ thể, tốt cho tiêu hoá.",
+   info:[["Thành phần","Mật ong, thạch nha đam, nghệ, sả, tỏi cô đơn trắng, lợi khuẩn, giấm táo, muối hồng"],
+         ["Công dụng","Hỗ trợ tăng đề kháng, bồi bổ cơ thể, lưu thông khí huyết, ổn định huyết áp; hỗ trợ thanh lọc, đào thải độc tố; điều hoà tiêu hoá, tốt cho đường ruột, dạ dày và đại tràng"],
+         ["Cách dùng","Khuấy đều, ăn trực tiếp hoặc pha loãng với nước ấm. Mỗi lần 1–3 thìa"]]},
+  {id:"ngu-vi-toi-den", name:"Ngũ Vị Thanh Tỏi Đen", size:"1,3kg", price:550000, tiers:[[10,400000],[30,350000]],
+   short:"ngũ vị thanh tỏi đen 1L", cat:"mat", img:"img/ngu-vi-toi-den.webp", gal:["img/nvt-2.webp","img/nvt-3.webp","img/nvt-4.webp","img/nvt-5.webp"], store:"Nhiệt độ phòng, nơi thoáng mát: 7–10 ngày. Tủ mát: 1 năm",
+   desc:"Ngũ Vị Thanh+ với tỏi cô đơn đen, mật ong, nha đam, nghệ, sả. Không chất bảo quản. Hỗ trợ tăng đề kháng, bồi bổ cơ thể, tốt cho tiêu hoá.",
+   info:[["Thành phần","Mật ong 30%, nha đam 27%, tỏi cô đơn đen 13%, nghệ 11%, giấm táo 10%, sả 8%, muối hồng 1%"],
+         ["Công dụng","Hỗ trợ tăng đề kháng, bồi bổ cơ thể, lưu thông khí huyết, ổn định huyết áp; hỗ trợ thanh lọc, đào thải độc tố; điều hoà tiêu hoá, tốt cho đường ruột, dạ dày và đại tràng"],
+         ["Cách dùng","Khuấy đều, ăn trực tiếp hoặc pha loãng với nước ấm, nước lọc để uống. Mỗi lần 1–3 thìa hoặc nhiều hơn tuỳ nhu cầu"],
+         ["Lưu ý","Phù hợp cho mọi người từ 1 tuổi trở lên"]]},
+  {id:"cu-cai-muoi", name:"Củ Cải Muối Lắc Mật Ong", size:"400gr", price:240000, tiers:[],
+   short:"củ cải muối mật ong", cat:"mat", tag:"New", img:"img/cu-cai-muoi.webp", gal:["img/ccm-2.webp","img/ccm-3.webp","img/ccm-4.webp"], store:"Để nơi khô ráo, thoáng mát, đậy kín sau khi sử dụng",
+   desc:"Củ cải muối lắc mật ong nguyên chất. Ngậm 1 lát nhỏ khi mệt, cảm lạnh, đầy bụng khó tiêu: hỗ trợ tiêu hoá, giảm ho, làm ấm người.",
+   info:[["Thành phần","Củ cải muối 68%, mật ong nguyên chất 32%"],
+         ["Công dụng","Khi mệt yếu, cảm lạnh, đầy bụng khó tiêu: ngậm 1 lát nhỏ (như ngậm sâm) giúp bụng dễ chịu, hỗ trợ tiêu hoá, đỡ ho, làm ấm người"],
+         ["Cách dùng","Ngậm hoặc ăn trực tiếp khi đói mệt. Ngon hơn khi ăn kèm cơm hoặc cháo; có thể chế biến các món ăn khác"]]},
+  {id:"toi-den-co-don", name:"Tỏi Đen Cô Đơn", size:"300gr", price:250000, tiers:[[10,180000],[30,150000],[100,130000]],
    short:"tỏi cô đơn", cat:"thao", img:Q+"TOI-DEN-CO-DON-1-900x714.jpg", store:KHO,
-   desc:"Tỏi đen cô đơn. Ăn trực tiếp hoặc dùng kèm món ăn."},
+   desc:"100% tỏi cô đơn ủ men truyền thống. Bồi bổ cơ thể, hỗ trợ tiêu hoá, tăng sức đề kháng.",
+   info:[["Thành phần","100% tỏi cô đơn ủ men truyền thống rồi lên men"],
+         ["Công dụng","Bồi bổ cơ thể, hỗ trợ kích thích tiêu hoá, tăng cường sức đề kháng, hạn chế quá trình lão hoá, hỗ trợ ổn định huyết áp"],
+         ["Cách dùng","Ăn trực tiếp hoặc dùng kèm món ăn"]]},
   {id:"thanh-xuan-duoc", name:"Thanh Xuân Dược", size:"50gr", price:400000, tiers:[[10,320000],[30,270000]],
    short:"thanh xuân dược", cat:"thao", img:Q+"thanh-xuan-duoc-2.jpeg", store:"Không nên để bên ngoài. Bảo quản ngăn mát tủ lạnh: 1 năm",
-   desc:"Thảo mộc đắp mặt, hỗ trợ chăm sóc da mụn, thâm."},
-  {id:"tra-4-vi", name:"Trà 4 Vị Trực Hàn Giải Cảm", size:"500gr", price:86000, tiers:[[10,60000]],
-   short:"trà 4 vị", cat:"thao", img:"img/tra-4-vi.webp", store:"Để nơi khô ráo thoáng mát, đóng kín túi sau khi sử dụng",
-   desc:"Trà thảo mộc 4 vị. Hướng dẫn pha có trên bao bì."}
+   desc:"Thảo mộc đắp mặt từ sâm tươi, lá mật gấu, chùm ngây, thanaka: hỗ trợ làm đẹp và trẻ hoá da.",
+   info:[["Thành phần","Sâm tươi, lá mật gấu, chùm ngây, thanaka, giấm, lợi khuẩn…"],
+         ["Công dụng","Hỗ trợ làm đẹp và trẻ hoá da: giảm mụn, mờ nám, mờ thâm sẹo, sáng da, se khít lỗ chân lông"]]}
 ];
-var CATS = [{id:"all",name:"Tất cả"},{id:"xoa",name:"Dầu & rượu xoa bóp"},{id:"mat",name:"Mật ong lên men"},{id:"thao",name:"Thảo mộc khác"}];
+var CATS = [{id:"all",name:"Tất cả"},{id:"xoa",name:"Dầu & rượu xoa bóp"},{id:"mat",name:"Thực phẩm lên men"},{id:"thao",name:"Thảo mộc khác"}];
 
 /* 34 tỉnh, thành (từ 01/7/2025) – trong ngoặc là tỉnh cũ đã sáp nhập để khách dễ tìm */
 var PROVINCES = [
@@ -898,6 +947,9 @@ var PROVINCES = [
     var box=$("#pdI"),old=box.querySelector("img");if(old)old.remove();
     box.insertAdjacentHTML("beforeend",img(p,400,false));
     var im=box.querySelector("img"),big=new Image();big.onload=function(){if(pdId===id)im.src=big.src};big.src=src(p,720,"contain");
+    var gl=[p.img].concat(p.gal||[]);
+    $("#pdG").innerHTML=gl.length>1?gl.map(function(u,i){return '<button type="button" data-g="'+i+'"'+(i?'':' class="on"')+' aria-label="Ảnh '+(i+1)+'"><img src="'+(i?u:src(p,120))+'" alt="" width="58" height="58" loading="lazy" decoding="async"></button>'}).join(""):"";
+    $("#pdG").onclick=function(e){var b=e.target.closest("[data-g]");if(!b)return;var i=+b.dataset.g;im.src=i?gl[i]:src(p,720,"contain");$$("#pdG button").forEach(function(x){x.classList.toggle("on",x===b)})};
     $("#pdN").textContent=p.name;$("#pdZ").textContent=p.size||"";$("#pdP").textContent=fmt(p.price);$("#pdD").textContent=p.desc;
     $("#pdL").innerHTML=[["Dung tích / khối lượng",p.size]].concat(p.info||[],[["Bảo quản",p.store]]).filter(function(r){return r[1]}).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join("");
     var rows=[[1,p.price]].concat(p.tiers||[]);
