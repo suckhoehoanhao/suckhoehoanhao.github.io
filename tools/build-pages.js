@@ -46,7 +46,7 @@ const fmt = (n) => Math.round(n).toLocaleString("vi-VN").replace(/,/g, ".") + "Ä
 const k = (n) => Math.round(n / 1000) + "k";
 const imgURL = (u, w) => /^https?:/.test(u)
   ? "https://wsrv.nl/?url=" + encodeURIComponent(u.replace(/^https?:\/\//, "")) + "&w=" + w + "&h=" + w + "&fit=contain&cbg=white&bg=white&output=webp&q=76"
-  : "../../" + u;
+  : "../../" + (w <= 400 ? u.replace(/^img\//, "img/s/") : u);
 const absImg = (u) => /^https?:/.test(u) ? imgURL(u, 800) : SITE + u;
 const full = (p) => p.name + (p.size ? " " + p.size : "");
 const row = (p, key) => ((p.info || []).find((r) => r[0] === key) || [])[1] || "";
