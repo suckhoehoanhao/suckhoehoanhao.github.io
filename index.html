@@ -910,7 +910,7 @@ var PROVINCES = [
     $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});fckKey="";updateFormCK();
     $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
   /* ===== chuyển khoản QR (dùng chung cho form và popup) ===== */
-  function memoOf(ph){ph=normPhone(ph||"");return "SKHH "+(/^0\d{9}$/.test(ph)?ph:"DAT HANG")}
+  function memoOf(ph){ph=normPhone(ph||"");return /^0\d{9}$/.test(ph)?ph:""}
   function qrURL(amount,memo){var B=C.BANK;return "https://img.vietqr.io/image/"+B.bin+"-"+B.acc+"-qr_only.png?amount="+amount+"&addInfo="+encodeURIComponent(memo)+"&accountName="+encodeURIComponent(B.holder)}
   function renderCK(el,amount,memo,shipNull,title){var B=C.BANK;
     el.innerHTML='<div class="ckh">'+esc(title||"Quét mã QR để chuyển khoản")+'</div><img alt="Mã QR chuyển khoản '+esc(B.name)+'" width="240" height="240">'+
@@ -933,6 +933,7 @@ var PROVINCES = [
   function updateFormCK(){var on=payCK()&&C.BANK&&C.BANK.acc;fck.hidden=!on;$("#go").textContent=on?"Xác nhận đặt hàng":"Đặt hàng ngay";$("#goNote").textContent=on?"📞 Nhân viên sẽ kiểm tra chuyển khoản và gọi xác nhận đơn.":"📞 Nhân viên sẽ gọi xác nhận đơn trước khi giao.";if(!on)return;
     var c=calc();if(!c.items.length){fck.innerHTML='<div class="ckh">Chọn sản phẩm để hiện mã QR chuyển khoản</div>';fckKey="";return}
     var memo=memoOf($("#fPhone").value),key=c.total+"|"+memo;if(key===fckKey)return;fckKey=key;
+    if(!memo){fck.innerHTML='<div class="ckh">Nhập số điện thoại người nhận ở trên để hiện mã QR</div><p class="cks">Nội dung chuyển khoản là số điện thoại người nhận hàng, giúp nhân viên đối soát nhanh.</p>';return}
     renderCK(fck,c.total,memo,c.ship==null,"Chuyển khoản xong, bấm “Xác nhận đặt hàng” bên dưới")}
   $("#pay").addEventListener("change",updateFormCK);window.__fck=updateFormCK;
   $("#fPhone").addEventListener("input",function(){clearTimeout(fckT);fckT=setTimeout(updateFormCK,500)});
