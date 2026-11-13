@@ -30,7 +30,8 @@ window.CONFIG = {
   FANPAGE: "https://www.facebook.com/suckhoehoanhao.xyz",
   ADDRESS: "318 Nguyễn Thị Minh Khai, KP Phú Hòa 3, P. Phú Lợi, TP. Hồ Chí Minh",
   BANK: { bin:"970436", name:"Vietcombank", acc:"0281001389783", holder:"NGUYEN THI ANH XUAN", qr:"img/qr-vcb.png" },
-  SHIP_FEE: null,       // null = nhân viên báo khi gọi xác nhận; 0 = freeship; 30000 = 30k
+  SHIP_RETAIL: 20000,   // phí ship đơn mua lẻ
+  SHIP_WHOLESALE: 30000,// phí ship đơn có sản phẩm đạt giá sỉ (từ 10 sp/loại)
   FREESHIP_FROM: null   // vd 500000 = miễn ship đơn từ 500k
 };
 /* PHẢN HỒI KHÁCH HÀNG – chỉ điền phản hồi THẬT của khách. Để trống [] thì mục này tự ẩn.
@@ -464,7 +465,7 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
         <ul class="ticks">
           <li>Nhận hàng, kiểm tra rồi mới thanh toán (COD)</li>
           <li>Hoặc chuyển khoản qua mã QR Vietcombank ngay sau khi đặt</li>
-          <li>Giao tận nơi 34 tỉnh thành</li>
+          <li>Giao tận nơi 34 tỉnh thành – phí ship <b>20k</b> đơn lẻ, <b>30k</b> đơn sỉ (từ 10 sp/loại)</li>
           <li>Nhân viên gọi xác nhận đơn và tư vấn cách dùng</li>
         </ul>
         <p class="help">Cần hỗ trợ? Gọi <a class="js-tel" href="tel:0933347114"><span class="js-hot">0933 347 114</span></a> hoặc <a class="js-zalo" href="#" target="_blank" rel="noopener">nhắn Zalo</a>.</p>
@@ -764,7 +765,9 @@ var PROVINCES = [
   function items(){return Object.keys(cart).filter(function(id){return by[id]&&cart[id]>0}).map(function(id){var p=by[id],q=cart[id],u=unit(p,q),t=tierOf(p,q);
     return{id:id,name:p.name+(p.size?" "+p.size:""),short:p.short+(t?" (giá sỉ ≥"+t[0]+": "+k(u)+")":""),qty:q,price:u,retail:p.price,tier:t?t[0]:0}})}
   function calc(){var it=items(),sub=0,cnt=0,save=0;it.forEach(function(i){sub+=i.qty*i.price;cnt+=i.qty;save+=i.qty*(i.retail-i.price)});
-    var ship=C.SHIP_FEE;if(C.FREESHIP_FROM!=null&&sub>=C.FREESHIP_FROM)ship=0;return{items:it,sub:sub,count:cnt,ship:ship,total:sub+(ship||0),save:save}}
+    var wholesale=it.some(function(i){return i.tier>0});
+    var ship=it.length?(wholesale?C.SHIP_WHOLESALE:C.SHIP_RETAIL):0;if(C.FREESHIP_FROM!=null&&sub>=C.FREESHIP_FROM)ship=0;
+    return{items:it,sub:sub,count:cnt,ship:ship,shipType:wholesale?"sỉ":"lẻ",total:sub+(ship||0),save:save}}
   function paintCart(){var c=calc();
     $("#empty").style.display=c.items.length?"none":"block";
     $("#lines").innerHTML=c.items.map(function(i){var p=by[i.id],nx=nextTier(p,i.qty);
@@ -773,7 +776,7 @@ var PROVINCES = [
         '</div><div class="lt">= '+fmt(i.price*i.qty)+'</div>'+(nx?'<div class="nx2">Mua thêm '+(nx[0]-i.qty)+' sp → còn '+fmt(nx[1])+'/sp</div>':'')+'</div>'+
         '<div class="mini"><button data-a="-" aria-label="Giảm">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="999" value="'+i.qty+'" aria-label="Số lượng"><button data-a="+" aria-label="Tăng">+</button></div></div>'}).join("");
     var sh=c.ship==null?'<span style="color:var(--mute)">Báo khi xác nhận</span>':(c.ship===0?'<b style="color:var(--g)">Miễn phí</b>':fmt(c.ship));
-    $("#tot").innerHTML=c.items.length?'<div><span>Tạm tính ('+c.count+' sp)</span><span>'+fmt(c.sub)+'</span></div>'+(c.save>0?'<div class="sv"><span>Đã áp giá sỉ, tiết kiệm</span><span>−'+fmt(c.save)+'</span></div>':'')+'<div><span>Phí giao hàng</span>'+sh+'</div>'+
+    $("#tot").innerHTML=c.items.length?'<div><span>Tạm tính ('+c.count+' sp)</span><span>'+fmt(c.sub)+'</span></div>'+(c.save>0?'<div class="sv"><span>Đã áp giá sỉ, tiết kiệm</span><span>−'+fmt(c.save)+'</span></div>':'')+'<div><span>Phí giao hàng (đơn '+c.shipType+')</span>'+sh+'</div>'+
       (C.FREESHIP_FROM!=null&&c.sub<C.FREESHIP_FROM?'<div style="color:var(--mute);font-size:13px">Mua thêm '+fmt(C.FREESHIP_FROM-c.sub)+' để được miễn ship</div>':'')+'<div class="gr"><span>Tổng</span><span>'+fmt(c.total)+'</span></div>':"";
     $("#binf").innerHTML=c.items.length?'<small>'+c.count+' sản phẩm</small><b>'+fmt(c.total)+'</b>':'<small>Chưa chọn sản phẩm</small><b>0đ</b>';
     $("#bbtn").textContent=c.items.length?"Đặt hàng →":"Chọn sản phẩm";
