@@ -57,7 +57,7 @@ window.CONFIG = {
     period: "18/11 – hết 24/11/2026",
     gift: "Kèm quà tặng – nhân viên báo khi gọi xác nhận đơn",
     opts: [
-      {id:"gv",  pct:27, name:"Thầy cô giáo", why:"Mừng Ngày Nhà giáo Việt Nam 20/11", need:"Gửi ảnh thẻ công tác qua Zalo để xác nhận", tag:"Giáo viên (xin ảnh thẻ công tác)"},
+      {id:"gv",  pct:27, name:"Thầy cô giáo", why:"Mừng Ngày Nhà giáo Việt Nam 20/11", from:"2026-11-19T00:00:00+07:00", to:"2026-11-21T00:00:00+07:00", when:"Chỉ áp dụng 19–20/11", need:"Gửi ảnh thẻ công tác qua Zalo để xác nhận", tag:"Giáo viên (xin ảnh thẻ công tác)"},
       {id:"nam", pct:20, name:"Nam giới", why:"Mừng Quốc tế Đàn ông 19/11", need:"Nhân viên xác nhận khi gọi", tag:"Nam giới (xác nhận khi gọi)"},
       {id:"all", pct:13, name:"Tất cả khách hàng", why:"Mừng Ngày Văn hóa Việt Nam 24/11", need:"", tag:"tất cả KH", def:true}
     ]
@@ -426,6 +426,10 @@ html.km-on{scroll-padding-top:54px}
 .pdko button.on{border-color:var(--p);background:var(--p-ll)}
 .pdkq{font-size:12.5px;color:var(--p-d);font-weight:700;margin-top:8px}
 @media(max-width:380px){.kph h3 span{font-size:34px}.cdb span{min-width:48px}.pdko b{font-size:16px}}
+[data-km].off,.kmo label.off{opacity:.55;cursor:not-allowed;filter:grayscale(.4)}
+[data-km].gone,.kmo label.gone{display:none}
+.kmw[hidden]{display:none}
+.kmw{display:inline-block;background:#fff3c4;color:#8a5a00;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;margin-top:3px}
 .tg{display:inline-block;background:#eaf6e3;color:#3e8a1b;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;vertical-align:1px}
 .ln .lt{font-size:13px;font-weight:700}
 .ln .nx2{font-size:12px;color:var(--or);font-weight:700}
@@ -943,12 +947,16 @@ var PROVINCES = [
   /* ===== khuyến mãi: bật/tắt theo giờ, giá tự về chuẩn khi hết hạn ===== */
   var P=C.PROMO&&C.PROMO.opts&&C.PROMO.opts.length?C.PROMO:null,P0=P?Date.parse(P.start):0,P1=P?Date.parse(P.end):0;
   var PDEF=P?(P.opts.filter(function(o){return o.def})[0]||P.opts[P.opts.length-1]):null,promoSel=PDEF?PDEF.id:"";
-  var PMIN=P?Math.min.apply(null,P.opts.map(function(o){return o.pct})):0,PMAX=P?Math.max.apply(null,P.opts.map(function(o){return o.pct})):0;
+  var PMIN=P?Math.min.apply(null,P.opts.map(function(o){return o.pct})):0,PMAX=0;
   function promoOn(){var n=Date.now();return !!(P&&n>=P0&&n<P1)}
-  function promoOpt(){if(!promoOn())return null;return P.opts.filter(function(o){return o.id===promoSel})[0]||PDEF}
+  /* từng mức có thể có khung giờ riêng (from/to); ngoài khung: chưa mở = hiện mờ, đã hết = ẩn */
+  function optOn(o){var n=Date.now();return (!o.from||n>=Date.parse(o.from))&&(!o.to||n<Date.parse(o.to))}
+  function optLive(o){return !o.to||Date.now()<Date.parse(o.to)}
+  function calcMax(){PMAX=P?Math.max.apply(null,P.opts.filter(optLive).map(function(o){return o.pct}).concat([PMIN])):0}calcMax();
+  function promoOpt(){if(!promoOn())return null;var o=P.opts.filter(function(o){return o.id===promoSel})[0];return o&&optOn(o)?o:PDEF}
   function kmPrice(v,pct){return Math.round(v*(100-pct)/100/1000)*1000}
   function priceHTML(p,pct){pct=pct||PMIN;return P?'<span class="kmv">'+fmt(kmPrice(p.price,pct))+'<s>'+fmt(p.price)+'</s></span><span class="kmh">'+fmt(p.price)+'</span>':fmt(p.price)}
-  function kmRib(){return P?'<span class="kx kmr">−'+PMIN+'%<small>đến −'+PMAX+'%</small></span>':""}
+  function kmRib(){return P?'<span class="kx kmr">−'+PMIN+'%<small class="js-kmax">đến −'+PMAX+'%</small></span>':""}
   function kmTag(){return P?'<div class="kmb">Ưu đãi T11: −'+PMIN+'%, đến −'+PMAX+'% cho '+P.opts.filter(function(o){return o.pct>PMIN}).map(function(o){return o.name.toLowerCase()}).join(", ")+'</div>':""}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   var by={}; PRODUCTS.forEach(function(p){by[p.id]=p});
@@ -1237,7 +1245,7 @@ var PROVINCES = [
     $$("#pdT tr[data-min]").forEach(function(tr){var m=+tr.dataset.min,nx=tr.nextElementSibling;tr.classList.toggle("on",pdQ>=m&&(!nx||pdQ<+nx.dataset.min))})}
   function pdKm(){var p=by[pdId],el=$("#pdK");if(!p||!P)return;var o=promoOpt();if(!o){el.innerHTML="";return}
     el.innerHTML='<div class="pdkh"><span>🎁 Ưu đãi tháng 11 – chọn mức của anh/chị</span><span class="js-kmcd"></span></div><div class="pdko">'+
-      P.opts.map(function(x){return '<button type="button" data-km="'+x.id+'"'+(x.id===o.id?' class="on"':'')+'><b>−'+x.pct+'%</b>'+esc(x.name)+'<i>'+fmt(kmPrice(p.price,x.pct))+'</i></button>'}).join("")+
+      P.opts.filter(optLive).map(function(x){var on=optOn(x);return '<button type="button" data-km="'+x.id+'"'+(on?'':' disabled')+' class="'+(x.id===o.id?'on':'')+(on?'':' off')+'"><b>−'+x.pct+'%</b>'+esc(x.name)+'<i>'+(on?fmt(kmPrice(p.price,x.pct)):esc(x.when||''))+'</i></button>'}).join("")+
       '</div><p class="pdkq">🎁 '+esc(P.gift)+(o.need?'<br>📌 '+esc(o.need):'')+'</p>';kmTick(true)}
   $("#pdK").addEventListener("click",function(e){var b=e.target.closest("[data-km]");if(b)kmPick(b.dataset.km)});
   function pdHide(){$("#pd").classList.remove("on");lock(false)}
@@ -1257,7 +1265,7 @@ var PROVINCES = [
 
   if(C.SHIP_FEE===0)$$(".js-ship").forEach(function(e){e.textContent="Miễn phí giao hàng"});
   /* khuyến mãi: banner + chọn mức trong form + đếm ngược; hết hạn tự ẩn, giỏ hàng về giá chuẩn */
-  function kmPick(id){promoSel=id;$$("#kmO label").forEach(function(l){var i=l.querySelector("input");i.checked=i.value===id;l.classList.toggle("on",i.checked)});
+  function kmPick(id){var oo=P&&P.opts.filter(function(o){return o.id===id})[0];if(oo&&!optOn(oo))id=PDEF.id;promoSel=id;$$("#kmO label").forEach(function(l){var i=l.querySelector("input");i.checked=i.value===id;l.classList.toggle("on",i.checked)});
     $$("[data-km]").forEach(function(b){b.classList.toggle("on",b.dataset.km===id)});
     var o=promoOpt();$("#kmN").textContent=o&&o.need?"📌 "+o.need:"";paintCart();
     if(pdId&&$("#pd").classList.contains("on")){$("#pdP").innerHTML=priceHTML(by[pdId],(o||{}).pct);pdKm();pdPrice()}}
@@ -1287,7 +1295,15 @@ var PROVINCES = [
   $("#form").addEventListener("focusin",function(){formUsed=true});
   d.addEventListener("mouseout",function(e){if(!e.relatedTarget&&e.clientY<=0)krOpen()});
   d.addEventListener("visibilitychange",function(){if(d.hidden)hidAt=Date.now();else if(hidAt&&Date.now()-hidAt>8000&&!formUsed)setTimeout(krOpen,600)});
+  var kmSig="";
+  function kmAvail(){if(!P)return;calcMax();
+    P.opts.forEach(function(o){var on=optOn(o),gone=!optLive(o);
+      $$('[data-km="'+o.id+'"]').forEach(function(b){b.classList.toggle("off",!on&&!gone);b.classList.toggle("gone",gone);b.disabled=!on;var w=b.querySelector(".kmw");if(w)w.hidden=on});
+      $$('#kmO input[value="'+o.id+'"]').forEach(function(i){i.disabled=!on;var l=i.closest("label");l.classList.toggle("off",!on&&!gone);l.classList.toggle("gone",gone);var w=l.querySelector(".kmw");if(w)w.hidden=on})});
+    $$(".js-kmax").forEach(function(e){e.textContent="đến −"+PMAX+"%"});$$(".js-kmaxp").forEach(function(e){e.textContent=PMAX+"%"});
+    kmPick(promoSel)}
   function kmTick(quiet){var on=promoOn();
+    var sg=P?P.opts.map(function(o){return +optOn(o)+""+(+optLive(o))}).join(""):"";if(sg!==kmSig&&quiet!==true){kmSig=sg;kmAvail()}
     if(on!==kmState&&quiet!==true){kmState=on;d.documentElement.classList.toggle("km-on",on);paintCart();if(!on){kpHide($("#kp"));kpHide($("#kr"))}}
     if(!on)return;var s=Math.max(0,Math.floor((P1-Date.now())/1000)),dd=Math.floor(s/86400),hh=Math.floor(s%86400/3600),mm=Math.floor(s%3600/60),ss=s%60,pad=function(n){return(n<10?"0":"")+n};
     var t="Còn "+(dd?dd+" ngày ":"")+pad(hh)+":"+pad(mm)+":"+pad(ss);
@@ -1296,18 +1312,18 @@ var PROVINCES = [
     $$(".js-kmcdb").forEach(function(e){e.innerHTML=bx});
     krAuto()}
   if(P){
-    $("#kmC").innerHTML='<span class="kmrib">⏰ CHỈ TỪ '+esc(P.period.toUpperCase())+'</span><p class="kmt">🎉 '+esc(P.title)+'</p><p class="kmd">Giảm đến <b>'+PMAX+'%</b> · <b class="js-kmcd"></b></p>'+
-      '<div class="kmg">'+P.opts.map(function(o){return '<button type="button" data-km="'+o.id+'"><b>−'+o.pct+'%</b><span>'+esc(o.name)+'</span><small>'+esc(o.why)+(o.need?' · '+esc(o.need.charAt(0).toLowerCase()+o.need.slice(1)):'')+'</small></button>'}).join("")+'</div>'+
+    $("#kmC").innerHTML='<span class="kmrib">⏰ CHỈ TỪ '+esc(P.period.toUpperCase())+'</span><p class="kmt">🎉 '+esc(P.title)+'</p><p class="kmd">Giảm đến <b class="js-kmaxp">'+PMAX+'%</b> · <b class="js-kmcd"></b></p>'+
+      '<div class="kmg">'+P.opts.map(function(o){return '<button type="button" data-km="'+o.id+'"><b>−'+o.pct+'%</b><span>'+esc(o.name)+'</span>'+(o.when?'<i class="kmw">'+esc(o.when)+'</i>':'')+'<small>'+esc(o.why)+(o.need?' · '+esc(o.need.charAt(0).toLowerCase()+o.need.slice(1)):'')+'</small></button>'}).join("")+'</div>'+
       '<p class="kmq">🎁 '+esc(P.gift)+'</p><a class="btn" href="#shop">Chọn sản phẩm nhận ưu đãi</a>'+
       '<p class="kmx">Giảm trên tiền hàng giá lẻ, áp 1 mức/đơn, không cộng thêm vào giá sỉ. Hết hạn, giá tự về như cũ.</p>';
-    $("#kmO").innerHTML=P.opts.map(function(o){return '<label><input type="radio" name="km" value="'+o.id+'"'+(o===PDEF?' checked':'')+'><b>−'+o.pct+'%</b><span>'+esc(o.name)+'<small>'+esc(o.why)+'</small></span></label>'}).join("");
+    $("#kmO").innerHTML=P.opts.map(function(o){return '<label><input type="radio" name="km" value="'+o.id+'"'+(o===PDEF?' checked':'')+'><b>−'+o.pct+'%</b><span>'+esc(o.name)+'<small>'+esc(o.why)+'</small>'+(o.when?'<i class="kmw">'+esc(o.when)+'</i>':'')+'</span></label>'}).join("");
     $("#kmO").addEventListener("change",function(e){if(e.target.name==="km")kmPick(e.target.value)});
     $("#kmC").addEventListener("click",function(e){var b=e.target.closest("[data-km]");if(b)kmPick(b.dataset.km)});
     var tp=P.title.split(" – ");
-    $("#kmBarW").innerHTML='<span>🎁 '+esc(tp[0].toUpperCase())+': GIẢM ĐẾN '+PMAX+'% + QUÀ</span><span class="cd js-kmcd"></span><u>Xem ›</u>';
-    $("#kmOH").innerHTML='🎉 Đặt trong CTKM tháng 11: giảm đến '+PMAX+'% + quà tặng<br><span class="js-kmcd"></span>';
-    $("#kpT").innerHTML=esc(tp[0])+'<span>GIẢM ĐẾN '+PMAX+'%</span>';$("#kpS").textContent=tp[1]||"";$("#kpQ").textContent="🎁 "+P.gift;
-    $("#kpO").innerHTML=P.opts.map(function(o){return '<button type="button" data-km="'+o.id+'"><b>−'+o.pct+'%</b><span><strong>'+esc(o.name)+'</strong><small>'+esc(o.why)+(o.need?' · '+esc(o.need):'')+'</small></span></button>'}).join("");
+    $("#kmBarW").innerHTML='<span>🎁 '+esc(tp[0].toUpperCase())+': GIẢM ĐẾN <span class="js-kmaxp">'+PMAX+'%</span> + QUÀ</span><span class="cd js-kmcd"></span><u>Xem ›</u>';
+    $("#kmOH").innerHTML='🎉 Đặt trong CTKM tháng 11: giảm đến <span class="js-kmaxp">'+PMAX+'%</span> + quà tặng<br><span class="js-kmcd"></span>';
+    $("#kpT").innerHTML=esc(tp[0])+'<span>GIẢM ĐẾN <i class="js-kmaxp" style="font-style:normal">'+PMAX+'%</i></span>';$("#kpS").textContent=tp[1]||"";$("#kpQ").textContent="🎁 "+P.gift;
+    $("#kpO").innerHTML=P.opts.map(function(o){return '<button type="button" data-km="'+o.id+'"><b>−'+o.pct+'%</b><span><strong>'+esc(o.name)+'</strong><small>'+esc(o.why)+(o.need?' · '+esc(o.need):'')+'</small>'+(o.when?'<i class="kmw">'+esc(o.when)+'</i>':'')+'</span></button>'}).join("");
     $("#kpO").addEventListener("click",function(e){var b=e.target.closest("[data-km]");if(b)kmPick(b.dataset.km)});
     kmTick();setInterval(kmTick,1000);kmPick(promoSel);
     var kd=new Date().toDateString();if(promoOn()&&LS.get("skhh_kp")!==kd){setTimeout(function(){if(!promoOn())return;LS.set("skhh_kp",kd);kpOpen()},2500)}}
