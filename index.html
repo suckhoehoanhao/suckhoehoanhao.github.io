@@ -46,7 +46,22 @@ window.CONFIG = {
   BANK: { bin:"970436", name:"Vietcombank", acc:"0281001389783", holder:"NGUYEN THI ANH XUAN", qr:"img/qr-vcb.webp" },
   SHIP_RETAIL: 20000,   // phí ship đơn mua lẻ
   SHIP_WHOLESALE: 30000,// phí ship đơn có sản phẩm đạt giá sỉ (từ 10 sp/loại)
-  FREESHIP_FROM: null   // vd 500000 = miễn ship đơn từ 500k
+  FREESHIP_FROM: null,  // vd 500000 = miễn ship đơn từ 500k
+  /* KHUYẾN MÃI – tự bật lúc start, tự tắt lúc end (giờ Việt Nam). Hết hạn giá tự về chuẩn.
+     Giảm % chỉ áp cho sản phẩm tính giá lẻ, sản phẩm đạt giá sỉ giữ giá sỉ. Khách chọn 1 mức/đơn.
+     Muốn tắt sớm: đổi end thành giờ hiện tại, hoặc PROMO: null */
+  PROMO: {
+    start: "2026-11-18T00:00:00+07:00",
+    end:   "2026-11-25T00:00:00+07:00",   // = hết ngày 24/11
+    title: "Đón lễ tháng 11 – Mua hàng ưu đãi, nhận quà hết ý!",
+    period: "18/11 – hết 24/11/2026",
+    gift: "Kèm quà tặng – nhân viên báo khi gọi xác nhận đơn",
+    opts: [
+      {id:"gv",  pct:27, name:"Thầy cô giáo", why:"Mừng Ngày Nhà giáo Việt Nam 20/11", need:"Gửi ảnh thẻ công tác qua Zalo để xác nhận", tag:"Giáo viên (xin ảnh thẻ công tác)"},
+      {id:"nam", pct:20, name:"Nam giới", why:"Mừng Quốc tế Đàn ông 19/11", need:"Nhân viên xác nhận khi gọi", tag:"Nam giới (xác nhận khi gọi)"},
+      {id:"all", pct:13, name:"Tất cả khách hàng", why:"Mừng Ngày Văn hóa Việt Nam 24/11", need:"", tag:"tất cả KH", def:true}
+    ]
+  }
 };
 /* PHẢN HỒI KHÁCH HÀNG – chỉ điền phản hồi THẬT của khách. Để trống [] thì mục này tự ẩn.
    Mẫu: {name:"Chị Lan", place:"Thủ Đức", text:"Nội dung khách nhắn…", img:"img/review-1.jpg"} */
@@ -315,6 +330,34 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 .cb .sx{font-size:12px;color:#2f7d1a;font-weight:700}
 .ln .m s,.pu s{color:#999}
 .ln .tp{color:var(--red)}
+.kmv,.kmb,.km{display:none}
+.km-on .kmv{display:inline}.km-on .kmb{display:block}.km-on .kmh{display:none}.km-on .km{display:block}
+.pr s,.pv s,.pdc s.o{color:var(--mute);font-weight:500;font-size:.72em;margin-left:5px}
+.kmb{font-size:12px;color:var(--red);font-weight:700;margin-top:2px;line-height:1.35}
+.km{padding:14px 0 4px}
+.kmc{background:linear-gradient(135deg,var(--p),var(--p-d));color:#fff;border-radius:18px;padding:18px 14px 14px;text-align:center;box-shadow:0 8px 24px rgba(155,43,125,.22)}
+.kmt{font-size:20px;font-weight:700;line-height:1.3;text-transform:uppercase}
+.kmd{font-size:14px;margin-top:4px}
+.kmd b{color:#ffe08a}
+.kmg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 12px}
+.kmg div{background:#fff;color:var(--ink);border-radius:12px;padding:10px 6px}
+.kmg b{display:block;color:var(--red);font-size:30px;line-height:1.1}
+.kmg span{display:block;font-weight:700;color:var(--p);font-size:14px;line-height:1.3;margin-top:2px}
+.kmg small{display:block;font-size:11.5px;color:var(--mute);line-height:1.35;margin-top:3px}
+.kmq{font-weight:700;font-size:15px;margin-bottom:12px}
+.kmc .btn{background:#ffe08a;color:var(--p-d)}
+.kmx{font-size:12px;opacity:.85;margin-top:10px}
+.kmo{display:grid;gap:8px}
+.kmo label{display:flex;gap:10px;align-items:center;border:1.5px solid #d6d6d6;border-radius:10px;padding:9px 10px;margin:0;font-size:14px;line-height:1.3}
+.kmo label.on{border-color:var(--p);background:var(--p-ll)}
+.kmo input{width:18px;height:18px;flex:none;accent-color:var(--p);-webkit-appearance:radio;appearance:auto}
+.kmo b{color:var(--red);font-size:18px;min-width:50px}
+.kmo small{display:block;color:var(--mute);font-size:12px;font-weight:500}
+.kmn{font-size:13px;color:var(--p);font-weight:700;margin-top:6px}
+.tot .kms{color:var(--red);font-weight:700}
+.tg.kt{background:#fde8ea;color:var(--red)}
+.mc .sm div.kmok{display:block;margin:10px 0 0;text-align:left;background:#fff8e1;border:1px solid #ffe08a;border-radius:12px;padding:10px 12px;font-size:14px}
+@media(max-width:420px){.kmg{gap:6px}.kmg b{font-size:24px}.kmt{font-size:17px}.kmg small{font-size:11px}}
 .tg{display:inline-block;background:#eaf6e3;color:#3e8a1b;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;vertical-align:1px}
 .ln .lt{font-size:13px;font-weight:700}
 .ln .nx2{font-size:12px;color:var(--or);font-weight:700}
@@ -416,6 +459,9 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
     <p class="sub">Chăm sóc cả nhà bằng <b>thảo mộc Sức Khỏe Hoàn Hảo</b> mỗi ngày</p>
     <div class="chips"><span>✔ Giao tận nơi 34 tỉnh thành</span><span>✔ Nhận hàng mới trả tiền</span><span>✔ Gọi xác nhận trước khi giao</span></div>
 </section>
+
+<!-- 1c. KHUYẾN MÃI (tự ẩn khi hết hạn) -->
+<section class="km" id="km" aria-label="Khuyến mãi"><div class="wrap"><div class="kmc" id="kmC"></div></div></section>
 
 <!-- 2. BÁN CHẠY -->
 <section class="sec sec-best">
@@ -525,6 +571,11 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
         <h3>Thông tin đặt hàng</h3>
         <div class="empty" id="empty">Chưa có sản phẩm. <a href="#shop">Chọn sản phẩm ›</a></div>
         <div class="lines" id="lines"></div>
+        <div class="f km" id="kmF" style="margin-bottom:14px">
+          <label>Chọn ưu đãi tháng 11 <i>(áp 1 mức / đơn)</i></label>
+          <div class="kmo" id="kmO"></div>
+          <p class="kmn" id="kmN"></p>
+        </div>
         <div class="tot" id="tot"></div>
         <form id="form" novalidate autocomplete="on">
           <div class="f" data-f="name">
@@ -792,6 +843,15 @@ var PROVINCES = [
   function $(s){return d.querySelector(s)}
   function $$(s){return Array.prototype.slice.call(d.querySelectorAll(s))}
   function fmt(n){return Math.round(n).toLocaleString("vi-VN").replace(/,/g,".")+"đ"}
+  /* ===== khuyến mãi: bật/tắt theo giờ, giá tự về chuẩn khi hết hạn ===== */
+  var P=C.PROMO&&C.PROMO.opts&&C.PROMO.opts.length?C.PROMO:null,P0=P?Date.parse(P.start):0,P1=P?Date.parse(P.end):0;
+  var PDEF=P?(P.opts.filter(function(o){return o.def})[0]||P.opts[P.opts.length-1]):null,promoSel=PDEF?PDEF.id:"";
+  var PMIN=P?Math.min.apply(null,P.opts.map(function(o){return o.pct})):0,PMAX=P?Math.max.apply(null,P.opts.map(function(o){return o.pct})):0;
+  function promoOn(){var n=Date.now();return !!(P&&n>=P0&&n<P1)}
+  function promoOpt(){if(!promoOn())return null;return P.opts.filter(function(o){return o.id===promoSel})[0]||PDEF}
+  function kmPrice(v,pct){return Math.round(v*(100-pct)/100/1000)*1000}
+  function priceHTML(p){return P?'<span class="kmv">'+fmt(kmPrice(p.price,PMIN))+'<s>'+fmt(p.price)+'</s></span><span class="kmh">'+fmt(p.price)+'</span>':fmt(p.price)}
+  function kmTag(){return P?'<div class="kmb">Ưu đãi T11: −'+PMIN+'%, đến −'+PMAX+'% cho '+P.opts.filter(function(o){return o.pct>PMIN}).map(function(o){return o.name.toLowerCase()}).join(", ")+'</div>':""}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   var by={}; PRODUCTS.forEach(function(p){by[p.id]=p});
   var LS={get:function(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -868,13 +928,13 @@ var PROVINCES = [
   var qp=$("#qProd");
   qp.innerHTML=PRODUCTS.map(function(p){return '<option value="'+p.id+'">'+esc(p.name)+(p.size?' '+esc(p.size):'')+'</option>'}).join("");
   if(focus.length)qp.value=focus[0];
-  function qPrice(){$("#qPrice").textContent=fmt(by[qp.value].price)}
+  function qPrice(){$("#qPrice").innerHTML=priceHTML(by[qp.value])}
   qp.addEventListener("change",qPrice); qPrice();
 
   /* bán chạy */
   $("#best").innerHTML=PRODUCTS.filter(function(p){return p.best}).map(function(p){
     return '<article class="bc" data-id="'+p.id+'"><div class="ph" data-v>'+img(p,400,false)+'</div><div><h3 data-v>'+esc(p.name)+'</h3>'+(p.size?'<div class="sz">'+esc(p.size)+'</div>':'')+
-      '<p>'+esc(p.desc)+'</p><div class="pr">'+fmt(p.price)+'</div><div class="acts"><button class="btn btn-p" data-b="buy">Mua ngay</button><button class="btn btn-o" data-v>Xem chi tiết</button></div></div></article>'}).join("");
+      '<p>'+esc(p.desc)+'</p><div class="pr">'+priceHTML(p)+'</div>'+kmTag()+'<div class="acts"><button class="btn btn-p" data-b="buy">Mua ngay</button><button class="btn btn-o" data-v>Xem chi tiết</button></div></div></article>'}).join("");
   $("#best").addEventListener("click",function(e){var c=e.target.closest(".bc");if(!c)return;
     if(e.target.closest('[data-b="buy"]')){change(c.dataset.id,cart[c.dataset.id]?0:1,"add");go("#dat-hang");return}
     if(e.target.closest("[data-v]"))pdShow(c.dataset.id)});
@@ -884,7 +944,7 @@ var PROVINCES = [
   $("#tabs").innerHTML=CATS.map(function(c,i){return '<button class="tab'+(i?'':' on')+'" data-c="'+c.id+'">'+c.name+'</button>'}).join("");
   $("#grid").innerHTML=list.map(function(p){
     return '<article class="card" data-id="'+p.id+'" data-c="'+p.cat+'"><div class="ph" data-v>'+img(p,320,true)+(p.tag?'<span class="badge'+(p.tag==="New"?' new':'')+'">'+p.tag+'</span>':'')+'</div>'+
-      '<div class="cb"><h3 data-v>'+esc(p.name)+'</h3>'+(p.size?'<span class="sz">'+esc(p.size)+'</span>':'')+'<button class="more" data-v>Xem chi tiết ›</button><div class="pr">'+fmt(p.price)+'</div>'+(p.tiers&&p.tiers.length?'<div class="sx">Sỉ từ '+p.tiers[0][0]+' sp: '+fmt(p.tiers[0][1])+'</div>':'')+'<div class="act"></div></div></article>'}).join("");
+      '<div class="cb"><h3 data-v>'+esc(p.name)+'</h3>'+(p.size?'<span class="sz">'+esc(p.size)+'</span>':'')+'<button class="more" data-v>Xem chi tiết ›</button><div class="pr">'+priceHTML(p)+'</div>'+(p.tiers&&p.tiers.length?'<div class="sx">Sỉ từ '+p.tiers[0][0]+' sp: '+fmt(p.tiers[0][1])+'</div>':'')+'<div class="act"></div></div></article>'}).join("");
   var cards={}; $$(".card").forEach(function(el){cards[el.dataset.id]=el});
   function paintCard(id){var el=cards[id],q=cart[id]||0;if(!el)return;el.classList.toggle("on",q>0);
     el.querySelector(".act").innerHTML=q?'<div class="qty"><button data-a="-" aria-label="Giảm">−</button><span>'+q+'</span><button data-a="+" aria-label="Tăng">+</button></div>':'<button class="add" data-a="add">+ Thêm vào đơn</button>'}
@@ -913,21 +973,22 @@ var PROVINCES = [
   function unit(p,q){var t=tierOf(p,q);return t?t[1]:p.price}
   function nextTier(p,q){var n=null;(p.tiers||[]).some(function(x){if(x[0]>q){n=x;return true}});return n}
   function k(n){return Math.round(n/1000)+"k"}
-  function items(){return Object.keys(cart).filter(function(id){return by[id]&&cart[id]>0}).map(function(id){var p=by[id],q=cart[id],u=unit(p,q),t=tierOf(p,q);
-    return{id:id,name:p.name+(p.size?" "+p.size:""),short:p.short+(t?" (giá sỉ ≥"+t[0]+": "+k(u)+")":""),qty:q,price:u,retail:p.price,tier:t?t[0]:0}})}
-  function calc(){var it=items(),sub=0,cnt=0,save=0;it.forEach(function(i){sub+=i.qty*i.price;cnt+=i.qty;save+=i.qty*(i.retail-i.price)});
+  function items(){var o=promoOpt();return Object.keys(cart).filter(function(id){return by[id]&&cart[id]>0}).map(function(id){var p=by[id],q=cart[id],u=unit(p,q),t=tierOf(p,q),km=0;
+    if(!t&&o){km=o.pct;u=kmPrice(p.price,km)}
+    return{id:id,name:p.name+(p.size?" "+p.size:""),short:p.short+(t?" (giá sỉ ≥"+t[0]+": "+k(u)+")":(km?" (KM -"+km+"%)":"")),qty:q,price:u,retail:p.price,tier:t?t[0]:0,km:km}})}
+  function calc(){var it=items(),sub=0,cnt=0,save=0,kms=0,o=promoOpt();it.forEach(function(i){sub+=i.qty*i.price;cnt+=i.qty;if(i.km)kms+=i.qty*(i.retail-i.price);else save+=i.qty*(i.retail-i.price)});
     var wholesale=it.some(function(i){return i.tier>0});
     var ship=it.length?(wholesale?C.SHIP_WHOLESALE:C.SHIP_RETAIL):0;if(C.FREESHIP_FROM!=null&&sub>=C.FREESHIP_FROM)ship=0;
-    return{items:it,sub:sub,count:cnt,ship:ship,shipType:wholesale?"sỉ":"lẻ",total:sub+(ship||0),save:save}}
+    return{items:it,sub:sub,count:cnt,ship:ship,shipType:wholesale?"sỉ":"lẻ",total:sub+(ship||0),save:save,kms:kms,km:kms>0?o:null}}
   function paintCart(){var c=calc();
     $("#empty").style.display=c.items.length?"none":"block";
     $("#lines").innerHTML=c.items.map(function(i){var p=by[i.id],nx=nextTier(p,i.qty);
       return '<div class="ln" data-id="'+i.id+'">'+img(p,88,true)+'<div><div class="n">'+esc(i.name)+'</div><div class="m">'+
-        (i.tier?'<s>'+fmt(i.retail)+'</s> <b class="tp">'+fmt(i.price)+'</b> × '+i.qty+' <span class="tg">Giá sỉ ≥'+i.tier+'</span>':fmt(i.price)+' × '+i.qty)+
+        (i.tier?'<s>'+fmt(i.retail)+'</s> <b class="tp">'+fmt(i.price)+'</b> × '+i.qty+' <span class="tg">Giá sỉ ≥'+i.tier+'</span>':(i.km?'<s>'+fmt(i.retail)+'</s> <b class="tp">'+fmt(i.price)+'</b> × '+i.qty+' <span class="tg kt">−'+i.km+'%</span>':fmt(i.price)+' × '+i.qty))+
         '</div><div class="lt">= '+fmt(i.price*i.qty)+'</div>'+(nx?'<div class="nx2">Mua thêm '+(nx[0]-i.qty)+' sp → còn '+fmt(nx[1])+'/sp</div>':'')+'</div>'+
         '<div class="mini"><button data-a="-" aria-label="Giảm">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="999" value="'+i.qty+'" aria-label="Số lượng"><button data-a="+" aria-label="Tăng">+</button></div></div>'}).join("");
     var sh=c.ship==null?'<span style="color:var(--mute)">Báo khi xác nhận</span>':(c.ship===0?'<b style="color:var(--g)">Miễn phí</b>':fmt(c.ship));
-    $("#tot").innerHTML=c.items.length?'<div><span>Tạm tính ('+c.count+' sp)</span><span>'+fmt(c.sub)+'</span></div>'+(c.save>0?'<div class="sv"><span>Đã áp giá sỉ, tiết kiệm</span><span>−'+fmt(c.save)+'</span></div>':'')+'<div><span>Phí giao hàng (đơn '+c.shipType+')</span>'+sh+'</div>'+
+    $("#tot").innerHTML=c.items.length?'<div><span>Tạm tính ('+c.count+' sp)</span><span>'+fmt(c.sub)+'</span></div>'+(c.save>0?'<div class="sv"><span>Đã áp giá sỉ, tiết kiệm</span><span>−'+fmt(c.save)+'</span></div>':'')+(c.kms>0?'<div class="kms"><span>Ưu đãi '+esc(c.km.name.toLowerCase())+' −'+c.km.pct+'% (đã trừ)</span><span>−'+fmt(c.kms)+'</span></div>':'')+(promoOn()&&c.items.length&&!c.kms?'<div style="color:var(--mute);font-size:13px">Sản phẩm đã tính giá sỉ nên không áp thêm giảm %</div>':'')+'<div><span>Phí giao hàng (đơn '+c.shipType+')</span>'+sh+'</div>'+
       (C.FREESHIP_FROM!=null&&c.sub<C.FREESHIP_FROM?'<div style="color:var(--mute);font-size:13px">Mua thêm '+fmt(C.FREESHIP_FROM-c.sub)+' để được miễn ship</div>':'')+'<div class="gr"><span>Tổng</span><span>'+fmt(c.total)+'</span></div>':"";
     $("#binf").innerHTML=c.items.length?'<small>'+c.count+' sản phẩm</small><b>'+fmt(c.total)+'</b>':'<small>Chưa chọn sản phẩm</small><b>0đ</b>';
     $("#bbtn").textContent=c.items.length?"Đặt hàng →":"Chọn sản phẩm";
@@ -963,7 +1024,7 @@ var PROVINCES = [
     var bad=[];if(!okName(v.name))bad.push("name");if(!okPhone(v.phone))bad.push("phone");if(!v.province)bad.push("province");if(v.ward.length<2)bad.push("ward");if(v.street.length<2)bad.push("street");
     ["name","phone","province","ward","street"].forEach(function(k){$('.f[data-f="'+k+'"]').classList.toggle("err",bad.indexOf(k)>-1)});
     if(bad.length){var fe=$('.f[data-f="'+bad[0]+'"]').querySelector('input:not([type=hidden]),select,button');if(fe){fe.focus();fe.scrollIntoView({block:"center"})}return}
-    var payload={name:v.name,phone:v.phone,province:v.province,ward:v.ward,street:v.street,address:v.street+", "+v.ward+", "+v.province,note:v.note,
+    var payload={name:v.name,phone:v.phone,province:v.province,ward:v.ward,street:v.street,address:v.street+", "+v.ward+", "+v.province,note:(c.km?"KM T11 -"+c.km.pct+"% "+c.km.tag+" + tặng quà"+(v.note?" | ":""):"")+v.note,promo:c.km?c.km.id+"-"+c.km.pct:"",discount:c.kms,
       payment:f.payment.value,website:f.website.value,items:c.items,subtotal:c.sub,ship:c.ship,total:c.total,
       utm_source:attr.utm_source||"",utm_medium:attr.utm_medium||"",utm_campaign:attr.utm_campaign||"",utm_content:attr.utm_content||"",fbclid:attr.fbclid||"",
       page:location.href.split("#")[0],ua:navigator.userAgent,t:Math.round((Date.now()-T0)/1000),fbp:ck("_fbp"),fbc:ck("_fbc")||(attr.fbclid?"fb.1."+(attr.fbts||Date.now())+"."+attr.fbclid:"")};
@@ -1007,7 +1068,9 @@ var PROVINCES = [
     $("#okId").textContent="Mã đơn: "+id;
     $("#okTime").textContent="Đặt lúc "+pad(now.getHours())+":"+pad(now.getMinutes())+" · "+pad(now.getDate())+"/"+pad(now.getMonth()+1)+"/"+now.getFullYear();
     $("#okS").innerHTML=c.items.map(function(i){return '<div><span>'+i.qty+' × '+esc(i.name)+'</span><b>'+fmt(i.qty*i.price)+'</b></div>'}).join("")+
-      '<div class="tt"><span>Tổng thanh toán</span><b>'+fmt(c.total)+(c.ship==null?' + ship':'')+'</b></div>';
+      (c.km?'<div><span>Ưu đãi '+esc(c.km.name.toLowerCase())+' −'+c.km.pct+'% (đã trừ)</span><b>−'+fmt(c.kms)+'</b></div>':'')+
+      '<div class="tt"><span>Tổng thanh toán</span><b>'+fmt(c.total)+(c.ship==null?' + ship':'')+'</b></div>'+
+      (c.km?'<div class="kmok">🎁 '+esc(P.gift)+(c.km.need?'<br>📌 '+esc(c.km.need)+(c.km.id==="gv"?' <a href="'+esc(C.ZALO)+'" target="_blank" rel="noopener"><b>Gửi qua Zalo ›</b></a>':''):'')+'</div>':'');
     $("#okTo").innerHTML='<div><span>Giao tới: </span>'+esc(p.address)+'</div><div><span>Người nhận: </span>'+esc(p.name)+' – '+esc(p.phone)+'</div><div><span>Thanh toán: </span>'+(p.payment==="ck"?"Chuyển khoản qua QR Vietcombank":"Khi nhận hàng (COD)")+'</div>';
     var isCK=p.payment==="ck",B=C.BANK||{};
     $("#okCall").textContent=isCK?"📞 Nhân viên sẽ kiểm tra chuyển khoản và gọi xác nhận đơn hàng":"📞 Nhân viên sẽ gọi xác nhận đơn hàng";
@@ -1016,7 +1079,7 @@ var PROVINCES = [
     $("#okStep1").textContent=isCK?"Chuyển khoản theo thông tin bên trên":"Nhân viên sẽ gọi số "+p.phone+" để xác nhận đơn";
     $("#okStep2").textContent=isCK?"Nhân viên kiểm tra chuyển khoản và gọi số "+p.phone+" xác nhận đơn":"Shop đóng gói và giao tận nơi cho anh/chị";
     $("#okStep3").textContent=isCK?"Shop đóng gói và giao tận nơi cho anh/chị":"Nhận hàng, kiểm tra rồi thanh toán";
-    Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();$("#qPhone").value="";wProv="";wBtn.disabled=true;setWard("");
+    Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();kmPick(PDEF?PDEF.id:"");$("#qPhone").value="";wProv="";wBtn.disabled=true;setWard("");
     $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});fckKey="";updateFormCK();
     $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
   /* ===== chuyển khoản QR (dùng chung cho form và popup) ===== */
@@ -1062,15 +1125,15 @@ var PROVINCES = [
     $("#pdG").innerHTML=gl.length>1?gl.map(function(u,i){return '<button type="button" data-g="'+i+'"'+(i?'':' class="on"')+' aria-label="Ảnh '+(i+1)+'"><img src="'+(i?u.replace(/^img\//,"img/t/"):(/^https?:/.test(p.img)?src(p,120):p.img.replace(/^img\//,"img/t/")))+'" alt="" width="58" height="58" loading="lazy" decoding="async"></button>'}).join(""):"";
     $("#pdG").onclick=function(e){var b=e.target.closest("[data-g]");if(!b)return;var i=+b.dataset.g;im.src=i?gl[i]:src(p,720,"contain");$$("#pdG button").forEach(function(x){x.classList.toggle("on",x===b)})};
     var sl=(window.SLUGS||{})[id],pl=$("#pdLink");pl.hidden=!sl;if(sl)pl.href="san-pham/"+sl+"/";
-    $("#pdN").textContent=p.name;$("#pdZ").textContent=p.size||"";$("#pdP").textContent=fmt(p.price);$("#pdD").textContent=p.desc;
+    $("#pdN").textContent=p.name;$("#pdZ").textContent=p.size||"";$("#pdP").innerHTML=priceHTML(p)+kmTag();$("#pdD").textContent=p.desc;
     $("#pdL").innerHTML=[["Dung tích / khối lượng",p.size]].concat(p.info||[],[["Bảo quản",p.store]]).filter(function(r){return r[1]}).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join("");
     var rows=[[1,p.price]].concat(p.tiers||[]);
     $("#pdT").innerHTML=rows.length>1?'<table class="tt2"><caption>Bảng giá theo số lượng</caption><tr><th>Số lượng</th><th>Giá / sp</th></tr>'+rows.map(function(r,i){var to=rows[i+1]?(rows[i+1][0]-1):null;return '<tr data-min="'+r[0]+'"><td>'+(i===0?(to?'1 – '+to+' sp':'1 sp'):(to?r[0]+' – '+to+' sp':'Từ '+r[0]+' sp'))+'</td><td>'+fmt(r[1])+'</td></tr>'}).join("")+'</table>':"";
     pdPrice();
     $("#pd .pds").scrollTop=0;$("#pd").classList.add("on");lock(true);
     track("ViewContent",{content_ids:[id],content_type:"product",value:p.price,currency:"VND"})}
-  function pdPrice(){var p=by[pdId],u=unit(p,pdQ),t=tierOf(p,pdQ);
-    $("#pdU").innerHTML=pdQ>1||t?(t?'<s>'+fmt(p.price)+'</s> ':'')+'<b>'+fmt(u)+'</b>/sp × '+pdQ+' = <b>'+fmt(u*pdQ)+'</b>'+(t?' <span class="tg">Giá sỉ ≥'+t[0]+'</span>':''):"";
+  function pdPrice(){var p=by[pdId],u=unit(p,pdQ),t=tierOf(p,pdQ),o=promoOpt(),km=!t&&o?o.pct:0;if(km)u=kmPrice(p.price,km);
+    $("#pdU").innerHTML=pdQ>1||t?(t||km?'<s>'+fmt(p.price)+'</s> ':'')+'<b>'+fmt(u)+'</b>/sp × '+pdQ+' = <b>'+fmt(u*pdQ)+'</b>'+(t?' <span class="tg">Giá sỉ ≥'+t[0]+'</span>':(km?' <span class="tg kt">−'+km+'%</span>':'')):"";
     $$("#pdT tr[data-min]").forEach(function(tr){var m=+tr.dataset.min,nx=tr.nextElementSibling;tr.classList.toggle("on",pdQ>=m&&(!nx||pdQ<+nx.dataset.min))})}
   function pdHide(){$("#pd").classList.remove("on");lock(false)}
   $("#pdX").addEventListener("click",pdHide);
@@ -1088,6 +1151,22 @@ var PROVINCES = [
   if("IntersectionObserver" in window){new IntersectionObserver(function(en,o){if(en[0].isIntersecting){loadMap();o.disconnect()}},{rootMargin:"300px"}).observe(mp)}else loadMap();
 
   if(C.SHIP_FEE===0)$$(".js-ship").forEach(function(e){e.textContent="Miễn phí giao hàng"});
+  /* khuyến mãi: banner + chọn mức trong form + đếm ngược; hết hạn tự ẩn, giỏ hàng về giá chuẩn */
+  function kmPick(id){promoSel=id;$$("#kmO label").forEach(function(l){var i=l.querySelector("input");i.checked=i.value===id;l.classList.toggle("on",i.checked)});
+    var o=promoOpt();$("#kmN").textContent=o&&o.need?"📌 "+o.need:"";paintCart()}
+  var kmState=null;
+  function kmTick(){var on=promoOn();
+    if(on!==kmState){kmState=on;d.documentElement.classList.toggle("km-on",on);paintCart()}
+    if(!on)return;var s=Math.max(0,Math.floor((P1-Date.now())/1000)),dd=Math.floor(s/86400),pad=function(n){return(n<10?"0":"")+n};
+    $("#kmCd").textContent="Còn "+(dd?dd+" ngày ":"")+pad(Math.floor(s%86400/3600))+":"+pad(Math.floor(s%3600/60))+":"+pad(s%60)}
+  if(P){
+    $("#kmC").innerHTML='<p class="kmt">🎉 '+esc(P.title)+'</p><p class="kmd">Áp dụng '+esc(P.period)+' · <b id="kmCd"></b></p>'+
+      '<div class="kmg">'+P.opts.map(function(o){return '<div><b>−'+o.pct+'%</b><span>'+esc(o.name)+'</span><small>'+esc(o.why)+(o.need?' · '+esc(o.need.charAt(0).toLowerCase()+o.need.slice(1)):'')+'</small></div>'}).join("")+'</div>'+
+      '<p class="kmq">🎁 '+esc(P.gift)+'</p><a class="btn" href="#shop">Chọn sản phẩm nhận ưu đãi</a>'+
+      '<p class="kmx">Giảm trên tiền hàng giá lẻ, áp 1 mức/đơn, không cộng thêm vào giá sỉ. Hết hạn, giá tự về như cũ.</p>';
+    $("#kmO").innerHTML=P.opts.map(function(o){return '<label><input type="radio" name="km" value="'+o.id+'"'+(o===PDEF?' checked':'')+'><b>−'+o.pct+'%</b><span>'+esc(o.name)+'<small>'+esc(o.why)+'</small></span></label>'}).join("");
+    $("#kmO").addEventListener("change",function(e){if(e.target.name==="km")kmPick(e.target.value)});
+    kmTick();setInterval(kmTick,1000);kmPick(promoSel)}
   paintCart();
   if(focus.length){var el=cards[focus[0]];if(el)el.classList.add("hl")}
 })();

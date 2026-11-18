@@ -92,3 +92,7 @@ Khi đủ số lượng, giỏ hàng tự đổi giá, hiện số tiền tiết
 Mỗi sản phẩm có trang riêng `san-pham/<tên-sản-phẩm>/` (tiêu đề, mô tả, bảng giá sỉ, hỏi đáp, sản phẩm liên quan, dữ liệu Google).
 **Sau khi sửa giá / thêm sản phẩm trong `index.html`, chạy lại:** `node tools/build-pages.js` → tự tạo lại toàn bộ trang sản phẩm, `sitemap.xml` và danh sách liên kết ở chân trang chủ.
 Sản phẩm mới cần thêm tên đường dẫn vào bảng `SLUG` trong `tools/build-pages.js`.
+
+## Khuyến mãi theo thời gian
+
+Khối `PROMO` trong `CONFIG` (`index.html`): `start`/`end` giờ Việt Nam, danh sách mức giảm `opts`. Trong khung giờ, trang tự hiện banner, ô chọn ưu đãi trong form và trừ % trên sản phẩm tính giá lẻ (sản phẩm đạt giá sỉ giữ giá sỉ). Hết `end`, banner tự ẩn và giá tự về chuẩn, không cần sửa code. Đơn có KM ghi vào cột ghi chú: `KM T11 -27% Giáo viên (xin ảnh thẻ công tác) + tặng quà`, cột NỘI DUNG ghi `(KM -27%)` sau tên sản phẩm. Tắt CTKM: `PROMO: null`.
