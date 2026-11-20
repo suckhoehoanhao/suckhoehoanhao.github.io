@@ -72,7 +72,10 @@ function doPost(e) {
     const phone = normPhone_(d.phone);
     const province = clean_(d.province, 60);
     const address = d.street ? [clean_(d.street, 160), clean_(d.ward, 80), province].filter(String).join(', ') : clean_(d.address, 300);
-    const note = clean_(d.note, 300);
+    const note = clean_(d.note, 400);
+    const gift = clean_(d.gift, 80);
+    const cardName = clean_(d.cardname, 80);
+    const promoId = clean_(d.promo, 20);
     const pay = d.payment === 'ck' ? 'ck' : 'cod';
     const items = (Array.isArray(d.items) ? d.items : []).slice(0, 50).map(function (i) {
       return {
@@ -136,7 +139,16 @@ function doPost(e) {
       const seq = Number(props.getProperty('ORDER_SEQ') || 0) + 1;
       props.setProperty('ORDER_SEQ', String(seq));
       const orderId = CONFIG.ORDER_PREFIX + '-' + String(seq).padStart(2, '0');
-      const addrCell = note ? address + '\nnote : ' + note : address;
+      // CTKM: ảnh giấy tờ chứng minh (thẻ giáo viên / CCCD) lưu vào thư mục Drive riêng, không chia sẻ
+      let proofNote = '';
+      if (/^(gv|nam)-/.test(promoId)) {
+        let url = '';
+        try { url = saveProof_(d.proof, orderId, name); } catch (e) { console.error('Lưu ảnh giấy tờ lỗi: ' + e); }
+        proofNote = url ? 'Giấy tờ: ' + url : '⚠ chưa có ảnh giấy tờ';
+        if (!cardName || norm_(cardName) !== norm_(name)) proofNote += ' | ⚠ tên trên giấy tờ khác tên người nhận';
+      }
+      const fullNote = [note, proofNote].filter(String).join(' | ');
+      const addrCell = fullNote ? address + '\nnote : ' + fullNote : address;
       const shipNote = ship === 0 ? 'freeship' : (ship ? 'ship ' + Math.round(ship / 1000) + 'k' : '');
       const amountK = Math.round(total / 1000);
       const row = [stamp, stt, name, phone, addrCell, shipNote, content, pay, amountK, flag];
@@ -159,6 +171,27 @@ function doPost(e) {
     console.error(err);
     return json_({ ok: false, error: 'Lỗi hệ thống, vui lòng gọi hotline' });
   }
+}
+
+/* Lưu ảnh giấy tờ (JPEG base64 từ web, đã nén ~1400px) vào thư mục Drive riêng của shop. Trả về link file. */
+function saveProof_(b64, orderId, name) {
+  if (!b64 || typeof b64 !== 'string' || b64.length > 8000000) return '';
+  const bytes = Utilities.base64Decode(b64);
+  if (bytes.length < 4 || bytes[0] !== -1 || bytes[1] !== -40) return '';   // chỉ nhận ảnh JPEG (FF D8)
+  const props = PropertiesService.getScriptProperties();
+  let folder = null;
+  const fid = props.getProperty('PROOF_FOLDER_ID');
+  if (fid) { try { folder = DriveApp.getFolderById(fid); } catch (e) { folder = null; } }
+  if (!folder) {
+    folder = DriveApp.createFolder('SKHH - Giấy tờ CTKM (không chia sẻ)');
+    props.setProperty('PROOF_FOLDER_ID', folder.getId());
+  }
+  return folder.createFile(Utilities.newBlob(bytes, 'image/jpeg', orderId + ' - ' + name + '.jpg')).getUrl();
+}
+
+/* so tên không phân biệt hoa thường, dấu, khoảng trắng */
+function norm_(t) {
+  return String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().replace(/\s+/g, ' ').trim();
 }
 
 function doGet() {

@@ -55,10 +55,18 @@ window.CONFIG = {
     end:   "2026-11-25T00:00:00+07:00",   // = hết ngày 24/11
     title: "Đón lễ tháng 11 – Mua hàng ưu đãi, nhận quà hết ý!",
     period: "18/11 – hết 24/11/2026",
-    gift: "Kèm quà tặng – nhân viên báo khi gọi xác nhận đơn",
+    gift: "Tự chọn 1 quà tặng ngay khi đặt hàng",
+    /* quà khách tự chọn trong form (size:true = chọn size như sản phẩm đai) */
+    gifts: [
+      {id:"dai", name:"Đai Chỉnh Dáng Lưng", size:true},
+      {id:"bot", name:"Bột Ngâm Chân Thảo Mộc 110gr"},
+      {id:"dap", name:"Đắp Thảo Mộc 200gr"},
+      {id:"dp",  name:"Dầu Phong Hoàn Hảo 50ml"}
+    ],
+    /* proof = mức ưu đãi bắt buộc tải ảnh giấy tờ + họ tên trên giấy tờ phải trùng tên người nhận */
     opts: [
-      {id:"gv",  pct:27, name:"Thầy cô giáo", why:"Mừng Ngày Nhà giáo Việt Nam 20/11", from:"2026-11-19T00:00:00+07:00", to:"2026-11-21T00:00:00+07:00", when:"Chỉ áp dụng 19–20/11", need:"Gửi ảnh thẻ công tác qua Zalo để xác nhận", tag:"Giáo viên (xin ảnh thẻ công tác)"},
-      {id:"nam", pct:20, name:"Nam giới", why:"Mừng Quốc tế Đàn ông 19/11", need:"Nhân viên xác nhận khi gọi", tag:"Nam giới (xác nhận khi gọi)"},
+      {id:"gv",  pct:27, name:"Thầy cô giáo", why:"Mừng Ngày Nhà giáo Việt Nam 20/11", from:"2026-11-19T00:00:00+07:00", to:"2026-11-21T00:00:00+07:00", when:"Chỉ áp dụng 19–20/11", need:"Tải ảnh thẻ công tác khi đặt hàng, tên trên thẻ trùng tên người nhận", proof:"thẻ công tác / giấy tờ chứng minh là giáo viên", tag:"Giáo viên (có ảnh thẻ công tác)"},
+      {id:"nam", pct:20, name:"Nam giới", why:"Mừng Quốc tế Đàn ông 19/11", need:"Tải ảnh CCCD / bằng lái khi đặt hàng, tên trên thẻ trùng tên người nhận", proof:"CCCD hoặc bằng lái xe (thấy rõ họ tên, giới tính Nam)", tag:"Nam giới (có ảnh CCCD)"},
       {id:"all", pct:13, name:"Tất cả khách hàng", why:"Mừng Ngày Văn hóa Việt Nam 24/11", need:"", tag:"tất cả KH", def:true}
     ]
   }
@@ -360,6 +368,26 @@ footer .disc{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,
 @media(max-width:420px){.kmg{gap:6px}.kmg b{font-size:24px}.kmt{font-size:17px}.kmg small{font-size:11px}}
 /* ===== giao diện CTKM (chỉ hiện khi html.km-on) ===== */
 .kx,.kmbar{display:none}.km-on .kx{display:block}.km-on .kmbar{display:block}
+/* chọn size (đai) + quà tặng + giấy tờ */
+.szs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.szs button{position:relative;min-width:46px;min-height:40px;padding:3px 8px;border:1.5px solid #cfcfcf;border-radius:9px;background:#fff;font:inherit;font-weight:700;font-size:14px;line-height:1.1;color:var(--ink);cursor:pointer}
+.szs button small{display:block;font-size:11px;font-weight:600;color:var(--mute)}
+.szs button.on{border-color:var(--p);background:var(--p-ll);color:var(--p)}
+.szs button i{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-style:normal;font-size:11px;line-height:18px;text-align:center;padding:0 4px}
+.gfb{border:1.5px dashed var(--p);border-radius:14px;padding:12px 12px 4px;margin:6px 0 14px;background:var(--p-ll)}
+.gfh{font-weight:700;color:var(--p);margin-bottom:6px}
+.gfs{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:4px;font-size:13.5px}
+.gfs li{position:relative;padding-left:24px;color:var(--mute)}
+.gfs li::before{content:"";position:absolute;left:0;top:2px;width:16px;height:16px;border-radius:50%;border:2px solid #c9c9c9;box-sizing:border-box}
+.gfs li.gok{color:var(--g);font-weight:700}.gfs li.gok::before{content:"✓";border:0;background:var(--g);color:#fff;font-size:11px;line-height:16px;text-align:center}
+.gfo label{background:#fff}
+.gsz{margin-top:8px;font-size:14px;font-weight:700}
+.lnk{background:none;border:0;padding:4px 0;color:var(--p);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer}
+#pfF{width:100%;padding:10px;border:1.5px dashed #bdbdbd;border-radius:10px;background:#fff;font:inherit;font-size:14px}
+.f.err #pfF{border-color:var(--red)}
+.pfp{display:flex;align-items:center;gap:10px;margin-top:6px}.pfp img{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.pfh{font-size:12.5px;color:var(--mute);margin-top:4px;line-height:1.45}
+.pfm{font-size:13px;font-weight:700;margin-top:4px}.pfm.gok{color:var(--g)}.pfm.gno{color:var(--red)}
 html.km-on{scroll-padding-top:54px}
 .kmbar{position:sticky;top:0;z-index:60;background:linear-gradient(90deg,#c41a24,var(--p) 55%,var(--p-d));color:#fff;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .kmbar .wrap{display:flex;align-items:center;justify-content:center;gap:6px 8px;min-height:40px;padding:5px 12px;flex-wrap:wrap;text-align:center}
@@ -680,6 +708,31 @@ html.km-on{scroll-padding-top:54px}
               <div class="e">Vui lòng nhập số nhà, tên đường</div>
             </div>
           </div>
+          <div class="kx gfb" id="gfB">
+            <div class="gfh">🎁 Nhận quà tặng CTKM – làm đủ các bước</div>
+            <ol class="gfs" id="gfS"></ol>
+            <div class="f" data-f="gift">
+              <label>Chọn 1 quà tặng *</label>
+              <div class="kmo gfo" id="gfO"></div>
+              <div class="gsz" id="gfZ" hidden><span>Size đai tặng *</span><div class="szs" id="gfZB"></div><button type="button" class="lnk" id="gfZH">Xem bảng size ›</button></div>
+              <div class="e">Vui lòng chọn 1 quà tặng (chọn đai thì chọn thêm size)</div>
+            </div>
+            <div id="pfB" hidden>
+              <div class="f" data-f="proof">
+                <label for="pfF">Ảnh giấy tờ chứng minh * <i id="pfT"></i></label>
+                <input id="pfF" type="file" accept="image/*">
+                <div class="pfp" id="pfP" hidden><img id="pfI" alt="Ảnh giấy tờ đã chọn"><button type="button" class="lnk" id="pfX">Đổi ảnh</button></div>
+                <p class="pfh">Chỉ cần thấy rõ <b>họ tên</b> (CCCD/bằng lái cần thấy giới tính). Có thể che bớt số giấy tờ. Ảnh chỉ dùng để xác nhận ưu đãi.</p>
+                <div class="e" id="pfE">Vui lòng tải ảnh giấy tờ để nhận ưu đãi</div>
+              </div>
+              <div class="f" data-f="cardname">
+                <label for="pfN">Họ tên trên giấy tờ * <i>(phải trùng tên người nhận hàng)</i></label>
+                <input id="pfN" type="text" maxlength="80" autocomplete="off" placeholder="Ghi đúng như trên giấy tờ">
+                <p class="pfm" id="pfM"></p>
+                <div class="e">Họ tên trên giấy tờ phải trùng với họ tên người nhận hàng ở trên</div>
+              </div>
+            </div>
+          </div>
           <div class="f">
             <label for="fNote">Ghi chú <i>(không bắt buộc)</i></label>
             <input id="fNote" name="note" type="text" placeholder="Vd: Gọi trước khi giao" maxlength="200">
@@ -717,7 +770,7 @@ html.km-on{scroll-padding-top:54px}
       </div>
       <div class="map" id="map"></div>
     </div>
-    <nav class="fsp" aria-label="Danh sách sản phẩm"><b>Sản phẩm Sức Khỏe Hoàn Hảo</b><!--SP-LINKS--><ul><li><a href="san-pham/dau-phong-hoan-hao-50ml/">Dầu Phong Hoàn Hảo 50ml</a></li><li><a href="san-pham/dau-phong-hoan-hao-100ml/">Dầu Phong Hoàn Hảo 100ml</a></li><li><a href="san-pham/ruou-tu-vi-tue-anh/">Rượu Tứ Vị Tuệ Ánh 500ml</a></li><li><a href="san-pham/thong-kinh-lac-thuy-tue-anh/">Thông Kinh Lạc Thủy Tuệ Ánh 100ml</a></li><li><a href="san-pham/dap-thao-moc-tue-anh/">Đắp Thảo Mộc Tuệ Ánh 200gr</a></li><li><a href="san-pham/bot-ngam-chan-thao-moc-tue-anh/">Bột Ngâm Chân Thảo Mộc Tuệ Ánh 110gr</a></li><li><a href="san-pham/mat-ong-len-men-vi-nguyen-ban/">Mật Ong Lên Men Vị Nguyên Bản 300ml</a></li><li><a href="san-pham/mat-ong-len-men-sam-que/">Mật Ong Lên Men Sâm Quế 300ml</a></li><li><a href="san-pham/mat-ong-len-men-bo-mau/">Mật Ong Lên Men Bổ Máu 300ml</a></li><li><a href="san-pham/mat-ong-len-men-cat-loi/">Mật Ong Lên Men Cát Lồi 300ml</a></li><li><a href="san-pham/mat-ong-len-men-nhau/">Mật Ong Lên Men Nhàu 300ml</a></li><li><a href="san-pham/ngu-vi-thanh-toi-thuong/">Ngũ Vị Thanh Tỏi Thường 1,3kg</a></li><li><a href="san-pham/ngu-vi-thanh-toi-den/">Ngũ Vị Thanh Tỏi Đen 1,3kg</a></li><li><a href="san-pham/cu-cai-muoi-lac-mat-ong/">Củ Cải Muối Lắc Mật Ong 400gr</a></li><li><a href="san-pham/toi-den-co-don/">Tỏi Đen Cô Đơn 300gr</a></li><li><a href="san-pham/thanh-xuan-duoc/">Thanh Xuân Dược 50gr</a></li></ul><!--/SP-LINKS--></nav>
+    <nav class="fsp" aria-label="Danh sách sản phẩm"><b>Sản phẩm Sức Khỏe Hoàn Hảo</b><!--SP-LINKS--><ul><li><a href="san-pham/dau-phong-hoan-hao-50ml/">Dầu Phong Hoàn Hảo 50ml</a></li><li><a href="san-pham/dau-phong-hoan-hao-100ml/">Dầu Phong Hoàn Hảo 100ml</a></li><li><a href="san-pham/ruou-tu-vi-tue-anh/">Rượu Tứ Vị Tuệ Ánh 500ml</a></li><li><a href="san-pham/thong-kinh-lac-thuy-tue-anh/">Thông Kinh Lạc Thủy Tuệ Ánh 100ml</a></li><li><a href="san-pham/dap-thao-moc-tue-anh/">Đắp Thảo Mộc Tuệ Ánh 200gr</a></li><li><a href="san-pham/bot-ngam-chan-thao-moc-tue-anh/">Bột Ngâm Chân Thảo Mộc Tuệ Ánh 110gr</a></li><li><a href="san-pham/mat-ong-len-men-vi-nguyen-ban/">Mật Ong Lên Men Vị Nguyên Bản 300ml</a></li><li><a href="san-pham/mat-ong-len-men-sam-que/">Mật Ong Lên Men Sâm Quế 300ml</a></li><li><a href="san-pham/mat-ong-len-men-bo-mau/">Mật Ong Lên Men Bổ Máu 300ml</a></li><li><a href="san-pham/mat-ong-len-men-cat-loi/">Mật Ong Lên Men Cát Lồi 300ml</a></li><li><a href="san-pham/mat-ong-len-men-nhau/">Mật Ong Lên Men Nhàu 300ml</a></li><li><a href="san-pham/ngu-vi-thanh-toi-thuong/">Ngũ Vị Thanh Tỏi Thường 1,3kg</a></li><li><a href="san-pham/ngu-vi-thanh-toi-den/">Ngũ Vị Thanh Tỏi Đen 1,3kg</a></li><li><a href="san-pham/cu-cai-muoi-lac-mat-ong/">Củ Cải Muối Lắc Mật Ong 400gr</a></li><li><a href="san-pham/toi-den-co-don/">Tỏi Đen Cô Đơn 300gr</a></li><li><a href="san-pham/thanh-xuan-duoc/">Thanh Xuân Dược 50gr</a></li><li><a href="san-pham/dai-chinh-dang-luong/">Đai Chỉnh Dáng Lưng Size S, M, L, XL, 2XL, 3XL</a></li></ul><!--/SP-LINKS--></nav>
     <p class="disc">Sản phẩm không phải là thuốc và không có tác dụng thay thế thuốc chữa bệnh. Hiệu quả có thể khác nhau tuỳ cơ địa. Đọc kỹ hướng dẫn sử dụng trên nhãn trước khi dùng.</p>
   </div>
 </footer>
@@ -922,7 +975,16 @@ var PRODUCTS = [
    info:[["Thành phần","Sâm tươi, lá mật gấu, chùm ngây, thanaka, giấm, lợi khuẩn…"],
          ["Công dụng","Hỗ trợ làm đẹp và trẻ hoá da: giảm mụn, mờ nám, mờ thâm sẹo, sáng da, se khít lỗ chân lông"]]}
 ];
-var CATS = [{id:"all",name:"Tất cả"},{id:"xoa",name:"Dầu & rượu xoa bóp"},{id:"mat",name:"Thực phẩm lên men"},{id:"thao",name:"Thảo mộc khác"}];
+/* Đai Chỉnh Dáng Lưng: 1 thẻ sản phẩm, khách chọn size; giá theo size (bảng size: img/dai-size.webp) */
+var DAI_SIZES = [["S","60 – 68",72,35000],["M","68 – 80",86,35000],["L","80 – 90",94,35000],["XL","90 – 100",108,50000],["2XL","100 – 110",118,50000],["3XL","110 – 120",127,50000]];
+DAI_SIZES.forEach(function(z,i){PRODUCTS.push({id:"dai-"+z[0].toLowerCase(), grp:"dai", gmain:i===0, sz:z[0], name:"Đai Chỉnh Dáng Lưng", size:"Size "+z[0], price:z[3], tiers:[],
+  short:"đai size "+z[0], cat:"pk", tag:"New", img:"img/dai.webp", gal:["img/dai-size.webp"], store:"Giặt tay nhẹ, phơi nơi thoáng mát, tránh ánh nắng gắt",
+  desc:"Đai vải quấn quanh thân ngay dưới chân ngực, dán khoá velcro, ôm vừa vặn, dùng được cho nam và nữ. Chọn size theo vòng đo dưới chân ngực.",
+  info:[["Size "+z[0],"Vòng đo dưới chân ngực "+z[1]+" cm · chiều dài đai "+z[2]+" cm"],
+        ["Bảng size","S, M, L: 35.000đ/đai · XL, 2XL, 3XL: 50.000đ/đai. "+DAI_SIZES.map(function(x){return x[0]+": "+x[1]+" cm"}).join(" · ")],
+        ["Cách đo","Dùng thước dây mềm quấn ngang ngay dưới chân ngực, giữ thước ôm sát không siết chặt, đo khi đứng thẳng thở bình thường, đọc số theo cm"],
+        ["Chất liệu","Vải màu be, khoá dán velcro"]]})});
+var CATS = [{id:"all",name:"Tất cả"},{id:"xoa",name:"Dầu & rượu xoa bóp"},{id:"mat",name:"Thực phẩm lên men"},{id:"thao",name:"Thảo mộc khác"},{id:"pk",name:"Đai & phụ kiện"}];
 
 /* 34 tỉnh, thành (từ 01/7/2025) – trong ngoặc là tỉnh cũ đã sáp nhập để khách dễ tìm */
 var PROVINCES = [
@@ -936,13 +998,13 @@ var PROVINCES = [
 ];
 </script>
 
-<script>/*SLUGS*/window.SLUGS={"dau-phong":"dau-phong-hoan-hao-50ml","dau-phong-100":"dau-phong-hoan-hao-100ml","ruou-tu-vi":"ruou-tu-vi-tue-anh","thong-kinh-lac-thuy":"thong-kinh-lac-thuy-tue-anh","dap-thao-moc":"dap-thao-moc-tue-anh","bot-ngam-chan":"bot-ngam-chan-thao-moc-tue-anh","molm-nguyen-ban":"mat-ong-len-men-vi-nguyen-ban","molm-sam-que":"mat-ong-len-men-sam-que","molm-bo-mau":"mat-ong-len-men-bo-mau","molm-cat-loi":"mat-ong-len-men-cat-loi","molm-nhau":"mat-ong-len-men-nhau","ngu-vi-toi-thuong":"ngu-vi-thanh-toi-thuong","ngu-vi-toi-den":"ngu-vi-thanh-toi-den","cu-cai-muoi":"cu-cai-muoi-lac-mat-ong","toi-den-co-don":"toi-den-co-don","thanh-xuan-duoc":"thanh-xuan-duoc"};/*/SLUGS*/</script>
+<script>/*SLUGS*/window.SLUGS={"dau-phong":"dau-phong-hoan-hao-50ml","dau-phong-100":"dau-phong-hoan-hao-100ml","ruou-tu-vi":"ruou-tu-vi-tue-anh","thong-kinh-lac-thuy":"thong-kinh-lac-thuy-tue-anh","dap-thao-moc":"dap-thao-moc-tue-anh","bot-ngam-chan":"bot-ngam-chan-thao-moc-tue-anh","molm-nguyen-ban":"mat-ong-len-men-vi-nguyen-ban","molm-sam-que":"mat-ong-len-men-sam-que","molm-bo-mau":"mat-ong-len-men-bo-mau","molm-cat-loi":"mat-ong-len-men-cat-loi","molm-nhau":"mat-ong-len-men-nhau","ngu-vi-toi-thuong":"ngu-vi-thanh-toi-thuong","ngu-vi-toi-den":"ngu-vi-thanh-toi-den","cu-cai-muoi":"cu-cai-muoi-lac-mat-ong","toi-den-co-don":"toi-den-co-don","thanh-xuan-duoc":"thanh-xuan-duoc","dai-s":"dai-chinh-dang-luong","dai-m":"dai-chinh-dang-luong","dai-l":"dai-chinh-dang-luong","dai-xl":"dai-chinh-dang-luong","dai-2xl":"dai-chinh-dang-luong","dai-3xl":"dai-chinh-dang-luong"};/*/SLUGS*/</script>
 <script>
 (function(){
   "use strict";
   var C=window.CONFIG, d=document;
   function $(s){return d.querySelector(s)}
-  function $$(s){return Array.prototype.slice.call(d.querySelectorAll(s))}
+  function $$(s,r){return Array.prototype.slice.call((r||d).querySelectorAll(s))}
   function fmt(n){return Math.round(n).toLocaleString("vi-VN").replace(/,/g,".")+"đ"}
   /* ===== khuyến mãi: bật/tắt theo giờ, giá tự về chuẩn khi hết hạn ===== */
   var P=C.PROMO&&C.PROMO.opts&&C.PROMO.opts.length?C.PROMO:null,P0=P?Date.parse(P.start):0,P1=P?Date.parse(P.end):0;
@@ -1046,19 +1108,28 @@ var PROVINCES = [
     if(e.target.closest("[data-v]"))pdShow(c.dataset.id)});
 
   /* danh sách: render 1 lần, chỉ cập nhật đúng thẻ khi bấm */
-  var list=PRODUCTS.slice(); if(focus.length)list.sort(function(a,b){return (focus.indexOf(b.id)>-1)-(focus.indexOf(a.id)>-1)});
+  /* sản phẩm nhiều size (grp): chỉ hiện 1 thẻ, khách chọn size trên thẻ */
+  function grpOf(p){return p.grp?PRODUCTS.filter(function(x){return x.grp===p.grp}):[p]}
+  function inFocus(p){return grpOf(p).some(function(x){return focus.indexOf(x.id)>-1})}
+  function szChips(p,cur){return '<div class="szs" role="group" aria-label="Chọn size">'+grpOf(p).map(function(x){return '<button type="button" data-sz="'+x.id+'"'+(x.id===cur?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>'+esc(x.sz)+'<small>'+Math.round(x.price/1000)+'k</small></button>'}).join("")+'</div>'}
+  var list=PRODUCTS.filter(function(p){return !p.grp||p.gmain}).map(function(p){var f=p.grp&&grpOf(p).filter(function(x){return focus.indexOf(x.id)>-1})[0];return f||p});
+  if(focus.length)list.sort(function(a,b){return inFocus(b)-inFocus(a)});
   $("#tabs").innerHTML=CATS.map(function(c,i){return '<button class="tab'+(i?'':' on')+'" data-c="'+c.id+'">'+c.name+'</button>'}).join("");
   $("#grid").innerHTML=list.map(function(p){
     return '<article class="card" data-id="'+p.id+'" data-c="'+p.cat+'"><div class="ph" data-v>'+img(p,320,true)+(p.tag?'<span class="badge'+(p.tag==="New"?' new':'')+'">'+p.tag+'</span>':'')+kmRib()+'</div>'+
-      '<div class="cb"><h3 data-v>'+esc(p.name)+'</h3>'+(p.size?'<span class="sz">'+esc(p.size)+'</span>':'')+'<button class="more" data-v>Xem chi tiết ›</button><div class="pr">'+priceHTML(p)+'</div>'+(p.tiers&&p.tiers.length?'<div class="sx">Sỉ từ '+p.tiers[0][0]+' sp: '+fmt(p.tiers[0][1])+'</div>':'')+'<div class="act"></div></div></article>'}).join("");
-  var cards={}; $$(".card").forEach(function(el){cards[el.dataset.id]=el});
-  function paintCard(id){var el=cards[id],q=cart[id]||0;if(!el)return;el.classList.toggle("on",q>0);
+      '<div class="cb"><h3 data-v>'+esc(p.name)+'</h3>'+(p.grp?'<span class="sz">Chọn size theo vòng dưới chân ngực</span>'+szChips(p,p.id):(p.size?'<span class="sz">'+esc(p.size)+'</span>':''))+'<button class="more" data-v>'+(p.grp?'Xem bảng size ›':'Xem chi tiết ›')+'</button><div class="pr">'+priceHTML(p)+'</div>'+(p.tiers&&p.tiers.length?'<div class="sx">Sỉ từ '+p.tiers[0][0]+' sp: '+fmt(p.tiers[0][1])+'</div>':'')+'<div class="act"></div></div></article>'}).join("");
+  var cards={}; $$(".card").forEach(function(el){grpOf(by[el.dataset.id]).forEach(function(x){cards[x.id]=el})});
+  function paintCard(id){var el=cards[id];if(!el)return;var cur=el.dataset.id,q=cart[cur]||0,g=grpOf(by[cur]);
+    el.classList.toggle("on",g.some(function(x){return cart[x.id]>0}));
+    if(g.length>1)$$('[data-sz]',el).forEach(function(b){var n=cart[b.dataset.sz]||0,on=b.dataset.sz===cur;b.classList.toggle("on",on);b.classList.toggle("has",n>0);b.setAttribute("aria-pressed",on);var i=b.querySelector("i");if(i)i.remove();if(n)b.insertAdjacentHTML("beforeend",'<i>'+n+'</i>')});
     el.querySelector(".act").innerHTML=q?'<div class="qty"><button data-a="-" aria-label="Giảm">−</button><span>'+q+'</span><button data-a="+" aria-label="Tăng">+</button></div>':'<button class="add" data-a="add">+ Thêm vào đơn</button>'}
   PRODUCTS.forEach(function(p){paintCard(p.id)});
   $("#tabs").addEventListener("click",function(e){var b=e.target.closest(".tab");if(!b)return;
     $$(".tab").forEach(function(t){t.classList.toggle("on",t===b)});var c=b.dataset.c;
     $$(".card").forEach(function(el){el.hidden=!(c==="all"||el.dataset.c===c)})});
-  $("#grid").addEventListener("click",function(e){var c=e.target.closest(".card");if(!c)return;var id=c.dataset.id,b=e.target.closest("[data-a]");
+  $("#grid").addEventListener("click",function(e){var c=e.target.closest(".card");if(!c)return;
+    var z=e.target.closest("[data-sz]");if(z){c.dataset.id=z.dataset.sz;c.querySelector(".pr").innerHTML=priceHTML(by[z.dataset.sz],(promoOpt()||{}).pct);paintCard(z.dataset.sz);return}
+    var id=c.dataset.id,b=e.target.closest("[data-a]");
     if(b){change(id,b.dataset.a==="-"?-1:1,b.dataset.a);return}
     if(e.target.closest("[data-v]"))pdShow(id)});
 
@@ -1099,7 +1170,7 @@ var PROVINCES = [
       (C.FREESHIP_FROM!=null&&c.sub<C.FREESHIP_FROM?'<div style="color:var(--mute);font-size:13px">Mua thêm '+fmt(C.FREESHIP_FROM-c.sub)+' để được miễn ship</div>':'')+'<div class="gr"><span>Tổng</span><span>'+fmt(c.total)+'</span></div>':"";
     $("#binf").innerHTML=c.items.length?'<small>'+c.count+' sp'+(c.kms+c.save>0?' · <span class="sv2">tiết kiệm '+fmt(c.kms+c.save)+'</span>':' sản phẩm')+'</small><b>'+fmt(c.total)+'</b>':'<small>Chưa chọn sản phẩm</small><b>0đ</b>';
     $("#bbtn").textContent=c.items.length?"Đặt hàng →":"Chọn sản phẩm";
-    if(window.__fck)window.__fck()}
+    if(window.__fck)window.__fck();if(typeof gfPaint==="function")gfPaint()}
 
   var fired=false;
   function initCheckout(){if(fired)return;var c=calc();if(!c.items.length)return;fired=true;
@@ -1123,6 +1194,49 @@ var PROVINCES = [
 
   $$(".f input,.f select").forEach(function(el){["input","change"].forEach(function(t){el.addEventListener(t,function(){var f=el.closest(".f");if(f)f.classList.remove("err")})})});
 
+  /* ===== quà tặng + giấy tờ chứng minh (chỉ khi CTKM đang chạy) =====
+     Nhận quà phải đủ bước: có sản phẩm, chọn quà (đai thì chọn size), điền đủ thông tin nhận hàng;
+     mức ưu đãi cần giấy tờ (o.proof) thì thêm: tải ảnh giấy tờ + họ tên trên giấy tờ trùng tên người nhận. */
+  var GIFTS=P&&P.gifts||[],giftSel="",giftSz="",proof=null;
+  var DAI=PRODUCTS.filter(function(x){return x.grp==="dai"});
+  if(GIFTS.length){
+    $("#gfO").innerHTML=GIFTS.map(function(g){return '<label><input type="radio" name="gift" value="'+g.id+'"><span>'+esc(g.name)+(g.size?'<small>Chọn size bên dưới</small>':'')+'</span></label>'}).join("");
+    $("#gfZB").innerHTML=DAI.map(function(x){return '<button type="button" data-gz="'+esc(x.sz)+'" aria-pressed="false">'+esc(x.sz)+'<small>'+esc(x.info[0][1].split(" cm")[0].replace("Vòng đo dưới chân ngực ",""))+'</small></button>'}).join("");
+    $("#gfO").addEventListener("change",function(e){if(e.target.name!=="gift")return;giftSel=e.target.value;
+      $$("#gfO label").forEach(function(l){l.classList.toggle("on",l.querySelector("input").checked)});
+      var g=giftOf();$("#gfZ").hidden=!(g&&g.size);$('.f[data-f="gift"]').classList.remove("err");gfPaint()});
+    $("#gfZB").addEventListener("click",function(e){var b=e.target.closest("[data-gz]");if(!b)return;giftSz=b.dataset.gz;
+      $$("#gfZB button").forEach(function(x){var on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-pressed",on)});$('.f[data-f="gift"]').classList.remove("err");gfPaint()});
+    $("#gfZH").addEventListener("click",function(){if(DAI[0])pdShow(DAI[0].id)})}
+  function giftOf(){return GIFTS.filter(function(g){return g.id===giftSel})[0]||null}
+  function giftText(){var g=giftOf();return g?g.name+(g.size?" size "+giftSz:""):""}
+  function giftOk(){var g=giftOf();return !!(g&&(!g.size||giftSz))}
+  function proofOpt(){var c=calc();return c.km&&c.km.proof?c.km:null}
+  function cardOk(){var a=nv($("#pfN").value),b=nv($("#fName").value);return !!(a&&b&&a===b)}
+  function addrOk(){var f=$("#form");return okName(f.name.value.trim())&&okPhone(normPhone(f.phone.value))&&!!f.province.value&&f.ward.value.trim().length>1&&f.street.value.trim().length>1}
+  function gfPaint(){if(!GIFTS||!GIFTS.length||!$("#gfB"))return;var c=calc(),po=proofOpt();
+    $("#pfB").hidden=!po;if(po)$("#pfT").textContent="("+po.proof+")";
+    var nm=$("#pfN").value.trim(),m=$("#pfM");
+    if(po&&nm&&$("#fName").value.trim()){var ok=cardOk();m.className="pfm "+(ok?"gok":"gno");m.textContent=ok?"✓ Trùng tên người nhận hàng":"✗ Chưa trùng tên người nhận: “"+$("#fName").value.trim()+"”"}else{m.className="pfm";m.textContent=""}
+    var st=[["Chọn sản phẩm",c.items.length>0],["Chọn quà tặng"+(giftOf()&&giftOf().size?" + size đai":""),giftOk()]];
+    if(po)st.push(["Tải ảnh "+po.proof.split(" (")[0],!!proof],["Họ tên trên giấy tờ trùng tên người nhận",cardOk()]);
+    st.push(["Điền đủ họ tên, SĐT, địa chỉ nhận hàng",addrOk()]);
+    $("#gfS").innerHTML=st.map(function(x,i){return '<li class="'+(x[1]?"gok":"")+'">Bước '+(i+1)+': '+esc(x[0])+'</li>'}).join("")}
+  /* nén ảnh giấy tờ trước khi gửi (tối đa 1400px, JPEG) */
+  function shrink(file){return new Promise(function(ok,no){if(!file||!/^image\//.test(file.type))return no(new Error("type"));
+    var u=URL.createObjectURL(file),im=new Image();im.onload=function(){var mx=1400,w=im.naturalWidth,h=im.naturalHeight,r=Math.min(1,mx/Math.max(w,h));
+      var cv=d.createElement("canvas");cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);
+      ok(cv.toDataURL("image/jpeg",0.82))};im.onerror=function(){URL.revokeObjectURL(u);no(new Error("read"))};im.src=u})}
+  $("#pfF").addEventListener("change",function(){var f=this.files&&this.files[0],box=$('.f[data-f="proof"]');proof=null;$("#pfP").hidden=true;
+    if(!f){gfPaint();return}
+    if(f.size>20*1024*1024){$("#pfE").textContent="Ảnh quá lớn, vui lòng chọn ảnh khác";box.classList.add("err");this.value="";gfPaint();return}
+    shrink(f).then(function(du){proof=du;$("#pfI").src=du;$("#pfP").hidden=false;box.classList.remove("err");gfPaint()})
+      .catch(function(){$("#pfE").textContent="Không đọc được ảnh, vui lòng chụp lại hoặc chọn ảnh khác (JPG/PNG)";box.classList.add("err");$("#pfF").value="";gfPaint()})});
+  $("#pfX").addEventListener("click",function(){$("#pfF").click()});
+  ["#pfN","#fName","#fPhone","#fStreet","#fProv"].forEach(function(s){$(s).addEventListener("input",gfPaint);$(s).addEventListener("change",gfPaint)});
+  function gfReset(){giftSel="";giftSz="";proof=null;$$("#gfO input").forEach(function(i){i.checked=false});$$("#gfO label").forEach(function(l){l.classList.remove("on")});
+    $$("#gfZB button").forEach(function(x){x.classList.remove("on")});$("#gfZ").hidden=true;$("#pfF").value="";$("#pfN").value="";$("#pfP").hidden=true;gfPaint()}
+
   var busy=false;
   $("#form").addEventListener("submit",function(e){e.preventDefault();if(busy)return;
     var er=$("#ferr");er.style.display="none";var c=calc();
@@ -1130,8 +1244,17 @@ var PROVINCES = [
     var f=this,v={name:f.name.value.trim().replace(/\s+/g," "),phone:normPhone(f.phone.value),province:f.province.value,ward:f.ward.value.trim(),street:f.street.value.trim(),note:f.note.value.trim()};
     var bad=[];if(!okName(v.name))bad.push("name");if(!okPhone(v.phone))bad.push("phone");if(!v.province)bad.push("province");if(v.ward.length<2)bad.push("ward");if(v.street.length<2)bad.push("street");
     ["name","phone","province","ward","street"].forEach(function(k){$('.f[data-f="'+k+'"]').classList.toggle("err",bad.indexOf(k)>-1)});
-    if(bad.length){var fe=$('.f[data-f="'+bad[0]+'"]').querySelector('input:not([type=hidden]),select,button');if(fe){fe.focus();fe.scrollIntoView({block:"center"})}return}
-    var payload={name:v.name,phone:v.phone,province:v.province,ward:v.ward,street:v.street,address:v.street+", "+v.ward+", "+v.province,note:(c.km?"KM T11 -"+c.km.pct+"% "+c.km.tag+" + tặng quà"+(v.note?" | ":""):"")+v.note,promo:c.km?c.km.id+"-"+c.km.pct:"",discount:c.kms,
+    var gfOn=promoOn()&&GIFTS.length>0,po=gfOn?proofOpt():null;
+    if(gfOn){if(!giftOk())bad.push("gift");if(po&&!proof)bad.push("proof");if(po&&!cardOk())bad.push("cardname")}
+    ["gift","proof","cardname"].forEach(function(k){var x=$('.f[data-f="'+k+'"]');if(x)x.classList.toggle("err",bad.indexOf(k)>-1)});
+    if(bad.indexOf("proof")>-1)$("#pfE").textContent="Vui lòng tải ảnh "+po.proof+". Không có giấy tờ? Chọn mức “Tất cả khách hàng” (vẫn nhận quà).";
+    if(bad.length){var fe=$('.f[data-f="'+bad[0]+'"]');fe=fe&&fe.querySelector('input:not([type=hidden]),select,button');if(fe){fe.focus();fe.scrollIntoView({block:"center"})}
+      if(gfOn&&bad.every(function(k){return ["gift","proof","cardname"].indexOf(k)>-1})){er.innerHTML="Để nhận quà và ưu đãi, vui lòng làm đủ các bước trong khung 🎁 Nhận quà tặng.";er.style.display="block"}
+      gfPaint();return}
+    var gift=gfOn?giftText():"";
+    var payload={name:v.name,phone:v.phone,province:v.province,ward:v.ward,street:v.street,address:v.street+", "+v.ward+", "+v.province,
+      note:[c.km?"KM T11 -"+c.km.pct+"% "+c.km.tag:"",gift?"Quà: "+gift:"",po?"Tên trên giấy tờ: "+$("#pfN").value.trim():"",v.note].filter(String).join(" | "),
+      promo:c.km?c.km.id+"-"+c.km.pct:"",discount:c.kms,gift:gift,cardname:po?$("#pfN").value.trim():"",proof:po&&proof?proof.split(",")[1]:"",
       payment:f.payment.value,website:f.website.value,items:c.items,subtotal:c.sub,ship:c.ship,total:c.total,
       utm_source:attr.utm_source||"",utm_medium:attr.utm_medium||"",utm_campaign:attr.utm_campaign||"",utm_content:attr.utm_content||"",fbclid:attr.fbclid||"",
       page:location.href.split("#")[0],ua:navigator.userAgent,t:Math.round((Date.now()-T0)/1000),fbp:ck("_fbp"),fbc:ck("_fbc")||(attr.fbclid?"fb.1."+(attr.fbts||Date.now())+"."+attr.fbclid:"")};
@@ -1177,7 +1300,7 @@ var PROVINCES = [
     $("#okS").innerHTML=c.items.map(function(i){return '<div><span>'+i.qty+' × '+esc(i.name)+'</span><b>'+fmt(i.qty*i.price)+'</b></div>'}).join("")+
       (c.km?'<div><span>Ưu đãi '+esc(c.km.name.toLowerCase())+' −'+c.km.pct+'% (đã trừ)</span><b>−'+fmt(c.kms)+'</b></div>':'')+
       '<div class="tt"><span>Tổng thanh toán</span><b>'+fmt(c.total)+(c.ship==null?' + ship':'')+'</b></div>'+
-      (c.km?'<div class="kmok">🎁 '+esc(P.gift)+(c.km.need?'<br>📌 '+esc(c.km.need)+(c.km.id==="gv"?' <a href="'+esc(C.ZALO)+'" target="_blank" rel="noopener"><b>Gửi qua Zalo ›</b></a>':''):'')+'</div>':'');
+      (p.gift?'<div class="kmok">🎁 Quà tặng: <b>'+esc(p.gift)+'</b>'+(p.proof?'<br>📌 Đã nhận ảnh giấy tờ – nhân viên kiểm tra khi gọi xác nhận đơn':'')+'</div>':'');
     $("#okTo").innerHTML='<div><span>Giao tới: </span>'+esc(p.address)+'</div><div><span>Người nhận: </span>'+esc(p.name)+' – '+esc(p.phone)+'</div><div><span>Thanh toán: </span>'+(p.payment==="ck"?"Chuyển khoản qua QR Vietcombank":"Khi nhận hàng (COD)")+'</div>';
     var isCK=p.payment==="ck",B=C.BANK||{};
     $("#okCall").textContent=isCK?"📞 Nhân viên sẽ kiểm tra chuyển khoản và gọi xác nhận đơn hàng":"📞 Nhân viên sẽ gọi xác nhận đơn hàng";
@@ -1186,7 +1309,7 @@ var PROVINCES = [
     $("#okStep1").textContent=isCK?"Chuyển khoản theo thông tin bên trên":"Nhân viên sẽ gọi số "+p.phone+" để xác nhận đơn";
     $("#okStep2").textContent=isCK?"Nhân viên kiểm tra chuyển khoản và gọi số "+p.phone+" xác nhận đơn":"Shop đóng gói và giao tận nơi cho anh/chị";
     $("#okStep3").textContent=isCK?"Shop đóng gói và giao tận nơi cho anh/chị":"Nhận hàng, kiểm tra rồi thanh toán";
-    Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();kmPick(PDEF?PDEF.id:"");$("#qPhone").value="";wProv="";wBtn.disabled=true;setWard("");
+    Object.keys(cart).forEach(function(k){delete cart[k];paintCard(k)});save();paintCart();$("#form").reset();kmPick(PDEF?PDEF.id:"");gfReset();$("#qPhone").value="";wProv="";wBtn.disabled=true;setWard("");
     $$("#pay label").forEach(function(l,i){l.classList.toggle("on",i===0)});fckKey="";updateFormCK();
     $("#md").classList.add("on");d.documentElement.style.overflow="hidden"}
   /* ===== chuyển khoản QR (dùng chung cho form và popup) ===== */
@@ -1232,7 +1355,7 @@ var PROVINCES = [
     $("#pdG").innerHTML=gl.length>1?gl.map(function(u,i){return '<button type="button" data-g="'+i+'"'+(i?'':' class="on"')+' aria-label="Ảnh '+(i+1)+'"><img src="'+(i?u.replace(/^img\//,"img/t/"):(/^https?:/.test(p.img)?src(p,120):p.img.replace(/^img\//,"img/t/")))+'" alt="" width="58" height="58" loading="lazy" decoding="async"></button>'}).join(""):"";
     $("#pdG").onclick=function(e){var b=e.target.closest("[data-g]");if(!b)return;var i=+b.dataset.g;im.src=i?gl[i]:src(p,720,"contain");$$("#pdG button").forEach(function(x){x.classList.toggle("on",x===b)})};
     var sl=(window.SLUGS||{})[id],pl=$("#pdLink");pl.hidden=!sl;if(sl)pl.href="san-pham/"+sl+"/";
-    $("#pdN").textContent=p.name;$("#pdZ").textContent=p.size||"";$("#pdP").innerHTML=priceHTML(p,(promoOpt()||{}).pct);pdKm();$("#pdD").textContent=p.desc;
+    $("#pdN").textContent=p.name;if(p.grp)$("#pdZ").innerHTML=szChips(p,p.id);else $("#pdZ").textContent=p.size||"";$("#pdP").innerHTML=priceHTML(p,(promoOpt()||{}).pct);pdKm();$("#pdD").textContent=p.desc;
     $("#pdL").innerHTML=[["Dung tích / khối lượng",p.size]].concat(p.info||[],[["Bảo quản",p.store]]).filter(function(r){return r[1]}).map(function(r){return '<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join("");
     var rows=[[1,p.price]].concat(p.tiers||[]);
     $("#pdT").innerHTML=rows.length>1?'<table class="tt2"><caption>Bảng giá theo số lượng</caption><tr><th>Số lượng</th><th>Giá / sp</th></tr>'+rows.map(function(r,i){var to=rows[i+1]?(rows[i+1][0]-1):null;return '<tr data-min="'+r[0]+'"><td>'+(i===0?(to?'1 – '+to+' sp':'1 sp'):(to?r[0]+' – '+to+' sp':'Từ '+r[0]+' sp'))+'</td><td>'+fmt(r[1])+'</td></tr>'}).join("")+'</table>':"";
@@ -1248,6 +1371,7 @@ var PROVINCES = [
       P.opts.filter(optLive).map(function(x){var on=optOn(x);return '<button type="button" data-km="'+x.id+'"'+(on?'':' disabled')+' class="'+(x.id===o.id?'on':'')+(on?'':' off')+'"><b>−'+x.pct+'%</b>'+esc(x.name)+'<i>'+(on?fmt(kmPrice(p.price,x.pct)):esc(x.when||''))+'</i></button>'}).join("")+
       '</div><p class="pdkq">🎁 '+esc(P.gift)+(o.need?'<br>📌 '+esc(o.need):'')+'</p>';kmTick(true)}
   $("#pdK").addEventListener("click",function(e){var b=e.target.closest("[data-km]");if(b)kmPick(b.dataset.km)});
+  $("#pdZ").addEventListener("click",function(e){var b=e.target.closest("[data-sz]");if(!b||b.dataset.sz===pdId)return;var q=pdQ;pdShow(b.dataset.sz);pdQ=q;$("#pdQ").value=q;pdPrice()});
   function pdHide(){$("#pd").classList.remove("on");lock(false)}
   $("#pdX").addEventListener("click",pdHide);
   $("#pd").addEventListener("click",function(e){if(e.target.id==="pd")pdHide()});
@@ -1267,7 +1391,7 @@ var PROVINCES = [
   /* khuyến mãi: banner + chọn mức trong form + đếm ngược; hết hạn tự ẩn, giỏ hàng về giá chuẩn */
   function kmPick(id){var oo=P&&P.opts.filter(function(o){return o.id===id})[0];if(oo&&!optOn(oo))id=PDEF.id;promoSel=id;$$("#kmO label").forEach(function(l){var i=l.querySelector("input");i.checked=i.value===id;l.classList.toggle("on",i.checked)});
     $$("[data-km]").forEach(function(b){b.classList.toggle("on",b.dataset.km===id)});
-    var o=promoOpt();$("#kmN").textContent=o&&o.need?"📌 "+o.need:"";paintCart();
+    var o=promoOpt();$("#kmN").textContent=o&&o.need?"📌 "+o.need+(o.proof?" (không có giấy tờ: chọn “Tất cả khách hàng”, vẫn nhận quà)":""):"";paintCart();
     if(pdId&&$("#pd").classList.contains("on")){$("#pdP").innerHTML=priceHTML(by[pdId],(o||{}).pct);pdKm();pdPrice()}}
   var kmState=null;
   /* popup CTKM: chào khách (1 lần/ngày) + giữ chân khi giỏ có hàng mà chưa đặt (1 lần/phiên) */

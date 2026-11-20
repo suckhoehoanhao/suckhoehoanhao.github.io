@@ -21,6 +21,8 @@ const SLUG = {
   "ngu-vi-toi-den": "ngu-vi-thanh-toi-den", "cu-cai-muoi": "cu-cai-muoi-lac-mat-ong",
   "toi-den-co-don": "toi-den-co-don", "thanh-xuan-duoc": "thanh-xuan-duoc"
 };
+/* sản phẩm nhiều size (grp): mọi size dùng chung 1 trang */
+PRODUCTS.forEach((p) => { if (p.grp === "dai") SLUG[p.id] = "dai-chinh-dang-luong"; });
 /* từ khóa phụ khách hay tìm (lấy từ gợi ý tìm kiếm Google) */
 const ALSO = {
   "dau-phong": "dầu phong, dầu xoa bóp thảo mộc, dầu nghệ ngải cứu",
@@ -38,7 +40,8 @@ const ALSO = {
   "ngu-vi-toi-den": "ngũ vị thanh đen, ngũ vị thanh+, mật ong ngâm tỏi đen, ngũ vị thanh Sức Khỏe Hoàn Hảo",
   "cu-cai-muoi": "củ cải muối mật ong, củ cải muối lên men",
   "toi-den-co-don": "tỏi đen cô đơn, tỏi cô đơn lên men",
-  "thanh-xuan-duoc": "đắp mặt thảo mộc, mặt nạ thảo mộc sâm"
+  "thanh-xuan-duoc": "đắp mặt thảo mộc, mặt nạ thảo mộc sâm",
+  "dai-s": "đai chỉnh dáng lưng, đai lưng vải dán velcro, bảng size đai, đai quấn dưới chân ngực"
 };
 
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -55,6 +58,13 @@ const catName = (id) => (CATS.find((c) => c.id === id) || {}).name || "";
 
 function faqs(p) {
   const f = [], n = full(p);
+  if (p.grp) {
+    const g = PRODUCTS.filter((x) => x.grp === p.grp);
+    f.push([p.name + " giá bao nhiêu?", g.map((x) => "Size " + x.sz + ": " + fmt(x.price)).join("; ") + ". Phí ship 20.000đ đơn lẻ."]);
+    f.push(["Chọn size " + p.name + " thế nào?", "Đo vòng ngay dưới chân ngực bằng thước dây mềm, giữ thước ôm sát không siết chặt, đứng thẳng thở bình thường. " + g.map((x) => x.sz + ": " + row(x, "Size " + x.sz)).join("; ") + "."]);
+    f.push(["Mua " + p.name + " ở đâu uy tín?", "Đặt trực tiếp từ Sức Khỏe Hoàn Hảo (" + ADDR + ") trên website, gọi hotline " + HOT_T + " hoặc nhắn Zalo. Giao tận nơi 34 tỉnh thành, nhận hàng kiểm tra rồi mới thanh toán."]);
+    return f;
+  }
   const u = uses(p).map((r) => (r[0] === "Công dụng" ? "" : r[0] + ": ") + r[1]).join(". ");
   if (u) f.push([n + " có tác dụng gì?", u + ". Sản phẩm hỗ trợ chăm sóc sức khỏe, không phải thuốc; hiệu quả tuỳ cơ địa."]);
   const tiers = (p.tiers || []).map((t) => "từ " + t[0] + " sp: " + fmt(t[1]) + "/sp").join("; ");
@@ -67,13 +77,13 @@ function faqs(p) {
 
 function page(p) {
   const slug = SLUG[p.id], url = SITE + "san-pham/" + slug + "/", n = full(p);
-  const title = n + " – Giá " + k(p.price) + ", công dụng, cách dùng | Sức Khỏe Hoàn Hảo";
+  const title = p.grp ? p.name + " – Giá từ " + k(p.price) + ", bảng size, cách chọn size | Sức Khỏe Hoàn Hảo" : n + " – Giá " + k(p.price) + ", công dụng, cách dùng | Sức Khỏe Hoàn Hảo";
   let desc = n + " giá " + fmt(p.price) + ". " + p.desc;
   if (desc.length > 155) desc = desc.slice(0, desc.lastIndexOf(" ", 152)) + "…";
   const gal = [p.img].concat(p.gal || []);
   const F = faqs(p);
-  const rel = PRODUCTS.filter((x) => x.id !== p.id && x.cat === p.cat).slice(0, 4);
-  const others = PRODUCTS.filter((x) => x.id !== p.id);
+  const rel = PAGES.filter((x) => x.id !== p.id && x.cat === p.cat).slice(0, 4);
+  const others = PAGES.filter((x) => x.id !== p.id);
   const rows = [["Dung tích / khối lượng", p.size]].concat(p.info || [], [["Bảo quản", p.store]]).filter((r) => r[1]);
   const tierRows = [[1, p.price]].concat(p.tiers || []);
   const ld = { "@context": "https://schema.org", "@graph": [
@@ -211,9 +221,10 @@ ${rel.length ? `<h2>Sản phẩm cùng loại</h2>
 }
 
 const today = new Date().toISOString().slice(0, 10);
-const urls = [{ loc: SITE, img: PRODUCTS.filter((p) => !/^https?:/.test(p.img)).map((p) => SITE + p.img), pri: "1.0" }];
+const PAGES = PRODUCTS.filter((p) => !p.grp || p.gmain).map((p) => p.grp ? Object.assign({}, p, { size: "Size " + PRODUCTS.filter((x) => x.grp === p.grp).map((x) => x.sz).join(", ") }) : p);
+const urls = [{ loc: SITE, img: PAGES.filter((p) => !/^https?:/.test(p.img)).map((p) => SITE + p.img), pri: "1.0" }];
 fs.rmSync(path.join(ROOT, "san-pham"), { recursive: true, force: true });
-PRODUCTS.forEach((p) => {
+PAGES.forEach((p) => {
   if (!SLUG[p.id]) throw new Error("Thiếu slug cho " + p.id);
   const dir = path.join(ROOT, "san-pham", SLUG[p.id]);
   fs.mkdirSync(dir, { recursive: true });
@@ -225,11 +236,11 @@ fs.writeFileSync(path.join(ROOT, "sitemap.xml"),
   urls.map((u) => `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <priority>${u.pri}</priority>\n${u.img.map((i) => `    <image:image><image:loc>${esc(i)}</image:loc></image:image>`).join("\n")}\n  </url>`).join("\n") +
   "\n</urlset>\n");
 
-console.log("Đã tạo", PRODUCTS.length, "trang sản phẩm + sitemap.xml");
+console.log("Đã tạo", PAGES.length, "trang sản phẩm + sitemap.xml");
 
 /* cập nhật liên kết nội bộ trên trang chủ */
 let home = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
-const links = "<ul>" + PRODUCTS.map((p) => `<li><a href="san-pham/${SLUG[p.id]}/">${esc(full(p))}</a></li>`).join("") + "</ul>";
+const links = "<ul>" + PAGES.map((p) => `<li><a href="san-pham/${SLUG[p.id]}/">${esc(full(p))}</a></li>`).join("") + "</ul>";
 home = home.replace(/<!--SP-LINKS-->[\s\S]*?<!--\/SP-LINKS-->/, "<!--SP-LINKS-->" + links + "<!--/SP-LINKS-->")
            .replace(/\/\*SLUGS\*\/[\s\S]*?\/\*\/SLUGS\*\//, "/*SLUGS*/window.SLUGS=" + JSON.stringify(SLUG) + ";/*/SLUGS*/");
 fs.writeFileSync(path.join(ROOT, "index.html"), home);
